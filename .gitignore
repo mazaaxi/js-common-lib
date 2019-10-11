@@ -1,0 +1,13 @@
+.idea/
+coverage/
+node_modules/
+screenshots/
+*.log
+*.tmp
+~$*
+
+/lib/**/*.js.map
+
+/src/**/*.js.map
+
+/tests/**/*.js.map
