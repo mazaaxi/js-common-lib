@@ -1,9 +1,9 @@
 const merge = require('lodash/merge')
 
-const prettierConfig = require('./prettier.config')
+const prettierConfig = require('./conf/prettier.config')
 
 const eslintConfig = merge(
-  require('./.eslintrc.base.js'),
+  require('./conf/.eslintrc.base.js'),
   {
     'rules': {
       'prettier/prettier': ['error', prettierConfig],

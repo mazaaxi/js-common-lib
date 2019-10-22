@@ -10,9 +10,8 @@
   },
   "files": [
     "lib",
-    "scripts",
-    ".eslintrc.base.js",
-    "prettier.config.js"
+    "conf",
+    "scripts"
   ],
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
