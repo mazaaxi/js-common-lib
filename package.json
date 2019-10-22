@@ -10,8 +10,8 @@
   },
   "files": [
     "lib",
-    "conf",
-    "scripts"
+    "tools",
+    "conf"
   ],
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -19,7 +19,7 @@
     "build": "rm -rf lib && tsc --declaration",
     "test": "jest --runInBand",
     "test:coverage": "jest --runInBand --coverage",
-    "lint": "./scripts/lint.sh"
+    "lint": "./tools/lint.sh"
   },
   "dependencies": {},
   "devDependencies": {
