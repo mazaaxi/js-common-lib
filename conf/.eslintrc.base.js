@@ -54,14 +54,7 @@ module.exports = {
       },
     ],
     'space-in-parens': ['error', 'never'],
-    '@typescript-eslint/camelcase': [
-      'error',
-      {
-        'properties': 'never',
-        'ignoreDestructuring': true,
-        'allow': ['^m_'],
-      },
-    ],
+    '@typescript-eslint/camelcase': 'off',
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/explicit-member-accessibility': 'off',
     '@typescript-eslint/indent': ['off', 2],
