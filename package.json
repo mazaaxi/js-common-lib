@@ -9,14 +9,14 @@
     "url": "https://github.com/masterpg/web-base-lib.git"
   },
   "files": [
-    "lib",
+    "dist",
     "tools",
     "conf"
   ],
-  "main": "lib/index.js",
-  "types": "lib/index.d.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
-    "build": "rm -rf lib && tsc --declaration",
+    "build": "rm -rf dist && tsc --declaration --project ./tsconfig.build.json",
     "test": "jest --runInBand",
     "test:coverage": "jest --runInBand --coverage",
     "lint": "./tools/lint.sh"

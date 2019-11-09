@@ -1,12 +1,13 @@
+**/*.log
+**/~$*
+
+.cache/
+.firebase/
 .idea/
-coverage/
 node_modules/
 screenshots/
-*.log
-*.tmp
-~$*
 
-/lib/**/*.js.map
+/dist/**/*.js.map
 
 /src/**/*.js.map
 

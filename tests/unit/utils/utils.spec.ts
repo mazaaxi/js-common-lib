@@ -1,4 +1,4 @@
-import { removeBothEndsSlash, removeEndSlash, removeStartSlash, splitFilePath } from '../../../src/utils'
+import { removeBothEndsSlash, removeEndSlash, removeStartSlash, splitFilePath } from '../../../src'
 
 describe('removeStartSlash', () => {
   it('ベーシックケース', async () => {
