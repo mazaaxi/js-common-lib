@@ -14,6 +14,14 @@ export declare function removeEndSlash(path?: string): string;
  */
 export declare function removeBothEndsSlash(path?: string): string;
 /**
+ * パスの先頭にあるディレクトリを表す文字を削除します。
+ * 例: './aaa'  → 'aaa'
+ *     '../aaa' → 'aaa'
+ *     '/aaa'   → 'aaa'
+ * @param path
+ */
+export declare function removeStartDirChars(path?: string): string;
+/**
  * ファイルパスをファイル名とディレクトリパスに分割します。
  * @param filePath
  */

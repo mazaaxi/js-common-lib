@@ -7,7 +7,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 function removeStartSlash(path) {
     if (!path)
         return '';
-    return path.replace(/^\//, '');
+    return path.replace(/^\/*/, '');
 }
 exports.removeStartSlash = removeStartSlash;
 /**
@@ -17,7 +17,7 @@ exports.removeStartSlash = removeStartSlash;
 function removeEndSlash(path) {
     if (!path)
         return '';
-    return path.replace(/\/$/, '');
+    return path.replace(/\/*$/, '');
 }
 exports.removeEndSlash = removeEndSlash;
 /**
@@ -30,6 +30,19 @@ function removeBothEndsSlash(path) {
     return removeStartSlash(removeEndSlash(path));
 }
 exports.removeBothEndsSlash = removeBothEndsSlash;
+/**
+ * パスの先頭にあるディレクトリを表す文字を削除します。
+ * 例: './aaa'  → 'aaa'
+ *     '../aaa' → 'aaa'
+ *     '/aaa'   → 'aaa'
+ * @param path
+ */
+function removeStartDirChars(path) {
+    if (!path)
+        return '';
+    return path.replace(/^\.*\/*/, '');
+}
+exports.removeStartDirChars = removeStartDirChars;
 /**
  * ファイルパスをファイル名とディレクトリパスに分割します。
  * @param filePath
