@@ -1,8 +1,18 @@
-import { removeBothEndsSlash, removeEndSlash, removeStartSlash, splitFilePath } from '../../../src'
+import { removeBothEndsSlash, removeEndSlash, removeStartDirChars, removeStartSlash, splitFilePath } from '../../../src'
 
 describe('removeStartSlash', () => {
   it('ベーシックケース', async () => {
     const actual = removeStartSlash('/aaa/bbb/')
+    expect(actual).toBe('aaa/bbb/')
+  })
+
+  it('複数のスラッシュがある場合', async () => {
+    const actual = removeStartSlash('///aaa/bbb/')
+    expect(actual).toBe('aaa/bbb/')
+  })
+
+  it('先頭にスラッシュがない場合', async () => {
+    const actual = removeStartSlash('aaa/bbb/')
     expect(actual).toBe('aaa/bbb/')
   })
 })
@@ -12,12 +22,39 @@ describe('removeEndSlash', () => {
     const actual = removeEndSlash('/aaa/bbb/')
     expect(actual).toBe('/aaa/bbb')
   })
+
+  it('複数のスラッシュがある場合', async () => {
+    const actual = removeEndSlash('/aaa/bbb///')
+    expect(actual).toBe('/aaa/bbb')
+  })
+
+  it('末尾にスラッシュがない場合', async () => {
+    const actual = removeEndSlash('/aaa/bbb')
+    expect(actual).toBe('/aaa/bbb')
+  })
 })
 
 describe('removeBothEndsSlash', () => {
   it('ベーシックケース', async () => {
     const actual = removeBothEndsSlash('/aaa/bbb/')
     expect(actual).toBe('aaa/bbb')
+  })
+})
+
+describe('removeStartDirChars', () => {
+  it('カレントディレクトリを示している場合', async () => {
+    const actual = removeStartDirChars('./aaa/bbb/')
+    expect(actual).toBe('aaa/bbb/')
+  })
+
+  it('上位ディレクトリを示している場合', async () => {
+    const actual = removeStartDirChars('../aaa/bbb/')
+    expect(actual).toBe('aaa/bbb/')
+  })
+
+  it('スラッシュで始まっている場合', async () => {
+    const actual = removeStartDirChars('./aaa/bbb/')
+    expect(actual).toBe('aaa/bbb/')
   })
 })
 

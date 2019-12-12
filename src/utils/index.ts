@@ -4,7 +4,7 @@
  */
 export function removeStartSlash(path?: string): string {
   if (!path) return ''
-  return path.replace(/^\//, '')
+  return path.replace(/^\/*/, '')
 }
 
 /**
@@ -13,7 +13,7 @@ export function removeStartSlash(path?: string): string {
  */
 export function removeEndSlash(path?: string): string {
   if (!path) return ''
-  return path.replace(/\/$/, '')
+  return path.replace(/\/*$/, '')
 }
 
 /**
@@ -23,6 +23,18 @@ export function removeEndSlash(path?: string): string {
 export function removeBothEndsSlash(path?: string): string {
   if (!path) return ''
   return removeStartSlash(removeEndSlash(path))
+}
+
+/**
+ * パスの先頭にあるディレクトリを表す文字を削除します。
+ * 例: './aaa'  → 'aaa'
+ *     '../aaa' → 'aaa'
+ *     '/aaa'   → 'aaa'
+ * @param path
+ */
+export function removeStartDirChars(path?: string): string {
+  if (!path) return ''
+  return path.replace(/^\.*\/*/, '')
 }
 
 /**
