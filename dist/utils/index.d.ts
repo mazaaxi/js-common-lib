@@ -2,17 +2,17 @@
  * パス先頭のスラッシュを除去します。
  * @param path
  */
-export declare function removeStartSlash(path?: string): string;
+export declare function removeStartSlash(path: string | undefined | null): string;
 /**
  * パス末尾のスラッシュを除去します。
  * @param path
  */
-export declare function removeEndSlash(path?: string): string;
+export declare function removeEndSlash(path: string | undefined | null): string;
 /**
  * パスの両端のスラッシュを除去します。
  * @param path
  */
-export declare function removeBothEndsSlash(path?: string): string;
+export declare function removeBothEndsSlash(path: string | undefined | null): string;
 /**
  * パスの先頭にあるディレクトリを表す文字を削除します。
  * 例: './aaa'  → 'aaa'
@@ -20,7 +20,7 @@ export declare function removeBothEndsSlash(path?: string): string;
  *     '/aaa'   → 'aaa'
  * @param path
  */
-export declare function removeStartDirChars(path?: string): string;
+export declare function removeStartDirChars(path: string | undefined | null): string;
 /**
  * ファイルパスをファイル名とディレクトリパスに分割します。
  * @param filePath
