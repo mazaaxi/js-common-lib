@@ -15,6 +15,16 @@ describe('removeStartSlash', () => {
     const actual = removeStartSlash('aaa/bbb/')
     expect(actual).toBe('aaa/bbb/')
   })
+
+  it('undefinedを指定した場合', async () => {
+    const actual = removeStartSlash(undefined)
+    expect(actual).toBe('')
+  })
+
+  it('nullを指定した場合', async () => {
+    const actual = removeStartSlash(null)
+    expect(actual).toBe('')
+  })
 })
 
 describe('removeEndSlash', () => {
@@ -32,12 +42,32 @@ describe('removeEndSlash', () => {
     const actual = removeEndSlash('/aaa/bbb')
     expect(actual).toBe('/aaa/bbb')
   })
+
+  it('undefinedを指定した場合', async () => {
+    const actual = removeEndSlash(undefined)
+    expect(actual).toBe('')
+  })
+
+  it('nullを指定した場合', async () => {
+    const actual = removeEndSlash(null)
+    expect(actual).toBe('')
+  })
 })
 
 describe('removeBothEndsSlash', () => {
   it('ベーシックケース', async () => {
     const actual = removeBothEndsSlash('/aaa/bbb/')
     expect(actual).toBe('aaa/bbb')
+  })
+
+  it('undefinedを指定した場合', async () => {
+    const actual = removeBothEndsSlash(undefined)
+    expect(actual).toBe('')
+  })
+
+  it('nullを指定した場合', async () => {
+    const actual = removeBothEndsSlash(null)
+    expect(actual).toBe('')
   })
 })
 
@@ -55,6 +85,16 @@ describe('removeStartDirChars', () => {
   it('スラッシュで始まっている場合', async () => {
     const actual = removeStartDirChars('./aaa/bbb/')
     expect(actual).toBe('aaa/bbb/')
+  })
+
+  it('undefinedを指定した場合', async () => {
+    const actual = removeStartDirChars(undefined)
+    expect(actual).toBe('')
+  })
+
+  it('nullを指定した場合', async () => {
+    const actual = removeStartDirChars(null)
+    expect(actual).toBe('')
   })
 })
 

@@ -2,7 +2,7 @@
  * パス先頭のスラッシュを除去します。
  * @param path
  */
-export function removeStartSlash(path?: string): string {
+export function removeStartSlash(path: string | undefined | null): string {
   if (!path) return ''
   return path.replace(/^\/*/, '')
 }
@@ -11,7 +11,7 @@ export function removeStartSlash(path?: string): string {
  * パス末尾のスラッシュを除去します。
  * @param path
  */
-export function removeEndSlash(path?: string): string {
+export function removeEndSlash(path: string | undefined | null): string {
   if (!path) return ''
   return path.replace(/\/*$/, '')
 }
@@ -20,7 +20,7 @@ export function removeEndSlash(path?: string): string {
  * パスの両端のスラッシュを除去します。
  * @param path
  */
-export function removeBothEndsSlash(path?: string): string {
+export function removeBothEndsSlash(path: string | undefined | null): string {
   if (!path) return ''
   return removeStartSlash(removeEndSlash(path))
 }
@@ -32,7 +32,7 @@ export function removeBothEndsSlash(path?: string): string {
  *     '/aaa'   → 'aaa'
  * @param path
  */
-export function removeStartDirChars(path?: string): string {
+export function removeStartDirChars(path: string | undefined | null): string {
   if (!path) return ''
   return path.replace(/^\.*\/*/, '')
 }
