@@ -1,4 +1,4 @@
-import { removeBothEndsSlash, removeEndSlash, removeStartDirChars, removeStartSlash, splitFilePath } from '../../../src'
+import { removeBothEndsSlash, removeEndSlash, removeStartDirChars, removeStartSlash, splitFilePath, splitHierarchicalPaths } from '../../../src'
 
 describe('removeStartSlash', () => {
   it('ベーシックケース', async () => {
@@ -109,5 +109,20 @@ describe('splitFilePath', () => {
     const actual = splitFilePath('aaa/bbb/fileA.txt')
     expect(actual.dirPath).toBe('aaa/bbb')
     expect(actual.fileName).toBe('fileA.txt')
+  })
+})
+
+describe('splitHierarchicalPaths', () => {
+  it('ベーシックケース', async () => {
+    const actual = splitHierarchicalPaths(`d1`, `d1/d11/fileA.txt`, 'd2/d21/fileC.txt', `d1/d11/fileB.txt`)
+
+    expect(actual.length).toBe(7)
+    expect(actual[0]).toBe(`d1`)
+    expect(actual[1]).toBe(`d1/d11`)
+    expect(actual[2]).toBe(`d1/d11/fileA.txt`)
+    expect(actual[3]).toBe(`d1/d11/fileB.txt`)
+    expect(actual[4]).toBe(`d2`)
+    expect(actual[5]).toBe(`d2/d21`)
+    expect(actual[6]).toBe(`d2/d21/fileC.txt`)
   })
 })

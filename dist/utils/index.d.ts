@@ -29,3 +29,12 @@ export declare function splitFilePath(filePath: string): {
     fileName: string;
     dirPath: string;
 };
+/**
+ * 指定されたパスを階層的に分割します。
+ *
+ * 例: ['d1/d11/fileA.txt', `d1/d11/fileB.txt`]が指定された場合、
+ *     ['d1', 'd1/d11', 'd1/d11/fileA.txt', 'd1/d11/fileB.txt']を返します。
+ *
+ * @param paths
+ */
+export declare function splitHierarchicalPaths(...paths: string[]): string[];

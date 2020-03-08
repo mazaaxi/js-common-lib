@@ -50,3 +50,28 @@ export function splitFilePath(filePath: string): { fileName: string; dirPath: st
   }
   return { fileName, dirPath }
 }
+
+/**
+ * 指定されたパスを階層的に分割します。
+ *
+ * 例: ['d1/d11/fileA.txt', `d1/d11/fileB.txt`]が指定された場合、
+ *     ['d1', 'd1/d11', 'd1/d11/fileA.txt', 'd1/d11/fileB.txt']を返します。
+ *
+ * @param paths
+ */
+export function splitHierarchicalPaths(...paths: string[]): string[] {
+  const set: Set<string> = new Set<string>()
+
+  for (const dirPath of paths) {
+    const segments = dirPath.split('/').filter(item => !!item)
+    for (let i = 0; i < segments.length; i++) {
+      const currentDirPath = segments.slice(0, i + 1).join('/')
+      set.add(currentDirPath)
+    }
+  }
+
+  // ディレクトリ階層順にソート
+  return Array.from(set).sort((a, b) => {
+    return a < b ? -1 : a > b ? 1 : 0
+  })
+}
