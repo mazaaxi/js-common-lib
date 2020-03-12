@@ -59,10 +59,11 @@ export function splitFilePath(filePath: string): { fileName: string; dirPath: st
  *
  * @param paths
  */
-export function splitHierarchicalPaths(...paths: string[]): string[] {
+export function splitHierarchicalPaths(...paths: (string | undefined | null)[]): string[] {
   const set: Set<string> = new Set<string>()
 
   for (const dirPath of paths) {
+    if (!dirPath) continue
     const segments = dirPath.split('/').filter(item => !!item)
     for (let i = 0; i < segments.length; i++) {
       const currentDirPath = segments.slice(0, i + 1).join('/')

@@ -37,4 +37,4 @@ export declare function splitFilePath(filePath: string): {
  *
  * @param paths
  */
-export declare function splitHierarchicalPaths(...paths: string[]): string[];
+export declare function splitHierarchicalPaths(...paths: (string | undefined | null)[]): string[];

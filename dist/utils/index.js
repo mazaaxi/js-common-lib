@@ -68,6 +68,8 @@ exports.splitFilePath = splitFilePath;
 function splitHierarchicalPaths(...paths) {
     const set = new Set();
     for (const dirPath of paths) {
+        if (!dirPath)
+            continue;
         const segments = dirPath.split('/').filter(item => !!item);
         for (let i = 0; i < segments.length; i++) {
             const currentDirPath = segments.slice(0, i + 1).join('/');

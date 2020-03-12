@@ -125,4 +125,29 @@ describe('splitHierarchicalPaths', () => {
     expect(actual[5]).toBe(`d2/d21`)
     expect(actual[6]).toBe(`d2/d21/fileC.txt`)
   })
+
+  it('undefinedまたはnullが含まれた場合', async () => {
+    const actual = splitHierarchicalPaths(`d1`, undefined, null)
+
+    expect(actual.length).toBe(1)
+    expect(actual[0]).toBe(`d1`)
+  })
+
+  it('undefinedが指定された場合', async () => {
+    const actual = splitHierarchicalPaths(undefined)
+
+    expect(actual.length).toBe(0)
+  })
+
+  it('nullが指定された場合', async () => {
+    const actual = splitHierarchicalPaths(undefined)
+
+    expect(actual.length).toBe(0)
+  })
+
+  it('何も指定しない場合', async () => {
+    const actual = splitHierarchicalPaths()
+
+    expect(actual.length).toBe(0)
+  })
 })
