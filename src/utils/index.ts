@@ -76,3 +76,23 @@ export function splitHierarchicalPaths(...paths: (string | undefined | null)[]):
     return a < b ? -1 : a > b ? 1 : 0
   })
 }
+
+/**
+ * オブジェクト配列を指定されたキーの値でマップ化します。
+ * @param list オブジェクト配列
+ * @param key オブジェクトのキーを指定。この値がマップのキーに使用されます。
+ */
+export function arrayToDict<ITEM>(list: ITEM[], key: keyof ITEM): Record<string | number, ITEM> {
+  return list.reduce(
+    (result, item) => {
+      const k = item[key]
+      if (typeof k === 'string') {
+        result[k] = item
+      } else if (typeof k === 'number') {
+        result[k] = item
+      }
+      return result
+    },
+    {} as Record<string | number, any>
+  )
+}

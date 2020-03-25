@@ -82,4 +82,22 @@ function splitHierarchicalPaths(...paths) {
     });
 }
 exports.splitHierarchicalPaths = splitHierarchicalPaths;
+/**
+ * オブジェクト配列を指定されたキーの値でマップ化します。
+ * @param list オブジェクト配列
+ * @param key オブジェクトのキーを指定。この値がマップのキーに使用されます。
+ */
+function arrayToDict(list, key) {
+    return list.reduce((result, item) => {
+        const k = item[key];
+        if (typeof k === 'string') {
+            result[k] = item;
+        }
+        else if (typeof k === 'number') {
+            result[k] = item;
+        }
+        return result;
+    }, {});
+}
+exports.arrayToDict = arrayToDict;
 //# sourceMappingURL=index.js.map

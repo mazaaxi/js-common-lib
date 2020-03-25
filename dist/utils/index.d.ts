@@ -38,3 +38,9 @@ export declare function splitFilePath(filePath: string): {
  * @param paths
  */
 export declare function splitHierarchicalPaths(...paths: (string | undefined | null)[]): string[];
+/**
+ * オブジェクト配列を指定されたキーの値でマップ化します。
+ * @param list オブジェクト配列
+ * @param key オブジェクトのキーを指定。この値がマップのキーに使用されます。
+ */
+export declare function arrayToDict<ITEM>(list: ITEM[], key: keyof ITEM): Record<string | number, ITEM>;
