@@ -1,4 +1,12 @@
-import { arrayToDict, removeBothEndsSlash, removeEndSlash, removeStartDirChars, removeStartSlash, splitFilePath, splitHierarchicalPaths } from '../../../src'
+import {
+  arrayToDict,
+  removeBothEndsSlash,
+  removeEndSlash,
+  removeStartDirChars,
+  removeStartSlash,
+  splitFilePath,
+  splitHierarchicalPaths,
+} from '../../../src'
 
 describe('removeStartSlash', () => {
   it('ベーシックケース', async () => {
@@ -162,7 +170,7 @@ describe('arrayToDict', () => {
   const jiro: Person = { id: 2, name: 'jiro', phones: ['090-0002-0001', '090-0002-0002'] }
   const saburo: Person = { id: 3, name: 'saburo', phones: ['090-0003-0001', '090-0003-0002'] }
 
-  it('ベーシックケース - キーにnumber型を指定', async () => {
+  it('keyにnumber型を指定', async () => {
     const array = [ichiro, jiro, saburo]
 
     const actual = arrayToDict(array, 'id')
@@ -172,7 +180,7 @@ describe('arrayToDict', () => {
     expect(actual[3]).toBe(saburo)
   })
 
-  it('ベーシックケース - キーにstring型を指定', async () => {
+  it('keyにstring型を指定', async () => {
     const array = [ichiro, jiro, saburo]
 
     const actual = arrayToDict(array, 'name')
@@ -182,10 +190,18 @@ describe('arrayToDict', () => {
     expect(actual['saburo']).toBe(saburo)
   })
 
-  it('ベーシックケース - キーにnumber、string型以外を指定', async () => {
+  it('keyにnumber、string型以外を指定', async () => {
     const array = [ichiro, jiro, saburo]
 
     const actual = arrayToDict(array, 'phones')
+
+    expect(Object.keys(actual).length).toBe(0)
+  })
+
+  it('listが空配列の場合', async () => {
+    const array: Person[] = []
+
+    const actual = arrayToDict(array, 'name')
 
     expect(Object.keys(actual).length).toBe(0)
   })
