@@ -96,3 +96,18 @@ export function arrayToDict<ITEM>(list: ITEM[], key: keyof ITEM): Record<string 
     {} as Record<string | number, any>
   )
 }
+
+/**
+ * 配列を塊に分割します。
+ * @param array 分割したい配列
+ * @param size 塊のアイテム数
+ */
+export function splitArrayChunk<T>(array: T[], size: number): T[][] {
+  return array.reduce<T[][]>((result, value, index) => {
+    if (index % size) {
+      return result
+    } else {
+      return [...result, array.slice(index, index + size)]
+    }
+  }, [])
+}

@@ -4,6 +4,7 @@ import {
   removeEndSlash,
   removeStartDirChars,
   removeStartSlash,
+  splitArrayChunk,
   splitFilePath,
   splitHierarchicalPaths,
 } from '../../../src'
@@ -204,5 +205,26 @@ describe('arrayToDict', () => {
     const actual = arrayToDict(array, 'name')
 
     expect(Object.keys(actual).length).toBe(0)
+  })
+})
+
+describe('splitArrayChunk', () => {
+  it('ベーシックケース', async () => {
+    const array: number[] = []
+    for (let i = 1; i <= 100; i++) {
+      array.push(i)
+    }
+
+    const actual = splitArrayChunk(array, 10)
+
+    expect(actual.length).toBe(10)
+    let num = 1
+    for (let i = 0; i < actual.length; i++) {
+      const chunk = actual[i]
+      for (let j = 0; j < chunk.length; j++) {
+        expect(chunk[j]).toBe(num)
+        num++
+      }
+    }
   })
 })

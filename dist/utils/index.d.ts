@@ -44,3 +44,9 @@ export declare function splitHierarchicalPaths(...paths: (string | undefined | n
  * @param key オブジェクトのキーを指定。この値がマップのキーに使用されます。
  */
 export declare function arrayToDict<ITEM>(list: ITEM[], key: keyof ITEM): Record<string | number, ITEM>;
+/**
+ * 配列を塊に分割します。
+ * @param array 分割したい配列
+ * @param size 塊のアイテム数
+ */
+export declare function splitArrayChunk<T>(array: T[], size: number): T[][];

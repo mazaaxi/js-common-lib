@@ -100,4 +100,20 @@ function arrayToDict(list, key) {
     }, {});
 }
 exports.arrayToDict = arrayToDict;
+/**
+ * 配列を塊に分割します。
+ * @param array 分割したい配列
+ * @param size 塊のアイテム数
+ */
+function splitArrayChunk(array, size) {
+    return array.reduce((result, value, index) => {
+        if (index % size) {
+            return result;
+        }
+        else {
+            return [...result, array.slice(index, index + size)];
+        }
+    }, []);
+}
+exports.splitArrayChunk = splitArrayChunk;
 //# sourceMappingURL=index.js.map
