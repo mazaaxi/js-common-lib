@@ -21,7 +21,9 @@
     "test:coverage": "jest --runInBand --coverage",
     "lint": "./tools/lint.sh"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@types/node": "^13.13.2"
+  },
   "devDependencies": {
     "@types/jest": "^25.2.1",
     "@typescript-eslint/eslint-plugin": "^2.3.3",
