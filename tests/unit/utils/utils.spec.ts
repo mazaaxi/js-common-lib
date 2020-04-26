@@ -4,10 +4,12 @@ import {
   removeEndSlash,
   removeStartDirChars,
   removeStartSlash,
+  sleep,
   splitArrayChunk,
   splitFilePath,
   splitHierarchicalPaths,
 } from '../../../src'
+import { performance } from 'perf_hooks'
 
 describe('removeStartSlash', () => {
   it('ベーシックケース', async () => {
@@ -226,5 +228,14 @@ describe('splitArrayChunk', () => {
         num++
       }
     }
+  })
+})
+
+describe('sleep', () => {
+  it('ベーシックケース', async () => {
+    const startTime = performance.now()
+    await sleep(1000)
+    const endTime = performance.now()
+    expect(endTime - startTime).toBeGreaterThanOrEqual(1000)
   })
 })

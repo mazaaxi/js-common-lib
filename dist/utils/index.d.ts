@@ -50,3 +50,8 @@ export declare function arrayToDict<ITEM>(list: ITEM[], key: keyof ITEM): Record
  * @param size 塊のアイテム数
  */
 export declare function splitArrayChunk<T>(array: T[], size: number): T[][];
+/**
+ * 指定されたミリ秒の間スリープします。
+ * @param ms
+ */
+export declare function sleep(ms: number): Promise<void>;

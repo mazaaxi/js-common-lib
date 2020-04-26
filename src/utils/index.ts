@@ -111,3 +111,13 @@ export function splitArrayChunk<T>(array: T[], size: number): T[][] {
     }
   }, [])
 }
+
+/**
+ * 指定されたミリ秒の間スリープします。
+ * @param ms
+ */
+export async function sleep(ms: number): Promise<void> {
+  return new Promise(resolve => {
+    setTimeout(resolve, ms)
+  }) as Promise<void>
+}

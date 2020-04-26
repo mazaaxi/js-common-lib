@@ -116,4 +116,14 @@ function splitArrayChunk(array, size) {
     }, []);
 }
 exports.splitArrayChunk = splitArrayChunk;
+/**
+ * 指定されたミリ秒の間スリープします。
+ * @param ms
+ */
+async function sleep(ms) {
+    return new Promise(resolve => {
+        setTimeout(resolve, ms);
+    });
+}
+exports.sleep = sleep;
 //# sourceMappingURL=index.js.map
