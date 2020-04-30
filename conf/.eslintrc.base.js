@@ -40,6 +40,8 @@ module.exports = {
     'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     'no-dupe-class-members': 'off',
+    'no-empty': 'off',
+    'no-inner-declarations': 'off',
     'no-unreachable': 'error',
     'no-var': 'error',
     'quotes': ['error', 'single', {'allowTemplateLiterals': true}],
