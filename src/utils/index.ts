@@ -82,7 +82,7 @@ export function splitHierarchicalPaths(...paths: (string | undefined | null)[]):
  * @param list オブジェクト配列
  * @param key オブジェクトのキーを指定。この値がマップのキーに使用されます。
  */
-export function arrayToDict<ITEM>(list: ITEM[], key: keyof ITEM): Record<string | number, ITEM> {
+export function arrayToDict<T>(list: T[], key: keyof T): Record<string | number, T> {
   return list.reduce(
     (result, item) => {
       const k = item[key]
@@ -110,6 +110,46 @@ export function splitArrayChunk<T>(array: T[], size: number): T[][] {
       return [...result, array.slice(index, index + size)]
     }
   }, [])
+}
+
+/**
+ * 配列の中から重複した値を取得します。
+ *
+ * @example
+ * findDuplicates(['aaa', 'bbb', 'aaa', 'ccc', 'ddd', 'ccc'])
+ * // ['aaa', 'ccc']
+ *
+ * @param array
+ */
+export function findDuplicateValues<T>(array: T[]): T[] {
+  return array.filter((item, index) => array.indexOf(item) != index)
+}
+
+/**
+ * 配列アイテムの指定フィールドが重複しているアイテムを取得します。
+ *
+ * @example
+ * const JavaScript: Language = { id: '001', name: 'JavaScript' }
+ * const Python: Language = { id: '002', name: 'Python' }
+ * const Dart: Language = { id: '003', name: 'Dart' }
+ * const TypeScript: Language = { id: '004', name: 'TypeScript' }
+ * const PHP: Language = { id: '005', name: 'PHP' }
+ *
+ * const languages = [JavaScript, Python, JavaScript, Dart, TypeScript, PHP, TypeScript]
+ * findDuplicateItems(languages, 'id')
+ * // [{ id: '001', name: 'JavaScript' }, { id: '004', name: 'TypeScript' }]
+ *
+ * @param array
+ * @param field
+ */
+export function findDuplicateItems<T, K extends keyof T>(array: T[], field: K): T[] {
+  const values = findDuplicateValues(array.map(input => input[field]))
+  const result: T[] = []
+  for (const value of values) {
+    const item = array.find(item => item[field] === value)
+    item && result.push(item)
+  }
+  return result
 }
 
 /**

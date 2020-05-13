@@ -117,6 +117,46 @@ function splitArrayChunk(array, size) {
 }
 exports.splitArrayChunk = splitArrayChunk;
 /**
+ * 配列の中から重複した値を取得します。
+ *
+ * @example
+ * findDuplicates(['aaa', 'bbb', 'aaa', 'ccc', 'ddd', 'ccc'])
+ * // ['aaa', 'ccc']
+ *
+ * @param array
+ */
+function findDuplicateValues(array) {
+    return array.filter((item, index) => array.indexOf(item) != index);
+}
+exports.findDuplicateValues = findDuplicateValues;
+/**
+ * 配列アイテムの指定フィールドが重複しているアイテムを取得します。
+ *
+ * @example
+ * const JavaScript: Language = { id: '001', name: 'JavaScript' }
+ * const Python: Language = { id: '002', name: 'Python' }
+ * const Dart: Language = { id: '003', name: 'Dart' }
+ * const TypeScript: Language = { id: '004', name: 'TypeScript' }
+ * const PHP: Language = { id: '005', name: 'PHP' }
+ *
+ * const languages = [JavaScript, Python, JavaScript, Dart, TypeScript, PHP, TypeScript]
+ * findDuplicateItems(languages, 'id')
+ * // [{ id: '001', name: 'JavaScript' }, { id: '004', name: 'TypeScript' }]
+ *
+ * @param array
+ * @param field
+ */
+function findDuplicateItems(array, field) {
+    const values = findDuplicateValues(array.map(input => input[field]));
+    const result = [];
+    for (const value of values) {
+        const item = array.find(item => item[field] === value);
+        item && result.push(item);
+    }
+    return result;
+}
+exports.findDuplicateItems = findDuplicateItems;
+/**
  * 指定されたミリ秒の間スリープします。
  * @param ms
  */

@@ -1,5 +1,7 @@
 import {
   arrayToDict,
+  findDuplicateItems,
+  findDuplicateValues,
   removeBothEndsSlash,
   removeEndSlash,
   removeStartDirChars,
@@ -228,6 +230,36 @@ describe('splitArrayChunk', () => {
         num++
       }
     }
+  })
+})
+
+describe('findDuplicateValues', () => {
+  it('ベーシックケース', async () => {
+    const actual = findDuplicateValues(['aaa', 'bbb', 'aaa', 'ccc', 'ddd', 'ccc'])
+
+    expect(actual[0]).toBe('aaa')
+    expect(actual[1]).toBe('ccc')
+  })
+})
+
+describe('findDuplicateItems', () => {
+  interface Language {
+    id: string
+    name: string
+  }
+
+  it('ベーシックケース', async () => {
+    const JavaScript: Language = { id: '001', name: 'JavaScript' }
+    const Python: Language = { id: '002', name: 'Python' }
+    const Dart: Language = { id: '003', name: 'Dart' }
+    const TypeScript: Language = { id: '004', name: 'TypeScript' }
+    const PHP: Language = { id: '005', name: 'PHP' }
+
+    const languages = [JavaScript, Python, JavaScript, Dart, TypeScript, PHP, TypeScript]
+    const actual = findDuplicateItems(languages, 'id')
+
+    expect(actual[0]).toBe(JavaScript)
+    expect(actual[1]).toBe(TypeScript)
   })
 })
 
