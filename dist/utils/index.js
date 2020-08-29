@@ -170,7 +170,7 @@ exports.sleep = sleep;
  * 配列をシャッフルします。
  * @param array
  */
-function shuffle(array) {
+function shuffleArray(array) {
     const result = Object.assign([], array);
     for (let i = result.length - 1; i > 0; i--) {
         const r = Math.floor(Math.random() * (i + 1));
@@ -180,5 +180,5 @@ function shuffle(array) {
     }
     return result;
 }
-exports.shuffle = shuffle;
+exports.shuffleArray = shuffleArray;
 //# sourceMappingURL=index.js.map

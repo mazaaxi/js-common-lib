@@ -87,4 +87,4 @@ export declare function sleep(ms: number): Promise<void>;
  * 配列をシャッフルします。
  * @param array
  */
-export declare function shuffle<T>(array: T[]): T[];
+export declare function shuffleArray<T>(array: T[]): T[];
