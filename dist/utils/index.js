@@ -166,4 +166,19 @@ async function sleep(ms) {
     });
 }
 exports.sleep = sleep;
+/**
+ * 配列をシャッフルします。
+ * @param array
+ */
+function shuffle(array) {
+    const result = Object.assign([], array);
+    for (let i = result.length - 1; i > 0; i--) {
+        const r = Math.floor(Math.random() * (i + 1));
+        const tmp = result[i];
+        result[i] = result[r];
+        result[r] = tmp;
+    }
+    return result;
+}
+exports.shuffle = shuffle;
 //# sourceMappingURL=index.js.map

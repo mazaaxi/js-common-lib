@@ -161,3 +161,18 @@ export async function sleep(ms: number): Promise<void> {
     setTimeout(resolve, ms)
   }) as Promise<void>
 }
+
+/**
+ * 配列をシャッフルします。
+ * @param array
+ */
+export function shuffle<T>(array: T[]): T[] {
+  const result = Object.assign([], array)
+  for (let i = result.length - 1; i > 0; i--) {
+    const r = Math.floor(Math.random() * (i + 1))
+    const tmp = result[i]
+    result[i] = result[r]
+    result[r] = tmp
+  }
+  return result
+}

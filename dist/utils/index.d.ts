@@ -83,3 +83,8 @@ export declare function findDuplicateItems<T, K extends keyof T>(array: T[], fie
  * @param ms
  */
 export declare function sleep(ms: number): Promise<void>;
+/**
+ * 配列をシャッフルします。
+ * @param array
+ */
+export declare function shuffle<T>(array: T[]): T[];
