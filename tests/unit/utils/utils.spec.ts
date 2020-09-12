@@ -10,6 +10,7 @@ import {
   splitArrayChunk,
   splitFilePath,
   splitHierarchicalPaths,
+  summarizeFamilyPaths,
 } from '../../../src'
 import { performance } from 'perf_hooks'
 
@@ -162,6 +163,16 @@ describe('splitHierarchicalPaths', () => {
     const actual = splitHierarchicalPaths()
 
     expect(actual.length).toBe(0)
+  })
+})
+
+describe('summarizeFamilyPaths', () => {
+  it('ベーシックケース', async () => {
+    const actual = summarizeFamilyPaths([`d1/d11`, `d1/d11/d111`, `d1/d11/d112`, `d2/d21`, `d2/d21/d211`])
+
+    expect(actual[0]).toBe(`d1/d11/d111`)
+    expect(actual[1]).toBe(`d1/d11/d112`)
+    expect(actual[2]).toBe(`d2/d21/d211`)
   })
 })
 

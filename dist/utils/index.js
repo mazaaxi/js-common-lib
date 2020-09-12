@@ -83,6 +83,42 @@ function splitHierarchicalPaths(...paths) {
 }
 exports.splitHierarchicalPaths = splitHierarchicalPaths;
 /**
+ * パスリストの中でまとめられるファミリーパスをサマリーします。
+ *
+ * `paths`に次が指定された場合:
+ *   + d1/d11
+ *   + d1/d11/d111
+ *   + d1/d11/d112
+ *   + d2/d21
+ *   + d2/d21/d211
+ *
+ * 結果として次のようにサマリーされます:
+ *   + d1/d11/d111
+ *   + d1/d11/d112
+ *   + d2/d21/d211
+ */
+function summarizeFamilyPaths(paths) {
+    const pushMaxPathToArray = (array, newPath) => {
+        for (let i = 0; i < array.length; i++) {
+            const path = array[i];
+            if (path.startsWith(newPath)) {
+                return;
+            }
+            else if (newPath.startsWith(path)) {
+                array[i] = newPath;
+                return;
+            }
+        }
+        array.push(newPath);
+    };
+    const result = [];
+    for (const path of paths) {
+        pushMaxPathToArray(result, path);
+    }
+    return result;
+}
+exports.summarizeFamilyPaths = summarizeFamilyPaths;
+/**
  * オブジェクト配列を指定されたキーの値でマップ化します。
  * @param list オブジェクト配列
  * @param key オブジェクトのキーを指定。この値がマップのキーに使用されます。
