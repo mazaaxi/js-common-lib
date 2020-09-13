@@ -45,7 +45,7 @@ export function FooAndWooMixin(superclass: Constructor<BaseClass>): Constructor<
     }
 
     woo(): string {
-      return 'woo from FooMixin'
+      return 'woo from WooMixin'
     }
   }
 }
@@ -72,5 +72,5 @@ it('ベーシックケース', async () => {
   expect(extra.hello()).toBe('Hello World from BaseClass + ExtraClass')
   expect(extra.boo()).toBe('boo from BooMixin')
   expect(extra.foo()).toBe('foo from FooMixin')
-  expect(extra.woo()).toBe('woo from FooMixin')
+  expect(extra.woo()).toBe('woo from WooMixin')
 })
