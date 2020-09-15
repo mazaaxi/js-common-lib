@@ -9,6 +9,8 @@ export type DeepPartial<T> = {
     ? null
     : T[K] extends undefined
     ? undefined
+    : T[K] extends Function
+    ? T[K]
     : T[K] extends Array<infer R>
     ? Array<DeepPartial<R>>
     : DeepPartial<T[K]>
