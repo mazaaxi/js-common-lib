@@ -15,3 +15,15 @@ export type DeepPartial<T> = {
     ? Array<DeepPartial<R>>
     : DeepPartial<T[K]>
 }
+
+export type DeepReadonly<T> = {
+  readonly [K in keyof T]: T[K] extends null
+    ? null
+    : T[K] extends undefined
+    ? undefined
+    : T[K] extends Function
+    ? T[K]
+    : T[K] extends Array<infer R>
+    ? Array<DeepReadonly<R>>
+    : DeepReadonly<T[K]>
+}
