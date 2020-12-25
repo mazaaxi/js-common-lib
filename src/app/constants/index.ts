@@ -4,6 +4,10 @@
 //
 //========================================================================
 
+namespace StorageAppConfig {
+  export const RootName = 'app'
+}
+
 namespace StorageUsersConfig {
   export const RootName = 'users'
 }
@@ -29,4 +33,4 @@ namespace Entities {
 //
 //========================================================================
 
-export { StorageUsersConfig, StorageArticlesConfig, Entities }
+export { StorageAppConfig, StorageUsersConfig, StorageArticlesConfig, Entities }

@@ -1,3 +1,6 @@
+declare namespace StorageAppConfig {
+    const RootName = "app";
+}
 declare namespace StorageUsersConfig {
     const RootName = "users";
 }
@@ -14,4 +17,4 @@ declare namespace Entities {
         const Name = "storage-nodes";
     }
 }
-export { StorageUsersConfig, StorageArticlesConfig, Entities };
+export { StorageAppConfig, StorageUsersConfig, StorageArticlesConfig, Entities };

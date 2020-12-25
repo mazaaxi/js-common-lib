@@ -5,6 +5,11 @@
 //
 //========================================================================
 Object.defineProperty(exports, "__esModule", { value: true });
+var StorageAppConfig;
+(function (StorageAppConfig) {
+    StorageAppConfig.RootName = 'app';
+})(StorageAppConfig || (StorageAppConfig = {}));
+exports.StorageAppConfig = StorageAppConfig;
 var StorageUsersConfig;
 (function (StorageUsersConfig) {
     StorageUsersConfig.RootName = 'users';
