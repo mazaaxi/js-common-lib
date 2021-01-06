@@ -119,6 +119,19 @@ function summarizeFamilyPaths(paths) {
 }
 exports.summarizeFamilyPaths = summarizeFamilyPaths;
 /**
+ * オブジェクトから指定されたプロパテを取り出します。
+ * @param obj
+ * @param keys
+ */
+function pickProps(obj, keys) {
+    const result = {};
+    for (const key of keys) {
+        result[key] = obj[key];
+    }
+    return result;
+}
+exports.pickProps = pickProps;
+/**
  * オブジェクト配列を指定されたキーの値でマップ化します。
  * @param list オブジェクト配列
  * @param key オブジェクトのキーを指定。この値がマップのキーに使用されます。

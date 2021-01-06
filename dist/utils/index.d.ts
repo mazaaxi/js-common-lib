@@ -55,6 +55,14 @@ export declare function splitHierarchicalPaths(...paths: (string | undefined | n
  */
 export declare function summarizeFamilyPaths(paths: string[]): string[];
 /**
+ * オブジェクトから指定されたプロパテを取り出します。
+ * @param obj
+ * @param keys
+ */
+export declare function pickProps<T, K extends keyof T>(obj: T, keys: K[]): {
+    [P in K]: T[P];
+};
+/**
  * オブジェクト配列を指定されたキーの値でマップ化します。
  * @param list オブジェクト配列
  * @param key オブジェクトのキーを指定。この値がマップのキーに使用されます。

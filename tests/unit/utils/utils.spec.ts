@@ -2,6 +2,7 @@ import {
   arrayToDict,
   findDuplicateItems,
   findDuplicateValues,
+  pickProps,
   removeBothEndsSlash,
   removeEndSlash,
   removeStartDirChars,
@@ -173,6 +174,38 @@ describe('summarizeFamilyPaths', () => {
     expect(actual[0]).toBe(`d1/d11/d111`)
     expect(actual[1]).toBe(`d1/d11/d112`)
     expect(actual[2]).toBe(`d2/d21/d211`)
+  })
+})
+
+describe('pickProps', () => {
+  interface Person {
+    first: string
+    last: string
+    age: number
+    gender: 'man' | 'woman'
+    address: Address
+  }
+
+  interface Address {
+    pref: string
+    city: string
+  }
+
+  it('ベーシックケース', async () => {
+    const person: Person = {
+      first: 'Taro',
+      last: 'Yamamoto',
+      age: 18,
+      gender: 'man',
+      address: { pref: 'Ibaraki', city: 'Tsukuba-Shi' },
+    }
+
+    const actual = pickProps(person, ['first', 'age', 'address'])
+
+    expect(actual.first).toBe('Taro')
+    expect(actual.age).toBe(18)
+    expect(actual.address.pref).toEqual('Ibaraki')
+    expect(actual.address.city).toEqual('Tsukuba-Shi')
   })
 })
 
