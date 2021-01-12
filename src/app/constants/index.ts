@@ -4,11 +4,11 @@
 //
 //========================================================================
 
-namespace StorageUsersConfig {
+namespace StorageUserConfig {
   export const RootName = 'users'
 }
 
-namespace StorageArticlesConfig {
+namespace StorageArticleConfig {
   export const RootName = 'articles'
   export const FileName = 'index.md'
   export const AssetsName = 'assets'
@@ -29,4 +29,4 @@ namespace Entities {
 //
 //========================================================================
 
-export { StorageUsersConfig, StorageArticlesConfig, Entities }
+export { StorageUserConfig, StorageArticleConfig, Entities }

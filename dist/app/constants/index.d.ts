@@ -1,7 +1,7 @@
-declare namespace StorageUsersConfig {
+declare namespace StorageUserConfig {
     const RootName = "users";
 }
-declare namespace StorageArticlesConfig {
+declare namespace StorageArticleConfig {
     const RootName = "articles";
     const FileName = "index.md";
     const AssetsName = "assets";
@@ -14,4 +14,4 @@ declare namespace Entities {
         const Name = "storage-nodes";
     }
 }
-export { StorageUsersConfig, StorageArticlesConfig, Entities };
+export { StorageUserConfig, StorageArticleConfig, Entities };

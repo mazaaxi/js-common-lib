@@ -5,18 +5,18 @@
 //
 //========================================================================
 Object.defineProperty(exports, "__esModule", { value: true });
-var StorageUsersConfig;
-(function (StorageUsersConfig) {
-    StorageUsersConfig.RootName = 'users';
-})(StorageUsersConfig || (StorageUsersConfig = {}));
-exports.StorageUsersConfig = StorageUsersConfig;
-var StorageArticlesConfig;
-(function (StorageArticlesConfig) {
-    StorageArticlesConfig.RootName = 'articles';
-    StorageArticlesConfig.FileName = 'index.md';
-    StorageArticlesConfig.AssetsName = 'assets';
-})(StorageArticlesConfig || (StorageArticlesConfig = {}));
-exports.StorageArticlesConfig = StorageArticlesConfig;
+var StorageUserConfig;
+(function (StorageUserConfig) {
+    StorageUserConfig.RootName = 'users';
+})(StorageUserConfig || (StorageUserConfig = {}));
+exports.StorageUserConfig = StorageUserConfig;
+var StorageArticleConfig;
+(function (StorageArticleConfig) {
+    StorageArticleConfig.RootName = 'articles';
+    StorageArticleConfig.FileName = 'index.md';
+    StorageArticleConfig.AssetsName = 'assets';
+})(StorageArticleConfig || (StorageArticleConfig = {}));
+exports.StorageArticleConfig = StorageArticleConfig;
 var Entities;
 (function (Entities) {
     let Users;
