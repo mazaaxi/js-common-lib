@@ -4,8 +4,8 @@ declare namespace StorageUserConfig {
 declare namespace StorageArticleConfig {
     const RootName = "articles";
     const AssetsName = "assets";
-    const MasterFileName = "index.md";
-    const DraftFileName = "index.draft.md";
+    const SrcMasterFileName = "index.md";
+    const SrcDraftFileName = "index.draft.md";
 }
 declare namespace Entities {
     namespace Users {

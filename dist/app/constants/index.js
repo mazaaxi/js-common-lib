@@ -14,8 +14,8 @@ var StorageArticleConfig;
 (function (StorageArticleConfig) {
     StorageArticleConfig.RootName = 'articles';
     StorageArticleConfig.AssetsName = 'assets';
-    StorageArticleConfig.MasterFileName = 'index.md';
-    StorageArticleConfig.DraftFileName = 'index.draft.md';
+    StorageArticleConfig.SrcMasterFileName = 'index.md';
+    StorageArticleConfig.SrcDraftFileName = 'index.draft.md';
 })(StorageArticleConfig || (StorageArticleConfig = {}));
 exports.StorageArticleConfig = StorageArticleConfig;
 var Entities;

@@ -11,8 +11,8 @@ namespace StorageUserConfig {
 namespace StorageArticleConfig {
   export const RootName = 'articles'
   export const AssetsName = 'assets'
-  export const MasterFileName = 'index.md'
-  export const DraftFileName = 'index.draft.md'
+  export const SrcMasterFileName = 'index.md'
+  export const SrcDraftFileName = 'index.draft.md'
 }
 
 namespace Entities {
