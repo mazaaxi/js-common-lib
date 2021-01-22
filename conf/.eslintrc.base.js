@@ -56,6 +56,15 @@ module.exports = {
       },
     ],
     'space-in-parens': ['error', 'never'],
+    '@typescript-eslint/ban-ts-ignore': 'off',
+    '@typescript-eslint/ban-types': [
+      'error',
+      {
+        types: {
+          'Function': false,
+        },
+      },
+    ],
     '@typescript-eslint/camelcase': 'off',
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/explicit-member-accessibility': 'off',
@@ -79,6 +88,8 @@ module.exports = {
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/no-namespace': 'off',
     '@typescript-eslint/no-non-null-assertion': 'off',
+    'no-redeclare': 'off',
+    '@typescript-eslint/no-redeclare': ['error'],
     '@typescript-eslint/no-unused-vars': 'off',
     '@typescript-eslint/no-use-before-define': 'off',
     '@typescript-eslint/no-var-requires': 'off',
