@@ -121,6 +121,7 @@ export function summarizeFamilyPaths(paths: string[]): string[] {
 export function pickProps<T, K extends keyof T>(obj: T, keys: K[]): { [P in K]: T[P] } {
   const result: any = {}
   for (const key of keys) {
+    if (typeof obj[key] === 'undefined') continue
     result[key] = obj[key]
   }
   return result

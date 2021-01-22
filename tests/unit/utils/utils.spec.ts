@@ -202,10 +202,24 @@ describe('pickProps', () => {
 
     const actual = pickProps(person, ['first', 'age', 'address'])
 
+    expect(Object.keys(actual).length).toBe(3)
     expect(actual.first).toBe('Taro')
     expect(actual.age).toBe(18)
     expect(actual.address.pref).toEqual('Ibaraki')
     expect(actual.address.city).toEqual('Tsukuba-Shi')
+  })
+
+  it('設定されていない値をピックアップしようとした場合', async () => {
+    const person: Partial<Person> = {
+      first: 'Taro',
+      age: 18,
+    }
+
+    const actual = pickProps(person, ['first', 'last', 'age'])
+
+    expect(Object.keys(actual).length).toBe(2)
+    expect(actual.first).toBe('Taro')
+    expect(actual.age).toBe(18)
   })
 })
 

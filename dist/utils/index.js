@@ -126,6 +126,8 @@ exports.summarizeFamilyPaths = summarizeFamilyPaths;
 function pickProps(obj, keys) {
     const result = {};
     for (const key of keys) {
+        if (typeof obj[key] === 'undefined')
+            continue;
         result[key] = obj[key];
     }
     return result;
