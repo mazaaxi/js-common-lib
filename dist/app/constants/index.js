@@ -5,6 +5,7 @@
 //
 //========================================================================
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Entities = exports.StorageArticleConfig = exports.StorageUserConfig = void 0;
 var StorageUserConfig;
 (function (StorageUserConfig) {
     StorageUserConfig.RootName = 'users';

@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.MixinBuilder = exports.mix = void 0;
 function mix(superclass) {
     return new MixinBuilder(superclass);
 }

@@ -1,41 +1,44 @@
 module.exports = {
-  'root': true,
-  'env': {
-    'node': true,
+  root: true,
+  env: {
+    node: true,
   },
-  'parserOptions': {
-    'parser': '@typescript-eslint/parser',
+  parserOptions: {
+    parser: '@typescript-eslint/parser',
   },
-  'extends': [
+  extends: [
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
     'plugin:@typescript-eslint/eslint-recommended',
     'plugin:prettier/recommended',
     'prettier/@typescript-eslint',
   ],
-  'plugins': ['@typescript-eslint'],
-  'rules': {
-    'prettier/prettier': ['error', {
-      'printWidth': 150,
-      'singleQuote': true,
-      'semi': false,
-      'trailingComma': 'es5',
-      'bracketSpacing': true,
-      'jsxBracketSameLine': false,
-      'arrowParens': 'avoid',
-    }],
+  plugins: ['@typescript-eslint'],
+  rules: {
+    'prettier/prettier': [
+      'error',
+      {
+        printWidth: 150,
+        singleQuote: true,
+        semi: false,
+        trailingComma: 'es5',
+        bracketSpacing: true,
+        jsxBracketSameLine: false,
+        arrowParens: 'avoid',
+      },
+    ],
     'array-bracket-spacing': ['error', 'never'],
     'comma-dangle': [
       'error',
       {
-        'arrays': 'always-multiline',
-        'objects': 'always-multiline',
-        'imports': 'always-multiline',
-        'exports': 'always-multiline',
-        'functions': 'never',
+        arrays: 'always-multiline',
+        objects: 'always-multiline',
+        imports: 'always-multiline',
+        exports: 'always-multiline',
+        functions: 'never',
       },
     ],
-    'comma-spacing': ['error', {'before': false, 'after': true}],
+    'comma-spacing': ['error', { before: false, after: true }],
     'computed-property-spacing': ['error', 'never'],
     'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
@@ -44,15 +47,15 @@ module.exports = {
     'no-inner-declarations': 'off',
     'no-unreachable': 'error',
     'no-var': 'error',
-    'quotes': ['error', 'single', {'allowTemplateLiterals': true}],
-    'semi': ['error', 'never', {'beforeStatementContinuationChars': 'never'}],
+    quotes: ['error', 'single', { allowTemplateLiterals: true }],
+    semi: ['error', 'never', { beforeStatementContinuationChars: 'never' }],
     'sort-imports': ['error'],
     'space-before-function-paren': [
       'error',
       {
-        'anonymous': 'never',
-        'named': 'never',
-        'asyncArrow': 'always',
+        anonymous: 'never',
+        named: 'never',
+        asyncArrow: 'always',
       },
     ],
     'space-in-parens': ['error', 'never'],
@@ -61,7 +64,7 @@ module.exports = {
       'error',
       {
         types: {
-          'Function': false,
+          Function: false,
         },
       },
     ],
@@ -74,12 +77,12 @@ module.exports = {
     '@typescript-eslint/member-delimiter-style': [
       'error',
       {
-        'multiline': {
-          'delimiter': 'none',
+        multiline: {
+          delimiter: 'none',
         },
-        'singleline': {
-          'delimiter': 'semi',
-          'requireLast': false,
+        singleline: {
+          delimiter: 'semi',
+          requireLast: false,
         },
       },
     ],

@@ -133,18 +133,15 @@ export function pickProps<T, K extends keyof T>(obj: T, keys: K[]): { [P in K]: 
  * @param key オブジェクトのキーを指定。この値がマップのキーに使用されます。
  */
 export function arrayToDict<T>(list: T[], key: keyof T): Record<string | number, T> {
-  return list.reduce(
-    (result, item) => {
-      const k = item[key]
-      if (typeof k === 'string') {
-        result[k] = item
-      } else if (typeof k === 'number') {
-        result[k] = item
-      }
-      return result
-    },
-    {} as Record<string | number, any>
-  )
+  return list.reduce((result, item) => {
+    const k = item[key]
+    if (typeof k === 'string') {
+      result[k] = item
+    } else if (typeof k === 'number') {
+      result[k] = item
+    }
+    return result
+  }, {} as Record<string | number, any>)
 }
 
 /**
