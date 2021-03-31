@@ -1,11 +1,13 @@
+declare type LangCode = 'ja' | 'en';
+declare const LangCodes: readonly ["ja", "en"];
 declare namespace StorageUserConfig {
     const RootName = "users";
 }
 declare namespace StorageArticleConfig {
     const RootName = "articles";
     const AssetsName = "assets";
-    const MasterSrcFileName = "master.src.md";
-    const DraftSrcFileName = "draft.src.md";
+    const MasterSrcFileName = "master-src.md";
+    const DraftSrcFileName = "draft-src.md";
 }
 declare namespace Entities {
     namespace Users {
@@ -15,4 +17,4 @@ declare namespace Entities {
         const Name = "storage-nodes";
     }
 }
-export { StorageUserConfig, StorageArticleConfig, Entities };
+export { Entities, LangCode, LangCodes, StorageArticleConfig, StorageUserConfig };

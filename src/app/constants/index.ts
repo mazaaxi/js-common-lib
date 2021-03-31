@@ -4,6 +4,10 @@
 //
 //========================================================================
 
+type LangCode = 'ja' | 'en'
+
+const LangCodes = ['ja', 'en'] as const
+
 namespace StorageUserConfig {
   export const RootName = 'users'
 }
@@ -11,8 +15,8 @@ namespace StorageUserConfig {
 namespace StorageArticleConfig {
   export const RootName = 'articles'
   export const AssetsName = 'assets'
-  export const MasterSrcFileName = 'master.src.md'
-  export const DraftSrcFileName = 'draft.src.md'
+  export const MasterSrcFileName = 'master-src.md'
+  export const DraftSrcFileName = 'draft-src.md'
 }
 
 namespace Entities {
@@ -30,4 +34,4 @@ namespace Entities {
 //
 //========================================================================
 
-export { StorageUserConfig, StorageArticleConfig, Entities }
+export { Entities, LangCode, LangCodes, StorageArticleConfig, StorageUserConfig }

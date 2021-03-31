@@ -5,7 +5,9 @@
 //
 //========================================================================
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Entities = exports.StorageArticleConfig = exports.StorageUserConfig = void 0;
+exports.StorageUserConfig = exports.StorageArticleConfig = exports.LangCodes = exports.Entities = void 0;
+const LangCodes = ['ja', 'en'];
+exports.LangCodes = LangCodes;
 var StorageUserConfig;
 (function (StorageUserConfig) {
     StorageUserConfig.RootName = 'users';
@@ -15,8 +17,8 @@ var StorageArticleConfig;
 (function (StorageArticleConfig) {
     StorageArticleConfig.RootName = 'articles';
     StorageArticleConfig.AssetsName = 'assets';
-    StorageArticleConfig.MasterSrcFileName = 'master.src.md';
-    StorageArticleConfig.DraftSrcFileName = 'draft.src.md';
+    StorageArticleConfig.MasterSrcFileName = 'master-src.md';
+    StorageArticleConfig.DraftSrcFileName = 'draft-src.md';
 })(StorageArticleConfig || (StorageArticleConfig = {}));
 exports.StorageArticleConfig = StorageArticleConfig;
 var Entities;
