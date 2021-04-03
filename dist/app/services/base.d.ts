@@ -17,7 +17,10 @@ declare type RawTimestamp = {
     createdAt: string;
     updatedAt: string;
 };
-declare type ToRawDate<T> = T extends undefined ? undefined : T extends null ? null : T extends Dayjs ? string : T extends Dayjs | undefined ? string | undefined : T extends Dayjs | null ? string | null : T;
+declare type ToRawDate<T> = T extends undefined ? undefined : T extends null ? null : T extends Dayjs ? string : T;
+declare type ToDeepRawDate<T> = {
+    [K in keyof T]: T[K] extends Dayjs ? string : T[K] extends Dayjs | undefined ? string | undefined : T[K] extends Dayjs | null ? string | null : T[K] extends Record<any, any> ? ToDeepRawDate<T[K]> : T[K] extends Record<any, any> | undefined ? ToDeepRawDate<T[K]> | undefined : T[K] extends Record<any, any> | null ? ToDeepRawDate<T[K]> | null : T[K];
+};
 declare type ToRawTimestamp<T> = T extends undefined ? undefined : T extends null ? null : {
     [K in keyof T]: K extends 'createdAt' ? ToRawDate<T[K]> : K extends 'updatedAt' ? ToRawDate<T[K]> : T[K];
 };
@@ -27,4 +30,4 @@ declare function toEntityTimestamps<T extends Partial<RawTimestamp>>(rawEntities
 declare function toRawDate<T extends Dayjs | undefined | null>(entityDate: T): ToRawDate<T>;
 declare function toRawTimestamp<T extends Partial<EntityTimestamp> | Record<any, any> | undefined | null>(entity: T): ToRawTimestamp<T>;
 declare function toRawTimestamps<T extends Partial<EntityTimestamp>>(entities: T[]): ToRawTimestamp<T>[];
-export { Entity, EntityTimestamp, OmitTimestamp, RawTimestamp, TimestampEntity, ToEntityDate, ToEntityTimestamp, ToRawDate, ToRawTimestamp, toEntityDate, toEntityTimestamp, toEntityTimestamps, toRawDate, toRawTimestamp, toRawTimestamps, };
+export { Entity, EntityTimestamp, OmitTimestamp, RawTimestamp, TimestampEntity, ToDeepRawDate, ToEntityDate, ToEntityTimestamp, ToRawDate, ToRawTimestamp, toEntityDate, toEntityTimestamp, toEntityTimestamps, toRawDate, toRawTimestamp, toRawTimestamps, };

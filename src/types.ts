@@ -37,3 +37,21 @@ export type DeepReadonly<T> = {
     ? Array<DeepReadonly<R>>
     : DeepReadonly<T[K]>
 }
+
+export type ToNull<T> = T extends undefined ? null : T
+
+export type ToDeepNull<T> = {
+  [K in keyof T]: T[K] extends Record<any, any>
+    ? ToDeepNull<T[K]>
+    : T[K] extends Record<any, any> | undefined
+    ? ToDeepNull<T[K]> | null
+    : ToNull<T[K]>
+}
+
+export type ToStrictDeepNull<T> = {
+  [K in keyof T]-?: T[K] extends Record<any, any>
+    ? ToStrictDeepNull<T[K]>
+    : T[K] extends Record<any, any> | undefined
+    ? ToStrictDeepNull<T[K]> | null
+    : ToNull<T[K]>
+}
