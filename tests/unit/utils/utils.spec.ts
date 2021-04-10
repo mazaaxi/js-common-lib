@@ -209,17 +209,58 @@ describe('pickProps', () => {
     expect(actual.address.city).toEqual('Tsukuba-Shi')
   })
 
-  it('設定されていない値をピックアップしようとした場合', async () => {
+  it('存在しないプロパティを取り出そうとした場合', async () => {
+    // 「last」に値を設定しない
     const person: Partial<Person> = {
       first: 'Taro',
       age: 18,
     }
 
+    // 存在しない「last」を取り出すよう指定
     const actual = pickProps(person, ['first', 'last', 'age'])
 
+    // 「last」は存在しないので除外される
     expect(Object.keys(actual).length).toBe(2)
     expect(actual.first).toBe('Taro')
     expect(actual.age).toBe(18)
+  })
+
+  it('undefinedが指定されたプロパティを取り出そうとした場合', async () => {
+    // 「last」に「undefined」を指定
+    const person: Partial<Person> = {
+      first: 'Taro',
+      last: undefined,
+      age: 18,
+    }
+
+    // 「undefined」が指定された「last」を取り出すよう指定
+    const actual = pickProps(person, ['first', 'last', 'age'])
+
+    // 「last」は「undefined」だがプロパティは存在するので取得される
+    expect(Object.keys(actual).length).toBe(3)
+    expect(actual.first).toBe('Taro')
+    expect(actual.last).toBeUndefined()
+    expect(actual.age).toBe(18)
+  })
+
+  it('除外指定した場合', async () => {
+    const address = { pref: 'Ibaraki', city: 'Tsukuba-Shi' }
+    const person: Partial<Person> = {
+      first: 'Taro',
+      age: undefined,
+      gender: 'man',
+      address,
+    }
+
+    // 除外指定を行う
+    const actual = pickProps(person, ['first', 'last', 'age', 'gender', 'address'], [undefined, 'man', address])
+
+    // - 「last」は存在しないので除外される
+    // - 「age」は「undefined」が除外指定されているので除外される
+    // - 「gender」は「man」が除外指定されているので除外される
+    // - 「address」は「address」が除外指定されているので除外される
+    expect(Object.keys(actual).length).toBe(1)
+    expect(actual.first).toBe('Taro')
   })
 })
 

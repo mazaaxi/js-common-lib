@@ -121,15 +121,24 @@ function summarizeFamilyPaths(paths) {
 exports.summarizeFamilyPaths = summarizeFamilyPaths;
 /**
  * オブジェクトから指定されたプロパテを取り出します。
- * @param obj
- * @param keys
+ * @param obj 対象オブジェクト
+ * @param props 取り出したいプロパティ
+ * @param excludeValues 除外したいプロパティ値
  */
-function pickProps(obj, keys) {
+function pickProps(obj, props, excludeValues) {
     const result = {};
-    for (const key of keys) {
-        if (typeof obj[key] === 'undefined')
+    for (const prop of props) {
+        // オブジェクトに指定されたキーが存在しない場合、そのキーを無視
+        if (!(prop in obj))
             continue;
-        result[key] = obj[key];
+        // プロパティの値を取得
+        const propValue = obj[prop];
+        // プロパティの値が除外リストに一致する場合、無視
+        const isExclude = (excludeValues !== null && excludeValues !== void 0 ? excludeValues : []).some(excludeValue => propValue === excludeValue);
+        if (isExclude)
+            continue;
+        // 戻り値に指定されたキーの値を設定
+        result[prop] = obj[prop];
     }
     return result;
 }

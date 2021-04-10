@@ -115,14 +115,22 @@ export function summarizeFamilyPaths(paths: string[]): string[] {
 
 /**
  * オブジェクトから指定されたプロパテを取り出します。
- * @param obj
- * @param keys
+ * @param obj 対象オブジェクト
+ * @param props 取り出したいプロパティ
+ * @param excludeValues 除外したいプロパティ値
  */
-export function pickProps<T, K extends keyof T>(obj: T, keys: K[]): { [P in K]: T[P] } {
+export function pickProps<T, K extends keyof T>(obj: T, props: K[], excludeValues?: any[]): { [P in K]: T[P] } {
   const result: any = {}
-  for (const key of keys) {
-    if (typeof obj[key] === 'undefined') continue
-    result[key] = obj[key]
+  for (const prop of props) {
+    // オブジェクトに指定されたキーが存在しない場合、そのキーを無視
+    if (!(prop in obj)) continue
+    // プロパティの値を取得
+    const propValue = obj[prop]
+    // プロパティの値が除外リストに一致する場合、無視
+    const isExclude = (excludeValues ?? []).some(excludeValue => propValue === excludeValue)
+    if (isExclude) continue
+    // 戻り値に指定されたキーの値を設定
+    result[prop] = obj[prop]
   }
   return result
 }

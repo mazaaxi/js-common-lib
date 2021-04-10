@@ -56,10 +56,11 @@ export declare function splitHierarchicalPaths(...paths: (string | undefined | n
 export declare function summarizeFamilyPaths(paths: string[]): string[];
 /**
  * オブジェクトから指定されたプロパテを取り出します。
- * @param obj
- * @param keys
+ * @param obj 対象オブジェクト
+ * @param props 取り出したいプロパティ
+ * @param excludeValues 除外したいプロパティ値
  */
-export declare function pickProps<T, K extends keyof T>(obj: T, keys: K[]): {
+export declare function pickProps<T, K extends keyof T>(obj: T, props: K[], excludeValues?: any[]): {
     [P in K]: T[P];
 };
 /**
