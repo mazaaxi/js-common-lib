@@ -19,7 +19,7 @@ export type DeepPartial<T> = {
     ? DeepPartial<T[K]>
     : T[K] extends Array<infer R>
     ? Array<DeepPartial<R>>
-    : DeepPartial<T[K]>
+    : T[K]
 }
 
 export type DeepReadonly<T> = {
@@ -35,7 +35,7 @@ export type DeepReadonly<T> = {
     ? DeepReadonly<T[K]>
     : T[K] extends Array<infer R>
     ? Array<DeepReadonly<R>>
-    : DeepReadonly<T[K]>
+    : T[K]
 }
 
 export type ToNull<T> = T extends undefined ? null : T
