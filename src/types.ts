@@ -13,13 +13,17 @@ export type DeepPartial<T> = {
     ? null
     : T[K] extends Function
     ? T[K]
+    : T[K] extends Function | undefined
+    ? T[K]
     : T[K] extends Dayjs
+    ? T[K]
+    : T[K] extends Dayjs | undefined
     ? T[K]
     : T[K] extends Record<any, any>
     ? DeepPartial<T[K]>
     : T[K] extends Array<infer R>
     ? Array<DeepPartial<R>>
-    : T[K]
+    : DeepPartial<T[K]>
 }
 
 export type DeepReadonly<T> = {
@@ -29,13 +33,17 @@ export type DeepReadonly<T> = {
     ? null
     : T[K] extends Function
     ? T[K]
+    : T[K] extends Function | undefined
+    ? T[K]
     : T[K] extends Dayjs
+    ? T[K]
+    : T[K] extends Dayjs | undefined
     ? T[K]
     : T[K] extends Record<any, any>
     ? DeepReadonly<T[K]>
     : T[K] extends Array<infer R>
     ? Array<DeepReadonly<R>>
-    : T[K]
+    : DeepReadonly<T[K]>
 }
 
 export type ToNull<T> = T extends undefined ? null : T
