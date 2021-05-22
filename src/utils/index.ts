@@ -211,7 +211,7 @@ export function findDuplicateItems<T, K extends keyof T>(array: T[], field: K): 
  * 指定されたミリ秒の間スリープします。
  * @param ms
  */
-export async function sleep(ms: number): Promise<void> {
+export async function sleep(ms?: number): Promise<void> {
   return new Promise(resolve => {
     setTimeout(resolve, ms)
   }) as Promise<void>

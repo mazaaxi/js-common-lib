@@ -107,7 +107,7 @@ export declare function findDuplicateItems<T, K extends keyof T>(array: T[], fie
  * 指定されたミリ秒の間スリープします。
  * @param ms
  */
-export declare function sleep(ms: number): Promise<void>;
+export declare function sleep(ms?: number): Promise<void>;
 /**
  * 配列をシャッフルします。
  * @param array
