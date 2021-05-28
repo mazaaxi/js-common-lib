@@ -16,5 +16,8 @@ declare namespace Entities {
     namespace StorageNodes {
         const Name = "storage-nodes";
     }
+    namespace ArticleTag {
+        const Name = "article-tags";
+    }
 }
 export { Entities, LangCode, LangCodes, StorageArticleConfig, StorageUserConfig };

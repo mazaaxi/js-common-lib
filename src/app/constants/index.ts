@@ -26,6 +26,9 @@ namespace Entities {
   export namespace StorageNodes {
     export const Name = 'storage-nodes'
   }
+  export namespace ArticleTag {
+    export const Name = 'article-tags'
+  }
 }
 
 //========================================================================

@@ -31,6 +31,10 @@ var Entities;
     (function (StorageNodes) {
         StorageNodes.Name = 'storage-nodes';
     })(StorageNodes = Entities.StorageNodes || (Entities.StorageNodes = {}));
+    let ArticleTag;
+    (function (ArticleTag) {
+        ArticleTag.Name = 'article-tags';
+    })(ArticleTag = Entities.ArticleTag || (Entities.ArticleTag = {}));
 })(Entities || (Entities = {}));
 exports.Entities = Entities;
 //# sourceMappingURL=index.js.map
