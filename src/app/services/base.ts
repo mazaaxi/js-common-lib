@@ -43,7 +43,17 @@ type ToEntityTimestamp<T> = T extends undefined
 
 type RawTimestamp = { createdAt: string; updatedAt: string }
 
-type ToRawDate<T> = T extends undefined ? undefined : T extends null ? null : T extends Dayjs ? string : T
+type ToRawDate<T> = T extends undefined
+  ? undefined
+  : T extends null
+  ? null
+  : T extends Dayjs
+  ? string
+  : T extends Dayjs | undefined
+  ? string | undefined
+  : T extends Dayjs | null
+  ? string | null
+  : T
 
 type ToDeepRawDate<T> = {
   [K in keyof T]: T[K] extends Dayjs

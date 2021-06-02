@@ -17,7 +17,7 @@ declare type RawTimestamp = {
     createdAt: string;
     updatedAt: string;
 };
-declare type ToRawDate<T> = T extends undefined ? undefined : T extends null ? null : T extends Dayjs ? string : T;
+declare type ToRawDate<T> = T extends undefined ? undefined : T extends null ? null : T extends Dayjs ? string : T extends Dayjs | undefined ? string | undefined : T extends Dayjs | null ? string | null : T;
 declare type ToDeepRawDate<T> = {
     [K in keyof T]: T[K] extends Dayjs ? string : T[K] extends Dayjs | undefined ? string | undefined : T[K] extends Dayjs | null ? string | null : T[K] extends Record<any, any> ? ToDeepRawDate<T[K]> : T[K] extends Record<any, any> | undefined ? ToDeepRawDate<T[K]> | undefined : T[K] extends Record<any, any> | null ? ToDeepRawDate<T[K]> | null : T[K];
 };
