@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.shuffleArray = exports.sleep = exports.findDuplicateItems = exports.findDuplicateValues = exports.splitArrayChunk = exports.arrayToDict = exports.pickProps = exports.summarizeFamilyPaths = exports.splitHierarchicalPaths = exports.splitFilePath = exports.removeStartDirChars = exports.removeBothEndsSlash = exports.removeEndSlash = exports.removeStartSlash = void 0;
+exports.shuffleArray = exports.notEmpty = exports.nonNullable = exports.sleep = exports.findDuplicateItems = exports.findDuplicateValues = exports.splitArrayChunk = exports.arrayToDict = exports.pickProps = exports.summarizeFamilyPaths = exports.splitHierarchicalPaths = exports.splitFilePath = exports.removeStartDirChars = exports.removeBothEndsSlash = exports.removeEndSlash = exports.removeStartSlash = void 0;
 /**
  * パス先頭のスラッシュを除去します。
  * @param path
@@ -227,6 +227,34 @@ async function sleep(ms) {
     });
 }
 exports.sleep = sleep;
+/**
+ * 指定された値が`null`または`undefined`でないことをチェックします。
+ * `null`または`undefined`の場合`false`を、そうでない場合は`true`を返します。
+ * @param value
+ */
+exports.nonNullable = (value) => {
+    return value !== null && value !== undefined;
+};
+/**
+ * 指定された値が空でないことをチェックします。
+ * 以下の場合は「空」と判定し、`false`を返します。
+ * - `null`または`undefined`の場合
+ * - 空文字の場合
+ * - 空オブジェクトの場合
+ * @param value
+ */
+function notEmpty(value) {
+    if (!exports.nonNullable(value))
+        return false;
+    if (typeof value === 'string') {
+        return value !== '';
+    }
+    else if (typeof value === 'object' && !Array.isArray(value)) {
+        return Object.keys(value).length > 0;
+    }
+    return true;
+}
+exports.notEmpty = notEmpty;
 /**
  * 配列をシャッフルします。
  * @param array

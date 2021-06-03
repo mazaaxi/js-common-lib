@@ -109,6 +109,21 @@ export declare function findDuplicateItems<T, K extends keyof T>(array: T[], fie
  */
 export declare function sleep(ms?: number): Promise<void>;
 /**
+ * 指定された値が`null`または`undefined`でないことをチェックします。
+ * `null`または`undefined`の場合`false`を、そうでない場合は`true`を返します。
+ * @param value
+ */
+export declare const nonNullable: <T>(value: T) => value is NonNullable<T>;
+/**
+ * 指定された値が空でないことをチェックします。
+ * 以下の場合は「空」と判定し、`false`を返します。
+ * - `null`または`undefined`の場合
+ * - 空文字の場合
+ * - 空オブジェクトの場合
+ * @param value
+ */
+export declare function notEmpty<T>(value: T): value is NonNullable<T>;
+/**
  * 配列をシャッフルします。
  * @param array
  */

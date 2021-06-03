@@ -2,6 +2,8 @@ import {
   arrayToDict,
   findDuplicateItems,
   findDuplicateValues,
+  nonNullable,
+  notEmpty,
   pickProps,
   removeBothEndsSlash,
   removeEndSlash,
@@ -368,5 +370,59 @@ describe('sleep', () => {
     await sleep(1000)
     const endTime = performance.now()
     expect(endTime - startTime).toBeGreaterThanOrEqual(1000)
+  })
+})
+
+describe('nonNullable', () => {
+  it('nullの場合', async () => {
+    const actual = nonNullable(null)
+    expect(actual).toBeFalsy()
+  })
+
+  it('undefinedの場合', async () => {
+    const actual = nonNullable(undefined)
+    expect(actual).toBeFalsy()
+  })
+
+  it('空文字の場合', async () => {
+    const actual = nonNullable('')
+    expect(actual).toBeTruthy()
+  })
+
+  it('空オブジェクトの場合', async () => {
+    const actual = nonNullable({})
+    expect(actual).toBeTruthy()
+  })
+
+  it('nullまたはundefined以外の場合', async () => {
+    const actual = nonNullable('abc')
+    expect(actual).toBeTruthy()
+  })
+})
+
+describe('notEmpty', () => {
+  it('nullの場合', async () => {
+    const actual = notEmpty(null)
+    expect(actual).toBeFalsy()
+  })
+
+  it('undefinedの場合', async () => {
+    const actual = notEmpty(undefined)
+    expect(actual).toBeFalsy()
+  })
+
+  it('空文字の場合', async () => {
+    const actual = notEmpty('')
+    expect(actual).toBeFalsy()
+  })
+
+  it('空オブジェクトの場合', async () => {
+    const actual = notEmpty({})
+    expect(actual).toBeFalsy()
+  })
+
+  it('nullまたはundefined以外の場合', async () => {
+    const actual = notEmpty('abc')
+    expect(actual).toBeTruthy()
   })
 })
