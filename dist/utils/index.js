@@ -232,9 +232,10 @@ exports.sleep = sleep;
  * `null`または`undefined`の場合`false`を、そうでない場合は`true`を返します。
  * @param value
  */
-exports.nonNullable = (value) => {
+const nonNullable = (value) => {
     return value !== null && value !== undefined;
 };
+exports.nonNullable = nonNullable;
 /**
  * 指定された値が空でないことをチェックします。
  * 以下の場合は「空」と判定し、`false`を返します。
