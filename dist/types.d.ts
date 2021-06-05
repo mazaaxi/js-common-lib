@@ -6,7 +6,7 @@ declare type DeepPartial<T> = {
     [K in keyof T]?: T[K] extends undefined ? undefined : T[K] extends null ? null : T[K] extends Function | undefined | null ? T[K] : T[K] extends Dayjs | undefined | null ? T[K] : T[K] extends Array<infer R> | undefined ? Array<DeepPartial<R>> : T[K] extends Array<infer R> | null ? Array<DeepPartial<R>> | null : T[K] extends Array<infer R> | undefined | null ? Array<DeepPartial<R>> | undefined | null : T[K] extends Record<any, any> | undefined | null ? DeepPartial<T[K]> : T[K];
 };
 declare type DeepReadonly<T> = {
-    readonly [K in keyof T]?: T[K] extends undefined ? undefined : T[K] extends null ? null : T[K] extends Function | undefined | null ? T[K] : T[K] extends Dayjs | undefined | null ? T[K] : T[K] extends Array<infer R> | undefined ? Array<DeepReadonly<R>> : T[K] extends Array<infer R> | null ? Array<DeepReadonly<R>> | null : T[K] extends Array<infer R> | undefined | null ? Array<DeepReadonly<R>> | undefined | null : T[K] extends Record<any, any> | undefined | null ? DeepReadonly<T[K]> : T[K];
+    readonly [K in keyof T]: T[K] extends undefined ? undefined : T[K] extends null ? null : T[K] extends Function | undefined | null ? T[K] : T[K] extends Dayjs | undefined | null ? T[K] : T[K] extends Array<infer R> | undefined ? Array<DeepReadonly<R>> : T[K] extends Array<infer R> | null ? Array<DeepReadonly<R>> | null : T[K] extends Array<infer R> | undefined | null ? Array<DeepReadonly<R>> | undefined | null : T[K] extends Record<any, any> | undefined | null ? DeepReadonly<T[K]> : T[K];
 };
 declare type ToNull<T> = T extends undefined ? null : T;
 declare type ToDeepNull<T> = {

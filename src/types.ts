@@ -33,7 +33,7 @@ type DeepPartial<T> = {
 }
 
 type DeepReadonly<T> = {
-  readonly [K in keyof T]?: T[K] extends undefined
+  readonly [K in keyof T]: T[K] extends undefined
     ? undefined
     : T[K] extends null
     ? null
