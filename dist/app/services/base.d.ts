@@ -1,4 +1,5 @@
 import { Dayjs } from 'dayjs';
+declare type OmitTimestamp<T = unknown> = Omit<T, 'createdAt' | 'updatedAt'>;
 interface Entity {
     id: string;
     version: number;
@@ -37,4 +38,4 @@ declare function toRawDate<T extends Dayjs | undefined | null>(entityDate: T): T
  * @param obj 対象オブジェクトを指定します。
  */
 declare function toDeepRawDate<T>(obj: T): ToDeepRawDate<T>;
-export { Entity, EntityTimestamp, TimestampEntity, ToDeepEntityDateAre, ToDeepRawDate, ToEntityDate, ToRawDate, toDeepEntityDate, toDeepRawDate, toEntityDate, toRawDate, };
+export { Entity, EntityTimestamp, OmitTimestamp, TimestampEntity, ToDeepEntityDateAre, ToDeepRawDate, ToEntityDate, ToRawDate, toDeepEntityDate, toDeepRawDate, toEntityDate, toRawDate, };

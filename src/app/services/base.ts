@@ -8,6 +8,8 @@ import { nonNullable } from '../../utils'
 //
 //========================================================================
 
+type OmitTimestamp<T = unknown> = Omit<T, 'createdAt' | 'updatedAt'>
+
 interface Entity {
   id: string
   version: number
@@ -150,6 +152,7 @@ function toDeepRawDate<T>(obj: T): ToDeepRawDate<T> {
 export {
   Entity,
   EntityTimestamp,
+  OmitTimestamp,
   TimestampEntity,
   ToDeepEntityDateAre,
   ToDeepRawDate,
