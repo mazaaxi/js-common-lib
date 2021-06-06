@@ -31,6 +31,8 @@ type ToEntityDate<T> = T extends undefined
   ? Dayjs | undefined
   : T extends string | null
   ? Dayjs | null
+  : T extends string | undefined | null
+  ? Dayjs | undefined | null
   : T
 
 type ToEntityTimestamp<T> = T extends undefined
@@ -43,16 +45,14 @@ type ToEntityTimestamp<T> = T extends undefined
 
 type RawTimestamp = { createdAt: string; updatedAt: string }
 
-type ToRawDate<T> = T extends undefined
-  ? undefined
-  : T extends null
-  ? null
-  : T extends Dayjs
+type ToRawDate<T> = T extends Dayjs
   ? string
   : T extends Dayjs | undefined
   ? string | undefined
   : T extends Dayjs | null
   ? string | null
+  : T extends Dayjs | undefined | null
+  ? string | undefined | null
   : T
 
 type ToDeepRawDate<T> = {
@@ -62,13 +62,17 @@ type ToDeepRawDate<T> = {
     ? string | undefined
     : T[K] extends Dayjs | null
     ? string | null
-    : T[K] extends Record<any, any>
-    ? ToDeepRawDate<T[K]>
-    : T[K] extends Record<any, any> | undefined
-    ? ToDeepRawDate<T[K]> | undefined
-    : T[K] extends Record<any, any> | null
-    ? ToDeepRawDate<T[K]> | null
-    : T[K]
+    : T[K] extends Dayjs | undefined | null
+    ? string | undefined | null
+    : T[K] extends Array<infer R>
+    ? Array<ToDeepRawDate<R>>
+    : T[K] extends Array<infer R> | undefined
+    ? Array<ToDeepRawDate<R>> | undefined
+    : T[K] extends Array<infer R> | null
+    ? Array<ToDeepRawDate<R>> | null
+    : T[K] extends Array<infer R> | undefined | null
+    ? Array<ToDeepRawDate<R>> | undefined | null
+    : ToDeepRawDate<T[K]>
 }
 
 type ToRawTimestamp<T> = T extends undefined

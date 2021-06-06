@@ -9,7 +9,7 @@ interface EntityTimestamp {
     updatedAt: Dayjs;
 }
 declare type TimestampEntity = Entity & EntityTimestamp;
-declare type ToEntityDate<T> = T extends undefined ? undefined : T extends null ? null : T extends string ? Dayjs : T extends string | undefined ? Dayjs | undefined : T extends string | null ? Dayjs | null : T;
+declare type ToEntityDate<T> = T extends undefined ? undefined : T extends null ? null : T extends string ? Dayjs : T extends string | undefined ? Dayjs | undefined : T extends string | null ? Dayjs | null : T extends string | undefined | null ? Dayjs | undefined | null : T;
 declare type ToEntityTimestamp<T> = T extends undefined ? undefined : T extends null ? null : {
     [K in keyof T]: K extends 'createdAt' ? ToEntityDate<T[K]> : K extends 'updatedAt' ? ToEntityDate<T[K]> : T[K];
 };
@@ -17,9 +17,9 @@ declare type RawTimestamp = {
     createdAt: string;
     updatedAt: string;
 };
-declare type ToRawDate<T> = T extends undefined ? undefined : T extends null ? null : T extends Dayjs ? string : T extends Dayjs | undefined ? string | undefined : T extends Dayjs | null ? string | null : T;
+declare type ToRawDate<T> = T extends Dayjs ? string : T extends Dayjs | undefined ? string | undefined : T extends Dayjs | null ? string | null : T extends Dayjs | undefined | null ? string | undefined | null : T;
 declare type ToDeepRawDate<T> = {
-    [K in keyof T]: T[K] extends Dayjs ? string : T[K] extends Dayjs | undefined ? string | undefined : T[K] extends Dayjs | null ? string | null : T[K] extends Record<any, any> ? ToDeepRawDate<T[K]> : T[K] extends Record<any, any> | undefined ? ToDeepRawDate<T[K]> | undefined : T[K] extends Record<any, any> | null ? ToDeepRawDate<T[K]> | null : T[K];
+    [K in keyof T]: T[K] extends Dayjs ? string : T[K] extends Dayjs | undefined ? string | undefined : T[K] extends Dayjs | null ? string | null : T[K] extends Dayjs | undefined | null ? string | undefined | null : T[K] extends Array<infer R> ? Array<ToDeepRawDate<R>> : T[K] extends Array<infer R> | undefined ? Array<ToDeepRawDate<R>> | undefined : T[K] extends Array<infer R> | null ? Array<ToDeepRawDate<R>> | null : T[K] extends Array<infer R> | undefined | null ? Array<ToDeepRawDate<R>> | undefined | null : ToDeepRawDate<T[K]>;
 };
 declare type ToRawTimestamp<T> = T extends undefined ? undefined : T extends null ? null : {
     [K in keyof T]: K extends 'createdAt' ? ToRawDate<T[K]> : K extends 'updatedAt' ? ToRawDate<T[K]> : T[K];
