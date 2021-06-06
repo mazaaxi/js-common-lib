@@ -1,13 +1,12 @@
 import { Dayjs } from 'dayjs'
 import dayjs = require('dayjs')
+import { nonNullable } from '../../utils'
 
 //========================================================================
 //
 //  Interfaces
 //
 //========================================================================
-
-type OmitTimestamp<T = unknown> = Omit<T, 'createdAt' | 'updatedAt'>
 
 interface Entity {
   id: string
@@ -35,15 +34,9 @@ type ToEntityDate<T> = T extends undefined
   ? Dayjs | undefined | null
   : T
 
-type ToEntityTimestamp<T> = T extends undefined
-  ? undefined
-  : T extends null
-  ? null
-  : {
-      [K in keyof T]: K extends 'createdAt' ? ToEntityDate<T[K]> : K extends 'updatedAt' ? ToEntityDate<T[K]> : T[K]
-    }
-
-type RawTimestamp = { createdAt: string; updatedAt: string }
+type ToDeepEntityDateAre<T, K extends keyof any> = {
+  [P in keyof T]: P extends K ? Dayjs : ToDeepEntityDateAre<T[P], K>
+}
 
 type ToRawDate<T> = T extends Dayjs
   ? string
@@ -75,68 +68,77 @@ type ToDeepRawDate<T> = {
     : ToDeepRawDate<T[K]>
 }
 
-type ToRawTimestamp<T> = T extends undefined
-  ? undefined
-  : T extends null
-  ? null
-  : {
-      [K in keyof T]: K extends 'createdAt' ? ToRawDate<T[K]> : K extends 'updatedAt' ? ToRawDate<T[K]> : T[K]
-    }
-
 //========================================================================
 //
 //  Implementation
 //
 //========================================================================
 
+/**
+ * 指定された文字列日付型をエンティティ日付型に変換します。
+ * @param rawDate
+ */
 function toEntityDate<T extends string | undefined | null>(rawDate: T): ToEntityDate<T> {
   if (rawDate === undefined) return undefined as ToEntityDate<T>
   if (rawDate === null) return null as ToEntityDate<T>
   return dayjs(rawDate as string) as ToEntityDate<T>
 }
 
-function toEntityTimestamp<T extends Partial<RawTimestamp> | Record<any, any> | undefined | null>(rawEntity: T): ToEntityTimestamp<T> {
-  if (rawEntity === undefined) return undefined as ToEntityTimestamp<T>
-  if (rawEntity === null) return null as ToEntityTimestamp<T>
+/**
+ * 指定されたオブジェクトの文字列日付型のプロパティをエンティティ日付型に変換します。
+ * @param obj 対象オブジェクトを指定します。
+ * @param props プロパティ名を指定します。
+ */
+function toDeepEntityDate<T, K extends keyof any>(obj: T, props: K[]): ToDeepEntityDateAre<T, K> {
+  for (const prop of Object.getOwnPropertyNames(obj)) {
+    const value = (obj as any)[prop]
+    if (!nonNullable(value) || dayjs.isDayjs(value)) continue
 
-  const { createdAt, updatedAt } = rawEntity as Partial<RawTimestamp>
-  const result: any = { ...rawEntity }
-  if (createdAt) {
-    result.createdAt = toEntityDate(createdAt)
+    if (props.includes(prop as any) && typeof value === 'string') {
+      ;(obj as any)[prop] = dayjs(value)
+    }
+
+    if (Array.isArray(value)) {
+      value.forEach(item => toDeepEntityDate(item, props))
+    } else if (typeof value === 'object') {
+      toDeepEntityDate(value, props)
+    }
   }
-  if (updatedAt) {
-    result.updatedAt = toEntityDate(updatedAt)
-  }
-  return result
+
+  return (obj as any) as ToDeepEntityDateAre<T, K>
 }
 
-function toEntityTimestamps<T extends Partial<RawTimestamp>>(rawEntities: T[]): ToEntityTimestamp<T>[] {
-  return rawEntities.map(rawEntity => toEntityTimestamp(rawEntity)!)
-}
-
+/**
+ * 指定されたエンティティ日付型を文字列日付型に変換します。
+ * @param entityDate
+ */
 function toRawDate<T extends Dayjs | undefined | null>(entityDate: T): ToRawDate<T> {
   if (entityDate === undefined) return undefined as ToRawDate<T>
   if (entityDate === null) return null as ToRawDate<T>
   return entityDate.toISOString() as ToRawDate<T>
 }
 
-function toRawTimestamp<T extends Partial<EntityTimestamp> | Record<any, any> | undefined | null>(entity: T): ToRawTimestamp<T> {
-  if (entity === undefined) return undefined as ToRawTimestamp<T>
-  if (entity === null) return null as ToRawTimestamp<T>
+/**
+ * 指定されたオブジェクトのエンティティ日付型のプロパティを文字列日付型に変換します。
+ * @param obj 対象オブジェクトを指定します。
+ */
+function toDeepRawDate<T>(obj: T): ToDeepRawDate<T> {
+  for (const prop of Object.getOwnPropertyNames(obj)) {
+    const value = (obj as any)[prop]
+    if (!nonNullable(value)) continue
 
-  const { createdAt, updatedAt } = entity as any
-  const result: any = { ...entity }
-  if (dayjs.isDayjs(createdAt)) {
-    result.createdAt = toRawDate(createdAt)
-  }
-  if (dayjs.isDayjs(updatedAt)) {
-    result.updatedAt = toRawDate(updatedAt)
-  }
-  return result
-}
+    if (dayjs.isDayjs(value)) {
+      ;(obj as any)[prop] = toRawDate(value)
+    }
 
-function toRawTimestamps<T extends Partial<EntityTimestamp>>(entities: T[]): ToRawTimestamp<T>[] {
-  return entities.map(entity => toRawTimestamp(entity)!)
+    if (Array.isArray(value)) {
+      value.forEach(item => toDeepRawDate(item))
+    } else if (typeof value === 'object') {
+      toDeepRawDate(value)
+    }
+  }
+
+  return (obj as any) as ToDeepRawDate<T>
 }
 
 //========================================================================
@@ -148,18 +150,13 @@ function toRawTimestamps<T extends Partial<EntityTimestamp>>(entities: T[]): ToR
 export {
   Entity,
   EntityTimestamp,
-  OmitTimestamp,
-  RawTimestamp,
   TimestampEntity,
+  ToDeepEntityDateAre,
   ToDeepRawDate,
   ToEntityDate,
-  ToEntityTimestamp,
   ToRawDate,
-  ToRawTimestamp,
+  toDeepEntityDate,
+  toDeepRawDate,
   toEntityDate,
-  toEntityTimestamp,
-  toEntityTimestamps,
   toRawDate,
-  toRawTimestamp,
-  toRawTimestamps,
 }

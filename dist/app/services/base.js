@@ -1,12 +1,17 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.toRawTimestamps = exports.toRawTimestamp = exports.toRawDate = exports.toEntityTimestamps = exports.toEntityTimestamp = exports.toEntityDate = void 0;
+exports.toRawDate = exports.toEntityDate = exports.toDeepRawDate = exports.toDeepEntityDate = void 0;
 const dayjs = require("dayjs");
+const utils_1 = require("../../utils");
 //========================================================================
 //
 //  Implementation
 //
 //========================================================================
+/**
+ * 指定された文字列日付型をエンティティ日付型に変換します。
+ * @param rawDate
+ */
 function toEntityDate(rawDate) {
     if (rawDate === undefined)
         return undefined;
@@ -15,26 +20,34 @@ function toEntityDate(rawDate) {
     return dayjs(rawDate);
 }
 exports.toEntityDate = toEntityDate;
-function toEntityTimestamp(rawEntity) {
-    if (rawEntity === undefined)
-        return undefined;
-    if (rawEntity === null)
-        return null;
-    const { createdAt, updatedAt } = rawEntity;
-    const result = { ...rawEntity };
-    if (createdAt) {
-        result.createdAt = toEntityDate(createdAt);
+/**
+ * 指定されたオブジェクトの文字列日付型のプロパティをエンティティ日付型に変換します。
+ * @param obj 対象オブジェクトを指定します。
+ * @param props プロパティ名を指定します。
+ */
+function toDeepEntityDate(obj, props) {
+    for (const prop of Object.getOwnPropertyNames(obj)) {
+        const value = obj[prop];
+        if (!utils_1.nonNullable(value) || dayjs.isDayjs(value))
+            continue;
+        if (props.includes(prop) && typeof value === 'string') {
+            ;
+            obj[prop] = dayjs(value);
+        }
+        if (Array.isArray(value)) {
+            value.forEach(item => toDeepEntityDate(item, props));
+        }
+        else if (typeof value === 'object') {
+            toDeepEntityDate(value, props);
+        }
     }
-    if (updatedAt) {
-        result.updatedAt = toEntityDate(updatedAt);
-    }
-    return result;
+    return obj;
 }
-exports.toEntityTimestamp = toEntityTimestamp;
-function toEntityTimestamps(rawEntities) {
-    return rawEntities.map(rawEntity => toEntityTimestamp(rawEntity));
-}
-exports.toEntityTimestamps = toEntityTimestamps;
+exports.toDeepEntityDate = toDeepEntityDate;
+/**
+ * 指定されたエンティティ日付型を文字列日付型に変換します。
+ * @param entityDate
+ */
 function toRawDate(entityDate) {
     if (entityDate === undefined)
         return undefined;
@@ -43,24 +56,27 @@ function toRawDate(entityDate) {
     return entityDate.toISOString();
 }
 exports.toRawDate = toRawDate;
-function toRawTimestamp(entity) {
-    if (entity === undefined)
-        return undefined;
-    if (entity === null)
-        return null;
-    const { createdAt, updatedAt } = entity;
-    const result = { ...entity };
-    if (dayjs.isDayjs(createdAt)) {
-        result.createdAt = toRawDate(createdAt);
+/**
+ * 指定されたオブジェクトのエンティティ日付型のプロパティを文字列日付型に変換します。
+ * @param obj 対象オブジェクトを指定します。
+ */
+function toDeepRawDate(obj) {
+    for (const prop of Object.getOwnPropertyNames(obj)) {
+        const value = obj[prop];
+        if (!utils_1.nonNullable(value))
+            continue;
+        if (dayjs.isDayjs(value)) {
+            ;
+            obj[prop] = toRawDate(value);
+        }
+        if (Array.isArray(value)) {
+            value.forEach(item => toDeepRawDate(item));
+        }
+        else if (typeof value === 'object') {
+            toDeepRawDate(value);
+        }
     }
-    if (dayjs.isDayjs(updatedAt)) {
-        result.updatedAt = toRawDate(updatedAt);
-    }
-    return result;
+    return obj;
 }
-exports.toRawTimestamp = toRawTimestamp;
-function toRawTimestamps(entities) {
-    return entities.map(entity => toRawTimestamp(entity));
-}
-exports.toRawTimestamps = toRawTimestamps;
+exports.toDeepRawDate = toDeepRawDate;
 //# sourceMappingURL=base.js.map
