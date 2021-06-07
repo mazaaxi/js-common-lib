@@ -178,6 +178,18 @@ describe('toDeepEntityDate', () => {
     expect(actual.objArr[1].createdAt).toEqual(now)
     expect(actual.objArr[1].updatedAt).toEqual(now)
   })
+
+  it('undefinedを指定した場合', async () => {
+    const actual = toDeepEntityDate(undefined, ['createdAt', 'updatedAt'])
+
+    expect(actual).toBeUndefined()
+  })
+
+  it('nullを指定した場合', async () => {
+    const actual = toDeepEntityDate(null, ['createdAt', 'updatedAt'])
+
+    expect(actual).toBeNull()
+  })
 })
 
 describe('toDeepRawDate', () => {
@@ -309,5 +321,17 @@ describe('toDeepRawDate', () => {
     expect(actual.objArr[0].updatedAt).toEqual(now)
     expect(actual.objArr[1].createdAt).toEqual(now)
     expect(actual.objArr[1].updatedAt).toEqual(now)
+  })
+
+  it('undefinedを指定した場合', async () => {
+    const actual = toDeepRawDate(undefined)
+
+    expect(actual).toBeUndefined()
+  })
+
+  it('nullを指定した場合', async () => {
+    const actual = toDeepRawDate(null)
+
+    expect(actual).toBeNull()
   })
 })

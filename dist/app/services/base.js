@@ -26,6 +26,8 @@ exports.toEntityDate = toEntityDate;
  * @param props プロパティ名を指定します。
  */
 function toDeepEntityDate(obj, props) {
+    if (!obj)
+        return obj;
     for (const prop of Object.getOwnPropertyNames(obj)) {
         const value = obj[prop];
         if (!utils_1.nonNullable(value) || dayjs.isDayjs(value))
@@ -61,6 +63,8 @@ exports.toRawDate = toRawDate;
  * @param obj 対象オブジェクトを指定します。
  */
 function toDeepRawDate(obj) {
+    if (!obj)
+        return obj;
     for (const prop of Object.getOwnPropertyNames(obj)) {
         const value = obj[prop];
         if (!utils_1.nonNullable(value))

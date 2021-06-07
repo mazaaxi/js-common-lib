@@ -92,6 +92,8 @@ function toEntityDate<T extends string | undefined | null>(rawDate: T): ToEntity
  * @param props プロパティ名を指定します。
  */
 function toDeepEntityDate<T, K extends keyof any>(obj: T, props: K[]): ToDeepEntityDateAre<T, K> {
+  if (!obj) return obj as any
+
   for (const prop of Object.getOwnPropertyNames(obj)) {
     const value = (obj as any)[prop]
     if (!nonNullable(value) || dayjs.isDayjs(value)) continue
@@ -125,6 +127,8 @@ function toRawDate<T extends Dayjs | undefined | null>(entityDate: T): ToRawDate
  * @param obj 対象オブジェクトを指定します。
  */
 function toDeepRawDate<T>(obj: T): ToDeepRawDate<T> {
+  if (!obj) return obj as any
+
   for (const prop of Object.getOwnPropertyNames(obj)) {
     const value = (obj as any)[prop]
     if (!nonNullable(value)) continue
