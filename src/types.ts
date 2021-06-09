@@ -40,22 +40,18 @@ type DeepReadonly<T> = {
     : DeepReadonly<T[K]>
 }
 
-type ToNull<T> = T extends undefined ? null : T
-
-type ToDeepNull<T> = {
-  [K in keyof T]: T[K] extends Record<any, any>
-    ? ToDeepNull<T[K]>
-    : T[K] extends Record<any, any> | undefined
-    ? ToDeepNull<T[K]> | null
-    : ToNull<T[K]>
-}
-
-type ToStrictDeepNull<T> = {
-  [K in keyof T]-?: T[K] extends Record<any, any>
-    ? ToStrictDeepNull<T[K]>
-    : T[K] extends Record<any, any> | undefined
-    ? ToStrictDeepNull<T[K]> | null
-    : ToNull<T[K]>
+type DeepUnreadonly<T> = {
+  readonly [K in keyof T]: T[K] extends Dayjs | undefined | null
+    ? T[K]
+    : T[K] extends Array<infer R>
+    ? Array<DeepUnreadonly<R>>
+    : T[K] extends Array<infer R> | undefined
+    ? Array<DeepUnreadonly<R>> | undefined
+    : T[K] extends Array<infer R> | null
+    ? Array<DeepUnreadonly<R>> | null
+    : T[K] extends Array<infer R> | undefined | null
+    ? Array<DeepUnreadonly<R>> | undefined | null
+    : DeepUnreadonly<T[K]>
 }
 
 /**
@@ -99,4 +95,4 @@ type ReplaceType<T, S, R> = ReplaceType1<T, S> & ReplaceType2<T, R>
 //
 //========================================================================
 
-export { Constructor, DeepPartial, DeepReadonly, Overwrite, PartialAre, ReplaceType, RequiredAre, ToDeepNull, ToNull, ToStrictDeepNull }
+export { Constructor, DeepPartial, DeepReadonly, DeepUnreadonly, Overwrite, PartialAre, ReplaceType, RequiredAre }

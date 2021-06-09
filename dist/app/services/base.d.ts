@@ -17,6 +17,17 @@ declare type ToRawDate<T> = T extends Dayjs ? string : T extends Dayjs | undefin
 declare type ToDeepRawDate<T> = {
     [K in keyof T]: T[K] extends Dayjs ? string : T[K] extends Dayjs | undefined ? string | undefined : T[K] extends Dayjs | null ? string | null : T[K] extends Dayjs | undefined | null ? string | undefined | null : T[K] extends Array<infer R> ? Array<ToDeepRawDate<R>> : T[K] extends Array<infer R> | undefined ? Array<ToDeepRawDate<R>> | undefined : T[K] extends Array<infer R> | null ? Array<ToDeepRawDate<R>> | null : T[K] extends Array<infer R> | undefined | null ? Array<ToDeepRawDate<R>> | undefined | null : ToDeepRawDate<T[K]>;
 };
+declare type ToNull<T> = T extends undefined ? null : T;
+declare type ToDeepNull<T> = {
+    [K in keyof T]-?: T[K] extends Record<any, any> ? ToDeepNull<T[K]> : T[K] extends Record<any, any> | undefined ? ToDeepNull<T[K]> | null : ToNull<T[K]>;
+};
+declare type ToDeepNullable<T> = {
+    [K in keyof T]?: T[K] extends Dayjs | undefined | null ? T[K] | null : T[K] extends Array<infer R> | undefined | null ? Array<ToDeepNullable<R>> | null : T[K] extends Record<any, any> | undefined | null ? ToDeepNullable<T[K]> | null : T[K] | null;
+};
+declare type ToUndefined<T> = T extends null ? undefined : T;
+declare type ToDeepUndefined<T> = {
+    [K in keyof T]: T[K] extends Dayjs | undefined | null ? ToUndefined<T[K]> : T[K] extends Record<any, any> | undefined | null ? ToUndefined<ToDeepUndefined<T[K]>> : ToUndefined<T[K]>;
+};
 /**
  * 指定された文字列日付型をエンティティ日付型に変換します。
  * @param rawDate
@@ -38,4 +49,10 @@ declare function toRawDate<T extends Dayjs | undefined | null>(entityDate: T): T
  * @param obj 対象オブジェクトを指定します。
  */
 declare function toDeepRawDate<T>(obj: T): ToDeepRawDate<T>;
-export { Entity, EntityTimestamp, OmitTimestamp, TimestampEntity, ToDeepEntityDateAre, ToDeepRawDate, ToEntityDate, ToRawDate, toDeepEntityDate, toDeepRawDate, toEntityDate, toRawDate, };
+declare function toNull<T>(value: T): ToNull<T>;
+declare function toDeepNull<T>(obj: T): ToDeepNull<T>;
+declare function toDeepNullWithoutTyped<T>(obj: T): T;
+declare function toUndefined<T>(value: T): ToUndefined<T>;
+declare function toDeepUndefined<T>(obj: T): ToDeepUndefined<T>;
+declare function toDeepUndefinedWithoutTyped<T>(obj: T): T;
+export { Entity, EntityTimestamp, OmitTimestamp, TimestampEntity, ToDeepEntityDateAre, ToDeepNull, ToDeepNullable, ToDeepRawDate, ToDeepUndefined, ToEntityDate, ToNull, ToRawDate, ToUndefined, toDeepEntityDate, toDeepNull, toDeepNullWithoutTyped, toDeepRawDate, toDeepUndefined, toDeepUndefinedWithoutTyped, toEntityDate, toNull, toRawDate, toUndefined, };

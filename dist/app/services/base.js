@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.toRawDate = exports.toEntityDate = exports.toDeepRawDate = exports.toDeepEntityDate = void 0;
+exports.toUndefined = exports.toRawDate = exports.toNull = exports.toEntityDate = exports.toDeepUndefinedWithoutTyped = exports.toDeepUndefined = exports.toDeepRawDate = exports.toDeepNullWithoutTyped = exports.toDeepNull = exports.toDeepEntityDate = void 0;
 const dayjs = require("dayjs");
 const utils_1 = require("../../utils");
 //========================================================================
@@ -83,4 +83,58 @@ function toDeepRawDate(obj) {
     return obj;
 }
 exports.toDeepRawDate = toDeepRawDate;
+function toNull(value) {
+    return value === undefined ? null : value;
+}
+exports.toNull = toNull;
+function toDeepNull(obj) {
+    if (!obj)
+        return obj;
+    for (const prop of Object.getOwnPropertyNames(obj)) {
+        const value = obj[prop];
+        if (value === undefined) {
+            ;
+            obj[prop] = null;
+        }
+        else if (Array.isArray(value)) {
+            value.forEach(item => toDeepNull(item));
+        }
+        else if (typeof value === 'object') {
+            toDeepNull(value);
+        }
+    }
+    return obj;
+}
+exports.toDeepNull = toDeepNull;
+function toDeepNullWithoutTyped(obj) {
+    return toDeepNull(obj);
+}
+exports.toDeepNullWithoutTyped = toDeepNullWithoutTyped;
+function toUndefined(value) {
+    return value === null ? undefined : value;
+}
+exports.toUndefined = toUndefined;
+function toDeepUndefined(obj) {
+    if (!obj)
+        return obj;
+    for (const prop of Object.getOwnPropertyNames(obj)) {
+        const value = obj[prop];
+        if (value === null) {
+            ;
+            obj[prop] = undefined;
+        }
+        else if (Array.isArray(value)) {
+            value.forEach(item => toDeepUndefined(item));
+        }
+        else if (typeof value === 'object') {
+            toDeepUndefined(value);
+        }
+    }
+    return obj;
+}
+exports.toDeepUndefined = toDeepUndefined;
+function toDeepUndefinedWithoutTyped(obj) {
+    return toDeepUndefined(obj);
+}
+exports.toDeepUndefinedWithoutTyped = toDeepUndefinedWithoutTyped;
 //# sourceMappingURL=base.js.map

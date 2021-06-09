@@ -70,6 +70,36 @@ type ToDeepRawDate<T> = {
     : ToDeepRawDate<T[K]>
 }
 
+type ToNull<T> = T extends undefined ? null : T
+
+type ToDeepNull<T> = {
+  [K in keyof T]-?: T[K] extends Record<any, any>
+    ? ToDeepNull<T[K]>
+    : T[K] extends Record<any, any> | undefined
+    ? ToDeepNull<T[K]> | null
+    : ToNull<T[K]>
+}
+
+type ToDeepNullable<T> = {
+  [K in keyof T]?: T[K] extends Dayjs | undefined | null
+    ? T[K] | null
+    : T[K] extends Array<infer R> | undefined | null
+    ? Array<ToDeepNullable<R>> | null
+    : T[K] extends Record<any, any> | undefined | null
+    ? ToDeepNullable<T[K]> | null
+    : T[K] | null
+}
+
+type ToUndefined<T> = T extends null ? undefined : T
+
+type ToDeepUndefined<T> = {
+  [K in keyof T]: T[K] extends Dayjs | undefined | null
+    ? ToUndefined<T[K]>
+    : T[K] extends Record<any, any> | undefined | null
+    ? ToUndefined<ToDeepUndefined<T[K]>>
+    : ToUndefined<T[K]>
+}
+
 //========================================================================
 //
 //  Implementation
@@ -147,6 +177,58 @@ function toDeepRawDate<T>(obj: T): ToDeepRawDate<T> {
   return (obj as any) as ToDeepRawDate<T>
 }
 
+function toNull<T>(value: T): ToNull<T> {
+  return value === undefined ? (null as any) : value
+}
+
+function toDeepNull<T>(obj: T): ToDeepNull<T> {
+  if (!obj) return obj as any
+
+  for (const prop of Object.getOwnPropertyNames(obj)) {
+    const value = (obj as any)[prop]
+
+    if (value === undefined) {
+      ;(obj as any)[prop] = null
+    } else if (Array.isArray(value)) {
+      value.forEach(item => toDeepNull(item))
+    } else if (typeof value === 'object') {
+      toDeepNull(value)
+    }
+  }
+
+  return (obj as any) as ToDeepNull<T>
+}
+
+function toDeepNullWithoutTyped<T>(obj: T): T {
+  return toDeepNull(obj) as T
+}
+
+function toUndefined<T>(value: T): ToUndefined<T> {
+  return value === null ? (undefined as any) : value
+}
+
+function toDeepUndefined<T>(obj: T): ToDeepUndefined<T> {
+  if (!obj) return obj as any
+
+  for (const prop of Object.getOwnPropertyNames(obj)) {
+    const value = (obj as any)[prop]
+
+    if (value === null) {
+      ;(obj as any)[prop] = undefined
+    } else if (Array.isArray(value)) {
+      value.forEach(item => toDeepUndefined(item))
+    } else if (typeof value === 'object') {
+      toDeepUndefined(value)
+    }
+  }
+
+  return (obj as any) as ToDeepUndefined<T>
+}
+
+function toDeepUndefinedWithoutTyped<T>(obj: T): T {
+  return toDeepUndefined(obj) as T
+}
+
 //========================================================================
 //
 //  Exports
@@ -159,11 +241,22 @@ export {
   OmitTimestamp,
   TimestampEntity,
   ToDeepEntityDateAre,
+  ToDeepNull,
+  ToDeepNullable,
   ToDeepRawDate,
+  ToDeepUndefined,
   ToEntityDate,
+  ToNull,
   ToRawDate,
+  ToUndefined,
   toDeepEntityDate,
+  toDeepNull,
+  toDeepNullWithoutTyped,
   toDeepRawDate,
+  toDeepUndefined,
+  toDeepUndefinedWithoutTyped,
   toEntityDate,
+  toNull,
   toRawDate,
+  toUndefined,
 }
