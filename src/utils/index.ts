@@ -1,8 +1,14 @@
+//========================================================================
+//
+//  Implementation
+//
+//========================================================================
+
 /**
  * パス先頭のスラッシュを除去します。
  * @param path
  */
-export function removeStartSlash(path: string | undefined | null): string {
+function removeStartSlash(path: string | undefined | null): string {
   if (!path) return ''
   return path.replace(/^\/*/, '')
 }
@@ -11,7 +17,7 @@ export function removeStartSlash(path: string | undefined | null): string {
  * パス末尾のスラッシュを除去します。
  * @param path
  */
-export function removeEndSlash(path: string | undefined | null): string {
+function removeEndSlash(path: string | undefined | null): string {
   if (!path) return ''
   return path.replace(/\/*$/, '')
 }
@@ -20,7 +26,7 @@ export function removeEndSlash(path: string | undefined | null): string {
  * パスの両端のスラッシュを除去します。
  * @param path
  */
-export function removeBothEndsSlash(path: string | undefined | null): string {
+function removeBothEndsSlash(path: string | undefined | null): string {
   if (!path) return ''
   return removeStartSlash(removeEndSlash(path))
 }
@@ -32,7 +38,7 @@ export function removeBothEndsSlash(path: string | undefined | null): string {
  *     '/aaa'   → 'aaa'
  * @param path
  */
-export function removeStartDirChars(path: string | undefined | null): string {
+function removeStartDirChars(path: string | undefined | null): string {
   if (!path) return ''
   return path.replace(/^\.*\/*/, '')
 }
@@ -41,7 +47,7 @@ export function removeStartDirChars(path: string | undefined | null): string {
  * ファイルパスをファイル名とディレクトリパスに分割します。
  * @param filePath
  */
-export function splitFilePath(filePath: string): { fileName: string; dirPath: string } {
+function splitFilePath(filePath: string): { fileName: string; dirPath: string } {
   const segments = filePath.split('/')
   const fileName = segments[segments.length - 1]
   let dirPath = ''
@@ -59,7 +65,7 @@ export function splitFilePath(filePath: string): { fileName: string; dirPath: st
  *
  * @param paths
  */
-export function splitHierarchicalPaths(...paths: (string | undefined | null)[]): string[] {
+function splitHierarchicalPaths(...paths: (string | undefined | null)[]): string[] {
   const set: Set<string> = new Set<string>()
 
   for (const dirPath of paths) {
@@ -92,7 +98,7 @@ export function splitHierarchicalPaths(...paths: (string | undefined | null)[]):
  *   + d1/d11/d112
  *   + d2/d21/d211
  */
-export function summarizeFamilyPaths(paths: string[]): string[] {
+function summarizeFamilyPaths(paths: string[]): string[] {
   const pushMaxPathToArray = (array: string[], newPath: string) => {
     for (let i = 0; i < array.length; i++) {
       const path = array[i]
@@ -119,7 +125,7 @@ export function summarizeFamilyPaths(paths: string[]): string[] {
  * @param props 取り出したいプロパティ
  * @param excludeValues 除外したいプロパティ値
  */
-export function pickProps<T, K extends keyof T>(obj: T, props: K[], excludeValues?: any[]): { [P in K]: T[P] } {
+function pickProps<T, K extends keyof T>(obj: T, props: K[], excludeValues?: any[]): { [P in K]: T[P] } {
   const result: any = {}
   for (const prop of props) {
     // オブジェクトに指定されたキーが存在しない場合、そのキーを無視
@@ -140,7 +146,7 @@ export function pickProps<T, K extends keyof T>(obj: T, props: K[], excludeValue
  * @param list オブジェクト配列
  * @param key オブジェクトのキーを指定。この値がマップのキーに使用されます。
  */
-export function arrayToDict<T>(list: T[], key: keyof T): Record<string | number, T> {
+function arrayToDict<T>(list: T[], key: keyof T): Record<string | number, T> {
   return list.reduce((result, item) => {
     const k = item[key]
     if (typeof k === 'string') {
@@ -157,7 +163,7 @@ export function arrayToDict<T>(list: T[], key: keyof T): Record<string | number,
  * @param array 分割したい配列
  * @param size 塊のアイテム数
  */
-export function splitArrayChunk<T>(array: T[], size: number): T[][] {
+function splitArrayChunk<T>(array: T[], size: number): T[][] {
   return array.reduce<T[][]>((result, value, index) => {
     if (index % size) {
       return result
@@ -167,51 +173,162 @@ export function splitArrayChunk<T>(array: T[], size: number): T[][] {
   }, [])
 }
 
+class DuplicateItem<T> {
+  constructor(container: BaseDuplicateContainer<T>, value: T, index: number) {
+    this.container = container
+    this.value = value
+    this.index = index
+  }
+
+  readonly container: BaseDuplicateContainer<T>
+  value!: T
+  index!: number
+  first = false
+  last = false
+  removed = false
+
+  remove(): void {
+    this.container.remove(this)
+  }
+}
+
+abstract class BaseDuplicateContainer<T> {
+  constructor(array: T[]) {
+    this.array = array
+  }
+
+  protected array: T[]
+
+  duplicates: DuplicateItem<T>[] = []
+
+  remove(target: DuplicateItem<T>): void {
+    this.array.splice(target.index, 1)
+    for (const item of this.duplicates) {
+      if (target.index < item.index && !item.removed) {
+        item.index = item.index - 1
+      }
+    }
+    target.removed = true
+  }
+}
+
+class DuplicateValueContainer<T> extends BaseDuplicateContainer<T> {
+  constructor(protected array: T[]) {
+    super(array)
+
+    let duplicateValues = this.array.filter((item, index) => {
+      return this.array.indexOf(item) != index
+    })
+    duplicateValues = Array.from(new Set(duplicateValues))
+
+    for (const duplicateValue of duplicateValues) {
+      const myDuplicates: DuplicateItem<T>[] = []
+      let fromIndex = 0
+      do {
+        fromIndex = this.array.indexOf(duplicateValue, fromIndex)
+        if (fromIndex >= 0) {
+          const duplicateItem = new DuplicateItem(this, duplicateValue, fromIndex)
+          myDuplicates.push(duplicateItem)
+          this.duplicates.push(duplicateItem)
+          fromIndex += 1
+        }
+      } while (fromIndex >= 0)
+
+      myDuplicates[0].first = true
+      myDuplicates[myDuplicates.length - 1].last = true
+    }
+
+    this.duplicates.sort((a, b) => {
+      return a.index < b.index ? -1 : a.index > b.index ? 1 : 0
+    })
+  }
+}
+
+class DuplicateItemContainer<T, K extends keyof T> extends BaseDuplicateContainer<T> {
+  constructor(protected array: T[], protected field: K) {
+    super(array)
+
+    const values = this.array.map(item => item[this.field])
+    let duplicateValues = values.filter((item, index) => {
+      return values.indexOf(item) != index
+    })
+    duplicateValues = Array.from(new Set(duplicateValues))
+
+    for (const duplicateValue of duplicateValues) {
+      const myDuplicates: DuplicateItem<T>[] = []
+      let fromIndex = 0
+      do {
+        fromIndex = this.array.findIndex((item, index) => {
+          if (index < fromIndex) return false
+          return item[this.field] === duplicateValue
+        })
+        if (fromIndex >= 0) {
+          const duplicateItem = new DuplicateItem(this, this.array[fromIndex], fromIndex)
+          myDuplicates.push(duplicateItem)
+          this.duplicates.push(duplicateItem)
+          fromIndex += 1
+        }
+      } while (fromIndex >= 0)
+
+      myDuplicates[0].first = true
+      myDuplicates[myDuplicates.length - 1].last = true
+    }
+
+    this.duplicates.sort((a, b) => {
+      return a.index < b.index ? -1 : a.index > b.index ? 1 : 0
+    })
+  }
+}
+
 /**
  * 配列の中から重複した値を取得します。
  *
  * @example
- * findDuplicates(['aaa', 'bbb', 'aaa', 'ccc', 'ddd', 'ccc'])
- * // ['aaa', 'ccc']
+ * findDuplicateValues(['a', 'b', 'c', 'a', 'd', 'c'])
+ * // [
+ * //   { value: 'a', index: 0, first: true, last: false, removed: false },
+ * //   { value: 'c', index: 2, first: true, last: false, removed: false },
+ * //   { value: 'a', index: 3, first: false, last: true, removed: false },
+ * //   { value: 'c', index: 5, first: false, last: true, removed: false },
+ * //]
  *
  * @param array
  */
-export function findDuplicateValues<T>(array: T[]): T[] {
-  return array.filter((item, index) => array.indexOf(item) != index)
+function findDuplicateValues<T>(array: T[]): DuplicateItem<T>[] {
+  return new DuplicateValueContainer(array).duplicates
 }
 
 /**
  * 配列アイテムの指定フィールドが重複しているアイテムを取得します。
  *
  * @example
- * const JavaScript: Language = { id: '001', name: 'JavaScript' }
- * const Python: Language = { id: '002', name: 'Python' }
- * const Dart: Language = { id: '003', name: 'Dart' }
- * const TypeScript: Language = { id: '004', name: 'TypeScript' }
- * const PHP: Language = { id: '005', name: 'PHP' }
- *
- * const languages = [JavaScript, Python, JavaScript, Dart, TypeScript, PHP, TypeScript]
- * findDuplicateItems(languages, 'id')
- * // [{ id: '001', name: 'JavaScript' }, { id: '004', name: 'TypeScript' }]
+ * findDuplicateItems([
+ *   { id: 0, str: 'a' },
+ *   { id: 1, str: 'b' },
+ *   { id: 2, str: 'c' },
+ *   { id: 3, str: 'a' },
+ *   { id: 4, str: 'd' },
+ *   { id: 5, str: 'c' },
+ * ], 'str')
+ * // [
+ * //   { value: { id: 0, str: 'a' }, index: 0, first: true, last: false, removed: false },
+ * //   { value: { id: 2, str: 'c' }, index: 2, first: true, last: false, removed: false },
+ * //   { value: { id: 3, str: 'a' }, index: 3, first: false, last: true, removed: false },
+ * //   { value: { id: 5, str: 'c' }, index: 5, first: false, last: true, removed: false },
+ * //]
  *
  * @param array
  * @param field
  */
-export function findDuplicateItems<T, K extends keyof T>(array: T[], field: K): T[] {
-  const values = findDuplicateValues(array.map(input => input[field]))
-  const result: T[] = []
-  for (const value of values) {
-    const item = array.find(item => item[field] === value)
-    item && result.push(item)
-  }
-  return result
+function findDuplicateItems<T, K extends keyof T>(array: T[], field: K): DuplicateItem<T>[] {
+  return new DuplicateItemContainer(array, field).duplicates
 }
 
 /**
  * 指定されたミリ秒の間スリープします。
  * @param ms
  */
-export async function sleep(ms?: number): Promise<void> {
+async function sleep(ms?: number): Promise<void> {
   return new Promise(resolve => {
     setTimeout(resolve, ms)
   }) as Promise<void>
@@ -222,7 +339,7 @@ export async function sleep(ms?: number): Promise<void> {
  * `null`または`undefined`の場合`false`を、そうでない場合は`true`を返します。
  * @param value
  */
-export const nonNullable = <T>(value: T): value is NonNullable<T> => {
+const nonNullable = <T>(value: T): value is NonNullable<T> => {
   return value !== null && value !== undefined
 }
 
@@ -234,7 +351,7 @@ export const nonNullable = <T>(value: T): value is NonNullable<T> => {
  * - 空オブジェクトの場合
  * @param value
  */
-export function notEmpty<T>(value: T): value is NonNullable<T> {
+function notEmpty<T>(value: T): value is NonNullable<T> {
   if (!nonNullable(value)) return false
   if (typeof value === 'string') {
     return value !== ''
@@ -248,7 +365,7 @@ export function notEmpty<T>(value: T): value is NonNullable<T> {
  * 配列をシャッフルします。
  * @param array
  */
-export function shuffleArray<T>(array: T[]): T[] {
+function shuffleArray<T>(array: T[]): T[] {
   const result = Object.assign([], array)
   for (let i = result.length - 1; i > 0; i--) {
     const r = Math.floor(Math.random() * (i + 1))
@@ -257,4 +374,29 @@ export function shuffleArray<T>(array: T[]): T[] {
     result[r] = tmp
   }
   return result
+}
+
+//========================================================================
+//
+//  Exports
+//
+//========================================================================
+
+export {
+  arrayToDict,
+  findDuplicateItems,
+  findDuplicateValues,
+  nonNullable,
+  notEmpty,
+  pickProps,
+  removeBothEndsSlash,
+  removeEndSlash,
+  removeStartDirChars,
+  removeStartSlash,
+  shuffleArray,
+  sleep,
+  splitArrayChunk,
+  splitFilePath,
+  splitHierarchicalPaths,
+  summarizeFamilyPaths,
 }

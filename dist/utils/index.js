@@ -1,6 +1,11 @@
 "use strict";
+//========================================================================
+//
+//  Implementation
+//
+//========================================================================
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.shuffleArray = exports.notEmpty = exports.nonNullable = exports.sleep = exports.findDuplicateItems = exports.findDuplicateValues = exports.splitArrayChunk = exports.arrayToDict = exports.pickProps = exports.summarizeFamilyPaths = exports.splitHierarchicalPaths = exports.splitFilePath = exports.removeStartDirChars = exports.removeBothEndsSlash = exports.removeEndSlash = exports.removeStartSlash = void 0;
+exports.summarizeFamilyPaths = exports.splitHierarchicalPaths = exports.splitFilePath = exports.splitArrayChunk = exports.sleep = exports.shuffleArray = exports.removeStartSlash = exports.removeStartDirChars = exports.removeEndSlash = exports.removeBothEndsSlash = exports.pickProps = exports.notEmpty = exports.nonNullable = exports.findDuplicateValues = exports.findDuplicateItems = exports.arrayToDict = void 0;
 /**
  * パス先頭のスラッシュを除去します。
  * @param path
@@ -177,44 +182,138 @@ function splitArrayChunk(array, size) {
     }, []);
 }
 exports.splitArrayChunk = splitArrayChunk;
+class DuplicateItem {
+    constructor(container, value, index) {
+        this.first = false;
+        this.last = false;
+        this.removed = false;
+        this.container = container;
+        this.value = value;
+        this.index = index;
+    }
+    remove() {
+        this.container.remove(this);
+    }
+}
+class BaseDuplicateContainer {
+    constructor(array) {
+        this.duplicates = [];
+        this.array = array;
+    }
+    remove(target) {
+        this.array.splice(target.index, 1);
+        for (const item of this.duplicates) {
+            if (target.index < item.index && !item.removed) {
+                item.index = item.index - 1;
+            }
+        }
+        target.removed = true;
+    }
+}
+class DuplicateValueContainer extends BaseDuplicateContainer {
+    constructor(array) {
+        super(array);
+        this.array = array;
+        let duplicateValues = this.array.filter((item, index) => {
+            return this.array.indexOf(item) != index;
+        });
+        duplicateValues = Array.from(new Set(duplicateValues));
+        for (const duplicateValue of duplicateValues) {
+            const myDuplicates = [];
+            let fromIndex = 0;
+            do {
+                fromIndex = this.array.indexOf(duplicateValue, fromIndex);
+                if (fromIndex >= 0) {
+                    const duplicateItem = new DuplicateItem(this, duplicateValue, fromIndex);
+                    myDuplicates.push(duplicateItem);
+                    this.duplicates.push(duplicateItem);
+                    fromIndex += 1;
+                }
+            } while (fromIndex >= 0);
+            myDuplicates[0].first = true;
+            myDuplicates[myDuplicates.length - 1].last = true;
+        }
+        this.duplicates.sort((a, b) => {
+            return a.index < b.index ? -1 : a.index > b.index ? 1 : 0;
+        });
+    }
+}
+class DuplicateItemContainer extends BaseDuplicateContainer {
+    constructor(array, field) {
+        super(array);
+        this.array = array;
+        this.field = field;
+        const values = this.array.map(item => item[this.field]);
+        let duplicateValues = values.filter((item, index) => {
+            return values.indexOf(item) != index;
+        });
+        duplicateValues = Array.from(new Set(duplicateValues));
+        for (const duplicateValue of duplicateValues) {
+            const myDuplicates = [];
+            let fromIndex = 0;
+            do {
+                fromIndex = this.array.findIndex((item, index) => {
+                    if (index < fromIndex)
+                        return false;
+                    return item[this.field] === duplicateValue;
+                });
+                if (fromIndex >= 0) {
+                    const duplicateItem = new DuplicateItem(this, this.array[fromIndex], fromIndex);
+                    myDuplicates.push(duplicateItem);
+                    this.duplicates.push(duplicateItem);
+                    fromIndex += 1;
+                }
+            } while (fromIndex >= 0);
+            myDuplicates[0].first = true;
+            myDuplicates[myDuplicates.length - 1].last = true;
+        }
+        this.duplicates.sort((a, b) => {
+            return a.index < b.index ? -1 : a.index > b.index ? 1 : 0;
+        });
+    }
+}
 /**
  * 配列の中から重複した値を取得します。
  *
  * @example
- * findDuplicates(['aaa', 'bbb', 'aaa', 'ccc', 'ddd', 'ccc'])
- * // ['aaa', 'ccc']
+ * findDuplicateValues(['a', 'b', 'c', 'a', 'd', 'c'])
+ * // [
+ * //   { value: 'a', index: 0, first: true, last: false, removed: false },
+ * //   { value: 'c', index: 2, first: true, last: false, removed: false },
+ * //   { value: 'a', index: 3, first: false, last: true, removed: false },
+ * //   { value: 'c', index: 5, first: false, last: true, removed: false },
+ * //]
  *
  * @param array
  */
 function findDuplicateValues(array) {
-    return array.filter((item, index) => array.indexOf(item) != index);
+    return new DuplicateValueContainer(array).duplicates;
 }
 exports.findDuplicateValues = findDuplicateValues;
 /**
  * 配列アイテムの指定フィールドが重複しているアイテムを取得します。
  *
  * @example
- * const JavaScript: Language = { id: '001', name: 'JavaScript' }
- * const Python: Language = { id: '002', name: 'Python' }
- * const Dart: Language = { id: '003', name: 'Dart' }
- * const TypeScript: Language = { id: '004', name: 'TypeScript' }
- * const PHP: Language = { id: '005', name: 'PHP' }
- *
- * const languages = [JavaScript, Python, JavaScript, Dart, TypeScript, PHP, TypeScript]
- * findDuplicateItems(languages, 'id')
- * // [{ id: '001', name: 'JavaScript' }, { id: '004', name: 'TypeScript' }]
+ * findDuplicateItems([
+ *   { id: 0, str: 'a' },
+ *   { id: 1, str: 'b' },
+ *   { id: 2, str: 'c' },
+ *   { id: 3, str: 'a' },
+ *   { id: 4, str: 'd' },
+ *   { id: 5, str: 'c' },
+ * ], 'str')
+ * // [
+ * //   { value: { id: 0, str: 'a' }, index: 0, first: true, last: false, removed: false },
+ * //   { value: { id: 2, str: 'c' }, index: 2, first: true, last: false, removed: false },
+ * //   { value: { id: 3, str: 'a' }, index: 3, first: false, last: true, removed: false },
+ * //   { value: { id: 5, str: 'c' }, index: 5, first: false, last: true, removed: false },
+ * //]
  *
  * @param array
  * @param field
  */
 function findDuplicateItems(array, field) {
-    const values = findDuplicateValues(array.map(input => input[field]));
-    const result = [];
-    for (const value of values) {
-        const item = array.find(item => item[field] === value);
-        item && result.push(item);
-    }
-    return result;
+    return new DuplicateItemContainer(array, field).duplicates;
 }
 exports.findDuplicateItems = findDuplicateItems;
 /**
@@ -245,7 +344,7 @@ exports.nonNullable = nonNullable;
  * @param value
  */
 function notEmpty(value) {
-    if (!exports.nonNullable(value))
+    if (!nonNullable(value))
         return false;
     if (typeof value === 'string') {
         return value !== '';

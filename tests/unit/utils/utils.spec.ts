@@ -335,32 +335,272 @@ describe('splitArrayChunk', () => {
 })
 
 describe('findDuplicateValues', () => {
-  it('ベーシックケース', async () => {
-    const actual = findDuplicateValues(['aaa', 'bbb', 'aaa', 'ccc', 'ddd', 'ccc'])
+  const originalA = ['c', 'b', 'a', 'f', 'c', 'b', 'c', 'd', 'f', 'e', 'f']
+  const originalB = ['a', 'c', 'b', 'b', 'c', 'f', 'c', 'd', 'f', 'e', 'f']
 
-    expect(actual[0]).toBe('aaa')
-    expect(actual[1]).toBe('ccc')
+  it('ベーシックケース', async () => {
+    const array = [...originalA]
+    const actual = findDuplicateValues(array)
+
+    expect(actual).toMatchObject([
+      { value: 'c', index: 0, first: true, last: false, removed: false },
+      { value: 'b', index: 1, first: true, last: false, removed: false },
+      { value: 'f', index: 3, first: true, last: false, removed: false },
+      { value: 'c', index: 4, first: false, last: false, removed: false },
+      { value: 'b', index: 5, first: false, last: true, removed: false },
+      { value: 'c', index: 6, first: false, last: true, removed: false },
+      { value: 'f', index: 8, first: false, last: false, removed: false },
+      { value: 'f', index: 10, first: false, last: true, removed: false },
+    ])
+  })
+
+  it('先頭の重複を削除', async () => {
+    const array = [...originalA]
+    const actual = findDuplicateValues(array)
+
+    actual[0].remove()
+
+    expect(actual).toMatchObject([
+      { value: 'c', index: 0, first: true, last: false, removed: true }, // 削除された
+      { value: 'b', index: 1 - 1, first: true, last: false, removed: false },
+      { value: 'f', index: 3 - 1, first: true, last: false, removed: false },
+      { value: 'c', index: 4 - 1, first: false, last: false, removed: false },
+      { value: 'b', index: 5 - 1, first: false, last: true, removed: false },
+      { value: 'c', index: 6 - 1, first: false, last: true, removed: false },
+      { value: 'f', index: 8 - 1, first: false, last: false, removed: false },
+      { value: 'f', index: 10 - 1, first: false, last: true, removed: false },
+    ])
+
+    expect(array).toEqual(['b', 'a', 'f', 'c', 'b', 'c', 'd', 'f', 'e', 'f'])
+  })
+
+  it('中間の重複を削除', async () => {
+    const array = [...originalA]
+    const actual = findDuplicateValues(array)
+
+    actual[2].remove()
+
+    expect(actual).toMatchObject([
+      { value: 'c', index: 0, first: true, last: false, removed: false },
+      { value: 'b', index: 1, first: true, last: false, removed: false },
+      { value: 'f', index: 3, first: true, last: false, removed: true }, // 削除された
+      { value: 'c', index: 4 - 1, first: false, last: false, removed: false },
+      { value: 'b', index: 5 - 1, first: false, last: true, removed: false },
+      { value: 'c', index: 6 - 1, first: false, last: true, removed: false },
+      { value: 'f', index: 8 - 1, first: false, last: false, removed: false },
+      { value: 'f', index: 10 - 1, first: false, last: true, removed: false },
+    ])
+
+    expect(array).toEqual(['c', 'b', 'a', 'c', 'b', 'c', 'd', 'f', 'e', 'f'])
+  })
+
+  it('最後尾の重複を削除', async () => {
+    const array = [...originalA]
+    const actual = findDuplicateValues(array)
+
+    actual[7].remove()
+
+    expect(actual).toMatchObject([
+      { value: 'c', index: 0, first: true, last: false, removed: false },
+      { value: 'b', index: 1, first: true, last: false, removed: false },
+      { value: 'f', index: 3, first: true, last: false, removed: false },
+      { value: 'c', index: 4, first: false, last: false, removed: false },
+      { value: 'b', index: 5, first: false, last: true, removed: false },
+      { value: 'c', index: 6, first: false, last: true, removed: false },
+      { value: 'f', index: 8, first: false, last: false, removed: false },
+      { value: 'f', index: 10, first: false, last: true, removed: true }, // 削除された
+    ])
+
+    expect(array).toEqual(['c', 'b', 'a', 'f', 'c', 'b', 'c', 'd', 'f', 'e'])
+  })
+
+  it('先頭の重複は残し、他の重複は全て削除', async () => {
+    const array = [...originalA]
+    const duplicates = findDuplicateValues(array)
+
+    duplicates.forEach(item => !item.last && item.remove())
+
+    expect(array).toEqual(['a', 'b', 'c', 'd', 'e', 'f'])
+  })
+
+  it('最後尾の重複は残し、他の重複は全て削除', async () => {
+    const array = [...originalB]
+    const duplicates = findDuplicateValues(array)
+
+    duplicates.forEach(item => !item.last && item.remove())
+
+    expect(array).toEqual(['a', 'b', 'c', 'd', 'e', 'f'])
   })
 })
 
 describe('findDuplicateItems', () => {
-  interface Language {
-    id: string
-    name: string
-  }
+  const originalA = [
+    { id: 0, str: 'c' },
+    { id: 1, str: 'b' },
+    { id: 2, str: 'a' },
+    { id: 3, str: 'f' },
+    { id: 4, str: 'c' },
+    { id: 5, str: 'b' },
+    { id: 6, str: 'c' },
+    { id: 7, str: 'd' },
+    { id: 8, str: 'f' },
+    { id: 9, str: 'e' },
+    { id: 10, str: 'f' },
+  ]
+
+  const originalB = [
+    { id: 0, str: 'a' },
+    { id: 1, str: 'c' },
+    { id: 2, str: 'b' },
+    { id: 3, str: 'b' },
+    { id: 4, str: 'c' },
+    { id: 5, str: 'f' },
+    { id: 6, str: 'c' },
+    { id: 7, str: 'd' },
+    { id: 8, str: 'f' },
+    { id: 9, str: 'e' },
+    { id: 10, str: 'f' },
+  ]
 
   it('ベーシックケース', async () => {
-    const JavaScript: Language = { id: '001', name: 'JavaScript' }
-    const Python: Language = { id: '002', name: 'Python' }
-    const Dart: Language = { id: '003', name: 'Dart' }
-    const TypeScript: Language = { id: '004', name: 'TypeScript' }
-    const PHP: Language = { id: '005', name: 'PHP' }
+    const array = [...originalA]
+    const actual = findDuplicateItems(array, 'str')
 
-    const languages = [JavaScript, Python, JavaScript, Dart, TypeScript, PHP, TypeScript]
-    const actual = findDuplicateItems(languages, 'id')
+    expect(actual).toMatchObject([
+      { value: { id: 0, str: 'c' }, index: 0, first: true, last: false, removed: false },
+      { value: { id: 1, str: 'b' }, index: 1, first: true, last: false, removed: false },
+      { value: { id: 3, str: 'f' }, index: 3, first: true, last: false, removed: false },
+      { value: { id: 4, str: 'c' }, index: 4, first: false, last: false, removed: false },
+      { value: { id: 5, str: 'b' }, index: 5, first: false, last: true, removed: false },
+      { value: { id: 6, str: 'c' }, index: 6, first: false, last: true, removed: false },
+      { value: { id: 8, str: 'f' }, index: 8, first: false, last: false, removed: false },
+      { value: { id: 10, str: 'f' }, index: 10, first: false, last: true, removed: false },
+    ])
+  })
 
-    expect(actual[0]).toBe(JavaScript)
-    expect(actual[1]).toBe(TypeScript)
+  it('先頭の重複を削除', async () => {
+    const array = [...originalA]
+    const actual = findDuplicateItems(array, 'str')
+
+    actual[0].remove()
+
+    expect(actual).toMatchObject([
+      { value: { id: 0, str: 'c' }, index: 0, first: true, last: false, removed: true }, // 削除された
+      { value: { id: 1, str: 'b' }, index: 1 - 1, first: true, last: false, removed: false },
+      { value: { id: 3, str: 'f' }, index: 3 - 1, first: true, last: false, removed: false },
+      { value: { id: 4, str: 'c' }, index: 4 - 1, first: false, last: false, removed: false },
+      { value: { id: 5, str: 'b' }, index: 5 - 1, first: false, last: true, removed: false },
+      { value: { id: 6, str: 'c' }, index: 6 - 1, first: false, last: true, removed: false },
+      { value: { id: 8, str: 'f' }, index: 8 - 1, first: false, last: false, removed: false },
+      { value: { id: 10, str: 'f' }, index: 10 - 1, first: false, last: true, removed: false },
+    ])
+
+    expect(array).toEqual([
+      { id: 1, str: 'b' },
+      { id: 2, str: 'a' },
+      { id: 3, str: 'f' },
+      { id: 4, str: 'c' },
+      { id: 5, str: 'b' },
+      { id: 6, str: 'c' },
+      { id: 7, str: 'd' },
+      { id: 8, str: 'f' },
+      { id: 9, str: 'e' },
+      { id: 10, str: 'f' },
+    ])
+  })
+
+  it('中間の重複を削除', async () => {
+    const array = [...originalA]
+    const actual = findDuplicateItems(array, 'str')
+
+    actual[2].remove()
+
+    expect(actual).toMatchObject([
+      { value: { id: 0, str: 'c' }, index: 0, first: true, last: false, removed: false },
+      { value: { id: 1, str: 'b' }, index: 1, first: true, last: false, removed: false },
+      { value: { id: 3, str: 'f' }, index: 3, first: true, last: false, removed: true }, // 削除された
+      { value: { id: 4, str: 'c' }, index: 4 - 1, first: false, last: false, removed: false },
+      { value: { id: 5, str: 'b' }, index: 5 - 1, first: false, last: true, removed: false },
+      { value: { id: 6, str: 'c' }, index: 6 - 1, first: false, last: true, removed: false },
+      { value: { id: 8, str: 'f' }, index: 8 - 1, first: false, last: false, removed: false },
+      { value: { id: 10, str: 'f' }, index: 10 - 1, first: false, last: true, removed: false },
+    ])
+
+    expect(array).toEqual([
+      { id: 0, str: 'c' },
+      { id: 1, str: 'b' },
+      { id: 2, str: 'a' },
+      { id: 4, str: 'c' },
+      { id: 5, str: 'b' },
+      { id: 6, str: 'c' },
+      { id: 7, str: 'd' },
+      { id: 8, str: 'f' },
+      { id: 9, str: 'e' },
+      { id: 10, str: 'f' },
+    ])
+  })
+
+  it('最後尾の重複を削除', async () => {
+    const array = [...originalA]
+    const actual = findDuplicateItems(array, 'str')
+
+    actual[7].remove()
+
+    expect(actual).toMatchObject([
+      { value: { id: 0, str: 'c' }, index: 0, first: true, last: false, removed: false },
+      { value: { id: 1, str: 'b' }, index: 1, first: true, last: false, removed: false },
+      { value: { id: 3, str: 'f' }, index: 3, first: true, last: false, removed: false },
+      { value: { id: 4, str: 'c' }, index: 4, first: false, last: false, removed: false },
+      { value: { id: 5, str: 'b' }, index: 5, first: false, last: true, removed: false },
+      { value: { id: 6, str: 'c' }, index: 6, first: false, last: true, removed: false },
+      { value: { id: 8, str: 'f' }, index: 8, first: false, last: false, removed: false },
+      { value: { id: 10, str: 'f' }, index: 10, first: false, last: true, removed: true }, // 削除された
+    ])
+
+    expect(array).toEqual([
+      { id: 0, str: 'c' },
+      { id: 1, str: 'b' },
+      { id: 2, str: 'a' },
+      { id: 3, str: 'f' },
+      { id: 4, str: 'c' },
+      { id: 5, str: 'b' },
+      { id: 6, str: 'c' },
+      { id: 7, str: 'd' },
+      { id: 8, str: 'f' },
+      { id: 9, str: 'e' },
+    ])
+  })
+
+  it('先頭の重複は残し、他の重複は全て削除', async () => {
+    const array = [...originalA]
+    const duplicates = findDuplicateItems(array, 'str')
+
+    duplicates.forEach(item => !item.last && item.remove())
+
+    expect(array).toEqual([
+      { id: 2, str: 'a' },
+      { id: 5, str: 'b' },
+      { id: 6, str: 'c' },
+      { id: 7, str: 'd' },
+      { id: 9, str: 'e' },
+      { id: 10, str: 'f' },
+    ])
+  })
+
+  it('最後尾の重複は残し、他の重複は全て削除', async () => {
+    const array = [...originalB]
+    const duplicates = findDuplicateItems(array, 'str')
+
+    duplicates.forEach(item => !item.last && item.remove())
+
+    expect(array).toEqual([
+      { id: 0, str: 'a' },
+      { id: 3, str: 'b' },
+      { id: 6, str: 'c' },
+      { id: 7, str: 'd' },
+      { id: 9, str: 'e' },
+      { id: 10, str: 'f' },
+    ])
   })
 })
 
