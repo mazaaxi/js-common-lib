@@ -191,7 +191,7 @@ function toDeepNull<T>(obj: T): ToDeepNull<T> {
       ;(obj as any)[prop] = null
     } else if (Array.isArray(value)) {
       value.forEach(item => toDeepNull(item))
-    } else if (typeof value === 'object') {
+    } else if (typeof value === 'object' && !dayjs.isDayjs(value)) {
       toDeepNull(value)
     }
   }
@@ -217,7 +217,7 @@ function toDeepUndefined<T>(obj: T): ToDeepUndefined<T> {
       ;(obj as any)[prop] = undefined
     } else if (Array.isArray(value)) {
       value.forEach(item => toDeepUndefined(item))
-    } else if (typeof value === 'object') {
+    } else if (typeof value === 'object' && !dayjs.isDayjs(value)) {
       toDeepUndefined(value)
     }
   }

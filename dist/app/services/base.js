@@ -99,7 +99,7 @@ function toDeepNull(obj) {
         else if (Array.isArray(value)) {
             value.forEach(item => toDeepNull(item));
         }
-        else if (typeof value === 'object') {
+        else if (typeof value === 'object' && !dayjs.isDayjs(value)) {
             toDeepNull(value);
         }
     }
@@ -126,7 +126,7 @@ function toDeepUndefined(obj) {
         else if (Array.isArray(value)) {
             value.forEach(item => toDeepUndefined(item));
         }
-        else if (typeof value === 'object') {
+        else if (typeof value === 'object' && !dayjs.isDayjs(value)) {
             toDeepUndefined(value);
         }
     }
