@@ -376,6 +376,86 @@ function shuffleArray<T>(array: T[]): T[] {
   return result
 }
 
+class Version {
+  constructor(value: Version | string) {
+    this.value = typeof value === 'string' ? value : value.value
+  }
+
+  /**
+   * バージョン文字列です。
+   */
+  readonly value: string
+
+  /**
+   * 指定されたバージョンが自身と同じかを判定します。
+   * @param other
+   */
+  equal(other: Version | string): boolean {
+    const compared = this.compare(other)
+    return compared === 0
+  }
+
+  /**
+   * 指定されたバージョンより自身の方が小さいかを判定します。
+   * @param other
+   */
+  lessThan(other: Version | string): boolean {
+    const compared = this.compare(other)
+    return compared === 0 ? false : compared === -1 ? true : false
+  }
+
+  /**
+   * 指定されたバージョンより自身の方が小さい、または同じかを判定します。
+   * @param other
+   */
+  lessThanOrEqual(other: Version | string): boolean {
+    const compared = this.compare(other)
+    return compared === 0 ? true : compared === -1 ? true : false
+  }
+
+  /**
+   * 指定されたバージョンより自身の方が大きいかを判定します。
+   * @param other
+   */
+  greaterThan(other: Version | string): boolean {
+    const compared = this.compare(other)
+    return compared === 0 ? false : compared === 1 ? true : false
+  }
+
+  /**
+   * 指定されたバージョンより自身の方が大きい、または同じかを判定します。
+   * @param other
+   */
+  greaterThanOrEqual(other: Version | string): boolean {
+    const compared = this.compare(other)
+    return compared === 0 ? true : compared === 1 ? true : false
+  }
+
+  private compare(otherVersion: Version | string): 0 | 1 | -1 {
+    function _split(value: string): string[] {
+      return value.split('.')
+    }
+
+    const selfArray = _split(this.value)
+    const otherArray = _split(typeof otherVersion === 'string' ? otherVersion : otherVersion.value)
+
+    const length = selfArray.length < otherArray.length ? otherArray.length : selfArray.length
+
+    for (let i = 0; i < length; i++) {
+      const subLength = selfArray[i].length < otherArray[i].length ? otherArray[i].length : selfArray[i].length
+      if (selfArray.length < length) selfArray.push('')
+      if (otherArray.length < length) otherArray.push('')
+      selfArray[i] = selfArray[i].padStart(subLength, '0')
+      otherArray[i] = otherArray[i].padStart(subLength, '0')
+    }
+
+    const self = BigInt(selfArray.join(''))
+    const other = BigInt(otherArray.join(''))
+
+    return self < other ? -1 : self > other ? 1 : 0
+  }
+}
+
 //========================================================================
 //
 //  Exports
@@ -383,6 +463,7 @@ function shuffleArray<T>(array: T[]): T[] {
 //========================================================================
 
 export {
+  Version,
   arrayToDict,
   findDuplicateItems,
   findDuplicateValues,

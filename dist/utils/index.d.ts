@@ -154,4 +154,37 @@ declare function notEmpty<T>(value: T): value is NonNullable<T>;
  * @param array
  */
 declare function shuffleArray<T>(array: T[]): T[];
-export { arrayToDict, findDuplicateItems, findDuplicateValues, nonNullable, notEmpty, pickProps, removeBothEndsSlash, removeEndSlash, removeStartDirChars, removeStartSlash, shuffleArray, sleep, splitArrayChunk, splitFilePath, splitHierarchicalPaths, summarizeFamilyPaths, };
+declare class Version {
+    constructor(value: Version | string);
+    /**
+     * バージョン文字列です。
+     */
+    readonly value: string;
+    /**
+     * 指定されたバージョンが自身と同じかを判定します。
+     * @param other
+     */
+    equal(other: Version | string): boolean;
+    /**
+     * 指定されたバージョンより自身の方が小さいかを判定します。
+     * @param other
+     */
+    lessThan(other: Version | string): boolean;
+    /**
+     * 指定されたバージョンより自身の方が小さい、または同じかを判定します。
+     * @param other
+     */
+    lessThanOrEqual(other: Version | string): boolean;
+    /**
+     * 指定されたバージョンより自身の方が大きいかを判定します。
+     * @param other
+     */
+    greaterThan(other: Version | string): boolean;
+    /**
+     * 指定されたバージョンより自身の方が大きい、または同じかを判定します。
+     * @param other
+     */
+    greaterThanOrEqual(other: Version | string): boolean;
+    private compare;
+}
+export { Version, arrayToDict, findDuplicateItems, findDuplicateValues, nonNullable, notEmpty, pickProps, removeBothEndsSlash, removeEndSlash, removeStartDirChars, removeStartSlash, shuffleArray, sleep, splitArrayChunk, splitFilePath, splitHierarchicalPaths, summarizeFamilyPaths, };

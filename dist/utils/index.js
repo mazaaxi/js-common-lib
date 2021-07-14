@@ -5,7 +5,7 @@
 //
 //========================================================================
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.summarizeFamilyPaths = exports.splitHierarchicalPaths = exports.splitFilePath = exports.splitArrayChunk = exports.sleep = exports.shuffleArray = exports.removeStartSlash = exports.removeStartDirChars = exports.removeEndSlash = exports.removeBothEndsSlash = exports.pickProps = exports.notEmpty = exports.nonNullable = exports.findDuplicateValues = exports.findDuplicateItems = exports.arrayToDict = void 0;
+exports.summarizeFamilyPaths = exports.splitHierarchicalPaths = exports.splitFilePath = exports.splitArrayChunk = exports.sleep = exports.shuffleArray = exports.removeStartSlash = exports.removeStartDirChars = exports.removeEndSlash = exports.removeBothEndsSlash = exports.pickProps = exports.notEmpty = exports.nonNullable = exports.findDuplicateValues = exports.findDuplicateItems = exports.arrayToDict = exports.Version = void 0;
 /**
  * パス先頭のスラッシュを除去します。
  * @param path
@@ -370,4 +370,70 @@ function shuffleArray(array) {
     return result;
 }
 exports.shuffleArray = shuffleArray;
+class Version {
+    constructor(value) {
+        this.value = typeof value === 'string' ? value : value.value;
+    }
+    /**
+     * 指定されたバージョンが自身と同じかを判定します。
+     * @param other
+     */
+    equal(other) {
+        const compared = this.compare(other);
+        return compared === 0;
+    }
+    /**
+     * 指定されたバージョンより自身の方が小さいかを判定します。
+     * @param other
+     */
+    lessThan(other) {
+        const compared = this.compare(other);
+        return compared === 0 ? false : compared === -1 ? true : false;
+    }
+    /**
+     * 指定されたバージョンより自身の方が小さい、または同じかを判定します。
+     * @param other
+     */
+    lessThanOrEqual(other) {
+        const compared = this.compare(other);
+        return compared === 0 ? true : compared === -1 ? true : false;
+    }
+    /**
+     * 指定されたバージョンより自身の方が大きいかを判定します。
+     * @param other
+     */
+    greaterThan(other) {
+        const compared = this.compare(other);
+        return compared === 0 ? false : compared === 1 ? true : false;
+    }
+    /**
+     * 指定されたバージョンより自身の方が大きい、または同じかを判定します。
+     * @param other
+     */
+    greaterThanOrEqual(other) {
+        const compared = this.compare(other);
+        return compared === 0 ? true : compared === 1 ? true : false;
+    }
+    compare(otherVersion) {
+        function _split(value) {
+            return value.split('.');
+        }
+        const selfArray = _split(this.value);
+        const otherArray = _split(typeof otherVersion === 'string' ? otherVersion : otherVersion.value);
+        const length = selfArray.length < otherArray.length ? otherArray.length : selfArray.length;
+        for (let i = 0; i < length; i++) {
+            const subLength = selfArray[i].length < otherArray[i].length ? otherArray[i].length : selfArray[i].length;
+            if (selfArray.length < length)
+                selfArray.push('');
+            if (otherArray.length < length)
+                otherArray.push('');
+            selfArray[i] = selfArray[i].padStart(subLength, '0');
+            otherArray[i] = otherArray[i].padStart(subLength, '0');
+        }
+        const self = BigInt(selfArray.join(''));
+        const other = BigInt(otherArray.join(''));
+        return self < other ? -1 : self > other ? 1 : 0;
+    }
+}
+exports.Version = Version;
 //# sourceMappingURL=index.js.map

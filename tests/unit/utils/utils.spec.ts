@@ -1,4 +1,5 @@
 import {
+  Version,
   arrayToDict,
   findDuplicateItems,
   findDuplicateValues,
@@ -664,5 +665,202 @@ describe('notEmpty', () => {
   it('nullまたはundefined以外の場合', async () => {
     const actual = notEmpty('abc')
     expect(actual).toBeTruthy()
+  })
+})
+
+describe('Version', () => {
+  it('ベーシックケース - 1', async () => {
+    // otherの方が3桁目が大きい
+    const self = new Version('1.2.3')
+    const other = new Version('1.2.30.1')
+
+    const actual = self.lessThanOrEqual(other)
+
+    expect(actual).toBeTruthy()
+  })
+
+  it('ベーシックケース - 2', async () => {
+    // selfの方が3桁目が大きい
+    const self = new Version('1.2.300.001')
+    const other = new Version('1.2.3.999.888.777')
+
+    const actual = self.lessThanOrEqual(other)
+
+    expect(actual).toBeFalsy()
+  })
+
+  it('ベーシックケース - 3', async () => {
+    // 桁数は違うが同じバージョン
+    const self = new Version('1.2.3.0.0.0')
+    const other = new Version('1.2.3')
+
+    const actual = self.lessThanOrEqual(other)
+
+    expect(actual).toBeTruthy()
+  })
+
+  it('バージョンにVersionオブジェクトを指定', async () => {
+    // 桁数は違うが同じバージョン
+    const self = new Version('1.2.3')
+    const other = new Version('1.2.4')
+
+    const actual = self.lessThanOrEqual(other)
+
+    expect(actual).toBeTruthy()
+  })
+
+  it('バージョンに文字列を指定', async () => {
+    // 桁数は違うが同じバージョン
+    const self = new Version('1.2.3')
+    const other = '1.2.4'
+
+    const actual = self.lessThanOrEqual(other)
+
+    expect(actual).toBeTruthy()
+  })
+
+  describe('equal', () => {
+    it('自身が相手より小さい場合', async () => {
+      const self = new Version('1.2.3')
+      const other = new Version('1.2.4')
+
+      const actual = self.equal(other)
+
+      expect(actual).toBeFalsy()
+    })
+
+    it('自身が相手より大きい場合', async () => {
+      const self = new Version('1.2.4')
+      const other = new Version('1.2.3')
+
+      const actual = self.equal(other)
+
+      expect(actual).toBeFalsy()
+    })
+
+    it('自身と相手が同じ場合', async () => {
+      const self = new Version('1.2.3')
+      const other = new Version('1.2.3')
+
+      const actual = self.equal(other)
+
+      expect(actual).toBeTruthy()
+    })
+  })
+
+  describe('lessThan', () => {
+    it('自身が相手より小さい場合', async () => {
+      const self = new Version('1.2.3')
+      const other = new Version('1.2.4')
+
+      const actual = self.lessThan(other)
+
+      expect(actual).toBeTruthy()
+    })
+
+    it('自身が相手より大きい場合', async () => {
+      const self = new Version('1.2.4')
+      const other = new Version('1.2.3')
+
+      const actual = self.lessThan(other)
+
+      expect(actual).toBeFalsy()
+    })
+
+    it('自身と相手が同じ場合', async () => {
+      const self = new Version('1.2.3')
+      const other = new Version('1.2.3')
+
+      const actual = self.lessThan(other)
+
+      expect(actual).toBeFalsy()
+    })
+  })
+
+  describe('lessThanOrEqual', () => {
+    it('自身が相手より小さい場合', async () => {
+      const self = new Version('1.2.3')
+      const other = new Version('1.2.4')
+
+      const actual = self.lessThanOrEqual(other)
+
+      expect(actual).toBeTruthy()
+    })
+
+    it('自身が相手より大きい場合', async () => {
+      const self = new Version('1.2.4')
+      const other = new Version('1.2.3')
+
+      const actual = self.lessThanOrEqual(other)
+
+      expect(actual).toBeFalsy()
+    })
+
+    it('自身と相手が同じ場合', async () => {
+      const self = new Version('1.2.3')
+      const other = new Version('1.2.3')
+
+      const actual = self.lessThanOrEqual(other)
+
+      expect(actual).toBeTruthy()
+    })
+  })
+
+  describe('greaterThan', () => {
+    it('自身が相手より小さい場合', async () => {
+      const self = new Version('1.2.3')
+      const other = new Version('1.2.4')
+
+      const actual = self.greaterThan(other)
+
+      expect(actual).toBeFalsy()
+    })
+
+    it('自身が相手より大きい場合', async () => {
+      const self = new Version('1.2.4')
+      const other = new Version('1.2.3')
+
+      const actual = self.greaterThan(other)
+
+      expect(actual).toBeTruthy()
+    })
+
+    it('自身と相手が同じ場合', async () => {
+      const self = new Version('1.2.3')
+      const other = new Version('1.2.3')
+
+      const actual = self.greaterThan(other)
+
+      expect(actual).toBeFalsy()
+    })
+  })
+
+  describe('greaterThanOrEqual', () => {
+    it('自身が相手より小さい場合', async () => {
+      const self = new Version('1.2.3')
+      const other = new Version('1.2.4')
+
+      const actual = self.greaterThanOrEqual(other)
+
+      expect(actual).toBeFalsy()
+    })
+
+    it('自身が相手より大きい場合', async () => {
+      const self = new Version('1.2.4')
+      const other = new Version('1.2.3')
+
+      const actual = self.greaterThanOrEqual(other)
+
+      expect(actual).toBeTruthy()
+    })
+
+    it('自身と相手が同じ場合', async () => {
+      const self = new Version('1.2.3')
+      const other = new Version('1.2.3')
+
+      const actual = self.greaterThanOrEqual(other)
+
+      expect(actual).toBeTruthy()
+    })
   })
 })
