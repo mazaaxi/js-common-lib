@@ -4,6 +4,8 @@
 //
 //========================================================================
 
+const APIVersion = '0.0.1'
+
 type LangCode = 'ja' | 'en'
 
 const LangCodes = ['ja', 'en'] as const
