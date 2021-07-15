@@ -39,4 +39,4 @@ namespace Entities {
 //
 //========================================================================
 
-export { Entities, LangCode, LangCodes, StorageArticleConfig, StorageUserConfig }
+export { APIVersion, Entities, LangCode, LangCodes, StorageArticleConfig, StorageUserConfig }

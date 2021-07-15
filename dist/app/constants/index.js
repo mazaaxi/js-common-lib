@@ -5,8 +5,9 @@
 //
 //========================================================================
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.StorageUserConfig = exports.StorageArticleConfig = exports.LangCodes = exports.Entities = void 0;
+exports.StorageUserConfig = exports.StorageArticleConfig = exports.LangCodes = exports.Entities = exports.APIVersion = void 0;
 const APIVersion = '0.0.1';
+exports.APIVersion = APIVersion;
 const LangCodes = ['ja', 'en'];
 exports.LangCodes = LangCodes;
 var StorageUserConfig;

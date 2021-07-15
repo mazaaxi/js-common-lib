@@ -1,3 +1,4 @@
+declare const APIVersion = "0.0.1";
 declare type LangCode = 'ja' | 'en';
 declare const LangCodes: readonly ["ja", "en"];
 declare namespace StorageUserConfig {
@@ -20,4 +21,4 @@ declare namespace Entities {
         const Name = "article-tags";
     }
 }
-export { Entities, LangCode, LangCodes, StorageArticleConfig, StorageUserConfig };
+export { APIVersion, Entities, LangCode, LangCodes, StorageArticleConfig, StorageUserConfig };
