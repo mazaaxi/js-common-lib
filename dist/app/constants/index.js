@@ -5,24 +5,35 @@
 //
 //========================================================================
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.StorageUserConfig = exports.StorageArticleConfig = exports.LangCodes = exports.Entities = exports.APIVersion = void 0;
+exports.StorageConfig = exports.LangCodes = exports.Entities = exports.APIVersion = void 0;
 const APIVersion = '0.0.1';
 exports.APIVersion = APIVersion;
 const LangCodes = ['ja', 'en'];
 exports.LangCodes = LangCodes;
-var StorageUserConfig;
-(function (StorageUserConfig) {
-    StorageUserConfig.RootName = 'users';
-})(StorageUserConfig || (StorageUserConfig = {}));
-exports.StorageUserConfig = StorageUserConfig;
-var StorageArticleConfig;
-(function (StorageArticleConfig) {
-    StorageArticleConfig.RootName = 'articles';
-    StorageArticleConfig.AssetsName = 'assets';
-    StorageArticleConfig.MasterSrcFileName = 'master-src.md';
-    StorageArticleConfig.DraftSrcFileName = 'draft-src.md';
-})(StorageArticleConfig || (StorageArticleConfig = {}));
-exports.StorageArticleConfig = StorageArticleConfig;
+var StorageConfig;
+(function (StorageConfig) {
+    let Users;
+    (function (Users) {
+        Users.Name = 'users';
+        let System;
+        (function (System) {
+            System.Name = 'system';
+            let Public;
+            (function (Public) {
+                Public.Name = 'public';
+            })(Public = System.Public || (System.Public = {}));
+        })(System = Users.System || (Users.System = {}));
+        let Articles;
+        (function (Articles) {
+            Articles.Name = 'articles';
+            let Assets;
+            (function (Assets) {
+                Assets.Name = 'assets';
+            })(Assets = Articles.Assets || (Articles.Assets = {}));
+        })(Articles = Users.Articles || (Users.Articles = {}));
+    })(Users = StorageConfig.Users || (StorageConfig.Users = {}));
+})(StorageConfig || (StorageConfig = {}));
+exports.StorageConfig = StorageConfig;
 var Entities;
 (function (Entities) {
     let Users;

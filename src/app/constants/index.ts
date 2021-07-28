@@ -10,15 +10,22 @@ type LangCode = 'ja' | 'en'
 
 const LangCodes = ['ja', 'en'] as const
 
-namespace StorageUserConfig {
-  export const RootName = 'users'
-}
-
-namespace StorageArticleConfig {
-  export const RootName = 'articles'
-  export const AssetsName = 'assets'
-  export const MasterSrcFileName = 'master-src.md'
-  export const DraftSrcFileName = 'draft-src.md'
+namespace StorageConfig {
+  export namespace Users {
+    export const Name = 'users'
+    export namespace System {
+      export const Name = 'system'
+      export namespace Public {
+        export const Name = 'public'
+      }
+    }
+    export namespace Articles {
+      export const Name = 'articles'
+      export namespace Assets {
+        export const Name = 'assets'
+      }
+    }
+  }
 }
 
 namespace Entities {
@@ -39,4 +46,4 @@ namespace Entities {
 //
 //========================================================================
 
-export { APIVersion, Entities, LangCode, LangCodes, StorageArticleConfig, StorageUserConfig }
+export { APIVersion, Entities, LangCode, LangCodes, StorageConfig }
