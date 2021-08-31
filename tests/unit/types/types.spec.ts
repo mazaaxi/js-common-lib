@@ -1,6 +1,6 @@
+import * as dayjs from 'dayjs'
 import { DeepPartial, DeepReadonly, ToDeepNullable, ToDeepUndefined } from '../../../src'
-import { Dayjs } from 'dayjs'
-import dayjs = require('dayjs')
+import Dayjs = dayjs.Dayjs
 
 interface Dummy {
   str1: string

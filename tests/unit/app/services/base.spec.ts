@@ -1,3 +1,4 @@
+import * as dayjs from 'dayjs'
 import {
   ToDeepNullable,
   ToDeepUndefined,
@@ -8,8 +9,8 @@ import {
   toEntityDate,
   toRawDate,
 } from '../../../../src'
-import { Dayjs } from 'dayjs'
-import dayjs = require('dayjs')
+import Dayjs = dayjs.Dayjs
+import { cloneDeep } from 'lodash'
 
 //========================================================================
 //
@@ -149,7 +150,7 @@ describe('toDeepEntityDate', () => {
 
   it('ベーシックケース', async () => {
     const original = new RawObject()
-    const target = new RawObject()
+    const target = cloneDeep(original)
 
     const actual = toDeepEntityDate(target, ['createdAt', 'updatedAt'])
 
@@ -291,7 +292,7 @@ describe('toDeepRawDate', () => {
 
   it('ベーシックケース', async () => {
     const original = new EntityObject()
-    const target = new EntityObject()
+    const target = cloneDeep(original)
 
     const actual = toDeepRawDate(target)
 
@@ -408,8 +409,9 @@ describe('ToDeepNullable', () => {
 
   it('ベーシックケース', async () => {
     const original = new MyNullableObject()
+    const target = cloneDeep(original)
 
-    const actual = toDeepNull(new MyNullableObject())
+    const actual = toDeepNull(target)
 
     expect(actual.str1).toBeNull()
     expect(actual.str2).toBe(original.str2)
@@ -607,8 +609,9 @@ describe('ToDeepUndefined', () => {
 
   it('ベーシックケース', async () => {
     const original = new MyNullableObject()
+    const target = cloneDeep(original)
 
-    const actual = toDeepUndefined(new MyNullableObject())
+    const actual = toDeepUndefined(target)
 
     expect(actual.str1).toBeUndefined()
     expect(actual.str2).toBe(original.str2)

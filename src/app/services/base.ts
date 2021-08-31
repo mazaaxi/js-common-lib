@@ -1,6 +1,6 @@
-import { Dayjs } from 'dayjs'
-import dayjs = require('dayjs')
+import * as dayjs from 'dayjs'
 import { nonNullable } from '../../utils'
+import Dayjs = dayjs.Dayjs
 
 //========================================================================
 //
