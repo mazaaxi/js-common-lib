@@ -120,6 +120,21 @@ function summarizeFamilyPaths(paths: string[]): string[] {
 }
 
 /**
+ * 指定されたパスの先頭にHTTPプロトコルを付与します。
+ * @param path
+ * @param https
+ */
+function prependHTTP(path: string, { https = true } = {}) {
+  path = path.trim()
+
+  if (/^\.*\/|^(?!localhost)\w+?:/.test(path)) {
+    return path
+  }
+
+  return path.replace(/^(?!(?:\w+?:)?\/\/)/, https ? 'https://' : 'http://')
+}
+
+/**
  * オブジェクトから指定されたプロパテを取り出します。
  * @param obj 対象オブジェクト
  * @param props 取り出したいプロパティ
@@ -470,6 +485,7 @@ export {
   nonNullable,
   notEmpty,
   pickProps,
+  prependHTTP,
   removeBothEndsSlash,
   removeEndSlash,
   removeStartDirChars,

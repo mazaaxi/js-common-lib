@@ -6,6 +6,7 @@ import {
   nonNullable,
   notEmpty,
   pickProps,
+  prependHTTP,
   removeBothEndsSlash,
   removeEndSlash,
   removeStartDirChars,
@@ -177,6 +178,29 @@ describe('summarizeFamilyPaths', () => {
     expect(actual[0]).toBe(`d1/d11/d111`)
     expect(actual[1]).toBe(`d1/d11/d112`)
     expect(actual[2]).toBe(`d2/d21/d211`)
+  })
+})
+
+describe('prependHTTP', () => {
+  it('ベーシックケース', async () => {
+    expect(prependHTTP('example.com', { https: false })).toBe('http://example.com')
+    expect(prependHTTP('http://example.com', { https: false })).toBe('http://example.com')
+    expect(prependHTTP('https://example.com', { https: false })).toBe('https://example.com')
+    expect(prependHTTP('//example.com', { https: false })).toBe('//example.com')
+    expect(prependHTTP('localhost', { https: false })).toBe('http://localhost')
+    expect(prependHTTP('localhost:8000', { https: false })).toBe('http://localhost:8000')
+    expect(prependHTTP('localhost:8000  ', { https: false })).toBe('http://localhost:8000')
+    expect(prependHTTP('./relative')).toBe('./relative')
+    expect(prependHTTP('../relative')).toBe('../relative')
+    expect(prependHTTP('/relative')).toBe('/relative')
+    expect(prependHTTP('mailto:info@site.com')).toBe('mailto:info@site.com')
+    expect(prependHTTP('tel:1234567890')).toBe('tel:1234567890')
+  })
+
+  it('https option', async () => {
+    expect(prependHTTP('example.com', { https: true })).toBe('https://example.com')
+    expect(prependHTTP('//example.com', { https: true })).toBe('//example.com')
+    expect(prependHTTP('localhost:8000', { https: true })).toBe('https://localhost:8000')
   })
 })
 

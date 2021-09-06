@@ -5,7 +5,7 @@
 //
 //========================================================================
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.summarizeFamilyPaths = exports.splitHierarchicalPaths = exports.splitFilePath = exports.splitArrayChunk = exports.sleep = exports.shuffleArray = exports.removeStartSlash = exports.removeStartDirChars = exports.removeEndSlash = exports.removeBothEndsSlash = exports.pickProps = exports.notEmpty = exports.nonNullable = exports.findDuplicateValues = exports.findDuplicateItems = exports.arrayToDict = exports.Version = void 0;
+exports.summarizeFamilyPaths = exports.splitHierarchicalPaths = exports.splitFilePath = exports.splitArrayChunk = exports.sleep = exports.shuffleArray = exports.removeStartSlash = exports.removeStartDirChars = exports.removeEndSlash = exports.removeBothEndsSlash = exports.prependHTTP = exports.pickProps = exports.notEmpty = exports.nonNullable = exports.findDuplicateValues = exports.findDuplicateItems = exports.arrayToDict = exports.Version = void 0;
 /**
  * パス先頭のスラッシュを除去します。
  * @param path
@@ -124,6 +124,19 @@ function summarizeFamilyPaths(paths) {
     return result;
 }
 exports.summarizeFamilyPaths = summarizeFamilyPaths;
+/**
+ * 指定されたパスの先頭にHTTPプロトコルを付与します。
+ * @param path
+ * @param https
+ */
+function prependHTTP(path, { https = true } = {}) {
+    path = path.trim();
+    if (/^\.*\/|^(?!localhost)\w+?:/.test(path)) {
+        return path;
+    }
+    return path.replace(/^(?!(?:\w+?:)?\/\/)/, https ? 'https://' : 'http://');
+}
+exports.prependHTTP = prependHTTP;
 /**
  * オブジェクトから指定されたプロパテを取り出します。
  * @param obj 対象オブジェクト

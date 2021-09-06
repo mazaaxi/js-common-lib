@@ -55,6 +55,14 @@ declare function splitHierarchicalPaths(...paths: (string | undefined | null)[])
  */
 declare function summarizeFamilyPaths(paths: string[]): string[];
 /**
+ * 指定されたパスの先頭にHTTPプロトコルを付与します。
+ * @param path
+ * @param https
+ */
+declare function prependHTTP(path: string, { https }?: {
+    https?: boolean | undefined;
+}): string;
+/**
  * オブジェクトから指定されたプロパテを取り出します。
  * @param obj 対象オブジェクト
  * @param props 取り出したいプロパティ
@@ -187,4 +195,4 @@ declare class Version {
     greaterThanOrEqual(other: Version | string): boolean;
     private compare;
 }
-export { Version, arrayToDict, findDuplicateItems, findDuplicateValues, nonNullable, notEmpty, pickProps, removeBothEndsSlash, removeEndSlash, removeStartDirChars, removeStartSlash, shuffleArray, sleep, splitArrayChunk, splitFilePath, splitHierarchicalPaths, summarizeFamilyPaths, };
+export { Version, arrayToDict, findDuplicateItems, findDuplicateValues, nonNullable, notEmpty, pickProps, prependHTTP, removeBothEndsSlash, removeEndSlash, removeStartDirChars, removeStartSlash, shuffleArray, sleep, splitArrayChunk, splitFilePath, splitHierarchicalPaths, summarizeFamilyPaths, };
