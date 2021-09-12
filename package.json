@@ -16,7 +16,8 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "rm -rf dist && yarn install && tsc --declaration --project ./tsconfig.build.json",
+    "env:prep": "yarn install",
+    "build": "yarn install && rm -rf dist && tsc --declaration --project ./tsconfig.build.json",
     "test": "jest --runInBand",
     "test:coverage": "jest --runInBand --coverage",
     "lint": "./tools/lint.sh"
