@@ -2,10 +2,8 @@
 **/~$*
 
 .cache/
-.firebase/
 .idea/
 node_modules/
-screenshots/
 
 /dist/**/*.js.map
 

@@ -1,6 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.MixinBuilder = exports.mix = void 0;
+exports.mix = exports.MixinBuilder = void 0;
+//========================================================================
+//
+//  Implementation
+//
+//========================================================================
 function mix(superclass) {
     return new MixinBuilder(superclass);
 }
@@ -14,4 +19,4 @@ class MixinBuilder {
     }
 }
 exports.MixinBuilder = MixinBuilder;
-//# sourceMappingURL=index.js.map
+//# sourceMappingURL=mixin.js.map

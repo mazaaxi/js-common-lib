@@ -12,5 +12,8 @@
     "strict": true,
     "target": "es2019"
   },
-  "compileOnSave": true
+  "compileOnSave": true,
+  "include": [
+    "src"
+  ]
 }

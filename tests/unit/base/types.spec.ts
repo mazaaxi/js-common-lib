@@ -1,5 +1,5 @@
 import * as dayjs from 'dayjs'
-import { DeepPartial, DeepReadonly, ToDeepNullable, ToDeepUndefined } from '../../../src'
+import { DeepPartial, DeepReadonly } from '../../../src'
 import Dayjs = dayjs.Dayjs
 
 interface Dummy {

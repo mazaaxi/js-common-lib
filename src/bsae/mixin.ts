@@ -1,8 +1,8 @@
-import { Constructor } from '../types'
+import { Constructor } from './types'
 
 //========================================================================
 //
-//  Exports
+//  Interfaces
 //
 //========================================================================
 
@@ -11,13 +11,19 @@ import { Constructor } from '../types'
 // http://justinfagnani.com/2015/12/21/real-mixins-with-javascript-classes/
 //
 
-export type Mixin<BASE, RESULT> = (superclass: Constructor<BASE>) => Constructor<RESULT>
+type Mixin<BASE, RESULT> = (superclass: Constructor<BASE>) => Constructor<RESULT>
 
-export function mix<T>(superclass: Constructor<T>): MixinBuilder<T> {
+//========================================================================
+//
+//  Implementation
+//
+//========================================================================
+
+function mix<T>(superclass: Constructor<T>): MixinBuilder<T> {
   return new MixinBuilder<T>(superclass)
 }
 
-export class MixinBuilder<T> {
+class MixinBuilder<T> {
   constructor(superclass: Constructor<T>) {
     this.superclass = superclass
   }
@@ -44,3 +50,11 @@ export class MixinBuilder<T> {
     return mixins.reduce((c, mixin) => mixin(c), this.superclass)
   }
 }
+
+//========================================================================
+//
+//  Exports
+//
+//========================================================================
+
+export { Mixin, MixinBuilder, mix }
