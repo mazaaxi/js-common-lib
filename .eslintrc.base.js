@@ -1,3 +1,5 @@
+const prettierConfig = require('./prettier.config')
+
 module.exports = {
   root: true,
   env: {
@@ -11,22 +13,10 @@ module.exports = {
     'plugin:@typescript-eslint/recommended',
     'plugin:@typescript-eslint/eslint-recommended',
     'plugin:prettier/recommended',
-    'prettier/@typescript-eslint',
   ],
   plugins: ['@typescript-eslint'],
   rules: {
-    'prettier/prettier': [
-      'error',
-      {
-        printWidth: 150,
-        singleQuote: true,
-        semi: false,
-        trailingComma: 'es5',
-        bracketSpacing: true,
-        jsxBracketSameLine: false,
-        arrowParens: 'avoid',
-      },
-    ],
+    'prettier/prettier': ['error', prettierConfig],
     'array-bracket-spacing': ['error', 'never'],
     'comma-dangle': [
       'error',

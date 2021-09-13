@@ -139,7 +139,7 @@ function toDeepEntityDate<T, K extends keyof any>(obj: T, props: K[]): ToDeepEnt
     }
   }
 
-  return (obj as any) as ToDeepEntityDateAre<T, K>
+  return obj as any as ToDeepEntityDateAre<T, K>
 }
 
 /**
@@ -174,7 +174,7 @@ function toDeepRawDate<T>(obj: T): ToDeepRawDate<T> {
     }
   }
 
-  return (obj as any) as ToDeepRawDate<T>
+  return obj as any as ToDeepRawDate<T>
 }
 
 function toNull<T>(value: T): ToNull<T> {
@@ -196,7 +196,7 @@ function toDeepNull<T>(obj: T): ToDeepNull<T> {
     }
   }
 
-  return (obj as any) as ToDeepNull<T>
+  return obj as any as ToDeepNull<T>
 }
 
 function toDeepNullWithoutTyped<T>(obj: T): T {
@@ -222,7 +222,7 @@ function toDeepUndefined<T>(obj: T): ToDeepUndefined<T> {
     }
   }
 
-  return (obj as any) as ToDeepUndefined<T>
+  return obj as any as ToDeepUndefined<T>
 }
 
 function toDeepUndefinedWithoutTyped<T>(obj: T): T {
