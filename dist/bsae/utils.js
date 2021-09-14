@@ -152,7 +152,7 @@ function pickProps(obj, props, excludeValues) {
         // プロパティの値を取得
         const propValue = obj[prop];
         // プロパティの値が除外リストに一致する場合、無視
-        const isExclude = (excludeValues ?? []).some(excludeValue => propValue === excludeValue);
+        const isExclude = (excludeValues !== null && excludeValues !== void 0 ? excludeValues : []).some(excludeValue => propValue === excludeValue);
         if (isExclude)
             continue;
         // 戻り値に指定されたキーの値を設定
