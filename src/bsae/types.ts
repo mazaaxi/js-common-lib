@@ -1,5 +1,4 @@
-import * as dayjs from 'dayjs'
-import Dayjs = dayjs.Dayjs
+import dayjs, { Dayjs } from 'dayjs'
 
 //========================================================================
 //

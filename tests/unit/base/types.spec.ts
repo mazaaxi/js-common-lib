@@ -1,6 +1,5 @@
-import * as dayjs from 'dayjs'
 import { DeepPartial, DeepReadonly } from '../../../src'
-import Dayjs = dayjs.Dayjs
+import dayjs, { Dayjs } from 'dayjs'
 
 interface Dummy {
   str1: string

@@ -1,5 +1,4 @@
-import * as dayjs from 'dayjs';
-import Dayjs = dayjs.Dayjs;
+import { Dayjs } from 'dayjs';
 declare type Constructor<T = any> = new (...args: any[]) => T;
 declare type RequiredAre<T, K extends keyof T> = Omit<T, K> & Required<Pick<T, K>>;
 declare type PartialAre<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
