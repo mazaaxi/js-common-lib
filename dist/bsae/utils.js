@@ -5,7 +5,7 @@
 //
 //========================================================================
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.summarizeFamilyPaths = exports.splitHierarchicalPaths = exports.splitFilePath = exports.splitArrayChunk = exports.sleep = exports.shuffleArray = exports.removeStartSlash = exports.removeStartDirChars = exports.removeEndSlash = exports.removeBothEndsSlash = exports.prependHTTP = exports.pickProps = exports.notEmpty = exports.nonNullable = exports.findDuplicateValues = exports.findDuplicateItems = exports.arrayToDict = exports.Version = void 0;
+exports.summarizeFamilyPaths = exports.splitHierarchicalPaths = exports.splitFilePath = exports.splitArrayChunk = exports.sleep = exports.shuffleArray = exports.removeStartSlash = exports.removeStartDirChars = exports.removeEndSlash = exports.removeBothEndsSlash = exports.prependHTTP = exports.pickProps = exports.notEmpty = exports.nonNullable = exports.isImplemented = exports.findDuplicateValues = exports.findDuplicateItems = exports.arrayToDict = exports.Version = void 0;
 /**
  * パス先頭のスラッシュを除去します。
  * @param path
@@ -330,18 +330,8 @@ function findDuplicateItems(array, field) {
 }
 exports.findDuplicateItems = findDuplicateItems;
 /**
- * 指定されたミリ秒の間スリープします。
- * @param ms
- */
-async function sleep(ms) {
-    return new Promise(resolve => {
-        setTimeout(resolve, ms);
-    });
-}
-exports.sleep = sleep;
-/**
  * 指定された値が`null`または`undefined`でないことをチェックします。
- * `null`または`undefined`の場合`false`を、そうでない場合は`true`を返します。
+ * `null`または`undefined`の場合は`false`を、それ以外の場合は`true`を返します。
  * @param value
  */
 const nonNullable = (value) => {
@@ -368,6 +358,24 @@ function notEmpty(value) {
     return true;
 }
 exports.notEmpty = notEmpty;
+/**
+ * `OBJECT`が`INTERFACE`を実装しているか静的に検証します。
+ * @param object
+ */
+function isImplemented(object) {
+    return object;
+}
+exports.isImplemented = isImplemented;
+/**
+ * 指定されたミリ秒の間スリープします。
+ * @param ms
+ */
+async function sleep(ms) {
+    return new Promise(resolve => {
+        setTimeout(resolve, ms);
+    });
+}
+exports.sleep = sleep;
 /**
  * 配列をシャッフルします。
  * @param array

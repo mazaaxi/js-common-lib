@@ -3,6 +3,7 @@ import {
   arrayToDict,
   findDuplicateItems,
   findDuplicateValues,
+  isImplemented,
   nonNullable,
   notEmpty,
   pickProps,
@@ -629,15 +630,6 @@ describe('findDuplicateItems', () => {
   })
 })
 
-describe('sleep', () => {
-  it('ベーシックケース', async () => {
-    const startTime = performance.now()
-    await sleep(1000)
-    const endTime = performance.now()
-    expect(endTime - startTime).toBeGreaterThanOrEqual(1000)
-  })
-})
-
 describe('nonNullable', () => {
   it('nullの場合', async () => {
     const actual = nonNullable(null)
@@ -689,6 +681,51 @@ describe('notEmpty', () => {
   it('nullまたはundefined以外の場合', async () => {
     const actual = notEmpty('abc')
     expect(actual).toBeTruthy()
+  })
+})
+
+describe('isImplemented', () => {
+  interface Person {
+    first: string
+    last: string
+    fullName(): string
+  }
+
+  it('ベーシックケース', async () => {
+    const first = 'Taro'
+    const last = 'Yamada'
+    const person = {
+      first,
+      last,
+      fullName: () => `${first} ${last}`,
+      age: 18,
+    }
+
+    const actual = isImplemented<Person, typeof person>(person)
+
+    expect(actual.age).toBe(18)
+  })
+
+  it('実装漏れがある場合', async () => {
+    const first = 'Taro'
+    const last = 'Yamada'
+    const person = {
+      first,
+      last,
+      age: 18,
+    }
+
+    // コメントアウトすると「`fullName`が未実装」というコンパイルエラーが出る
+    // isImplemented<Person>(person)
+  })
+})
+
+describe('sleep', () => {
+  it('ベーシックケース', async () => {
+    const startTime = performance.now()
+    await sleep(1000)
+    const endTime = performance.now()
+    expect(endTime - startTime).toBeGreaterThanOrEqual(1000)
   })
 })
 

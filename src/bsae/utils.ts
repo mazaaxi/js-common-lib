@@ -340,18 +340,8 @@ function findDuplicateItems<T, K extends keyof T>(array: T[], field: K): Duplica
 }
 
 /**
- * 指定されたミリ秒の間スリープします。
- * @param ms
- */
-async function sleep(ms?: number): Promise<void> {
-  return new Promise(resolve => {
-    setTimeout(resolve, ms)
-  }) as Promise<void>
-}
-
-/**
  * 指定された値が`null`または`undefined`でないことをチェックします。
- * `null`または`undefined`の場合`false`を、そうでない場合は`true`を返します。
+ * `null`または`undefined`の場合は`false`を、それ以外の場合は`true`を返します。
  * @param value
  */
 const nonNullable = <T>(value: T): value is NonNullable<T> => {
@@ -374,6 +364,24 @@ function notEmpty<T>(value: T): value is NonNullable<T> {
     return Object.keys(value).length > 0
   }
   return true
+}
+
+/**
+ * `OBJECT`が`INTERFACE`を実装しているか静的に検証します。
+ * @param object
+ */
+function isImplemented<INTERFACE, OBJECT extends INTERFACE>(object: OBJECT): OBJECT {
+  return object
+}
+
+/**
+ * 指定されたミリ秒の間スリープします。
+ * @param ms
+ */
+async function sleep(ms?: number): Promise<void> {
+  return new Promise(resolve => {
+    setTimeout(resolve, ms)
+  }) as Promise<void>
 }
 
 /**
@@ -482,6 +490,7 @@ export {
   arrayToDict,
   findDuplicateItems,
   findDuplicateValues,
+  isImplemented,
   nonNullable,
   notEmpty,
   pickProps,

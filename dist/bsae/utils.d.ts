@@ -138,13 +138,8 @@ declare function findDuplicateValues<T>(array: T[]): DuplicateItem<T>[];
  */
 declare function findDuplicateItems<T, K extends keyof T>(array: T[], field: K): DuplicateItem<T>[];
 /**
- * 指定されたミリ秒の間スリープします。
- * @param ms
- */
-declare function sleep(ms?: number): Promise<void>;
-/**
  * 指定された値が`null`または`undefined`でないことをチェックします。
- * `null`または`undefined`の場合`false`を、そうでない場合は`true`を返します。
+ * `null`または`undefined`の場合は`false`を、それ以外の場合は`true`を返します。
  * @param value
  */
 declare const nonNullable: <T>(value: T) => value is NonNullable<T>;
@@ -157,6 +152,16 @@ declare const nonNullable: <T>(value: T) => value is NonNullable<T>;
  * @param value
  */
 declare function notEmpty<T>(value: T): value is NonNullable<T>;
+/**
+ * `OBJECT`が`INTERFACE`を実装しているか静的に検証します。
+ * @param object
+ */
+declare function isImplemented<INTERFACE, OBJECT extends INTERFACE>(object: OBJECT): OBJECT;
+/**
+ * 指定されたミリ秒の間スリープします。
+ * @param ms
+ */
+declare function sleep(ms?: number): Promise<void>;
 /**
  * 配列をシャッフルします。
  * @param array
@@ -195,4 +200,4 @@ declare class Version {
     greaterThanOrEqual(other: Version | string): boolean;
     private compare;
 }
-export { Version, arrayToDict, findDuplicateItems, findDuplicateValues, nonNullable, notEmpty, pickProps, prependHTTP, removeBothEndsSlash, removeEndSlash, removeStartDirChars, removeStartSlash, shuffleArray, sleep, splitArrayChunk, splitFilePath, splitHierarchicalPaths, summarizeFamilyPaths, };
+export { Version, arrayToDict, findDuplicateItems, findDuplicateValues, isImplemented, nonNullable, notEmpty, pickProps, prependHTTP, removeBothEndsSlash, removeEndSlash, removeStartDirChars, removeStartSlash, shuffleArray, sleep, splitArrayChunk, splitFilePath, splitHierarchicalPaths, summarizeFamilyPaths, };
