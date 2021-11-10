@@ -1,16 +1,22 @@
-import { Dayjs } from 'dayjs';
+import type { Dayjs } from 'dayjs';
+declare type Primitive = string | number | boolean | bigint | symbol | undefined | null;
+declare type IterableCollections = Map<any, any> | Set<any>;
+declare type WeakCollections = WeakMap<any, any> | WeakSet<any>;
+declare type CollectionTypes = IterableCollections | WeakCollections;
+declare type BaseTypes = string | number | boolean;
+declare type Builtin = Primitive | Function | Date | Error | RegExp | Dayjs;
 declare type Constructor<T = any> = new (...args: any[]) => T;
 declare type RequiredAre<T, K extends keyof T> = Omit<T, K> & Required<Pick<T, K>>;
 declare type PartialAre<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
-declare type DeepPartial<T> = {
-    [K in keyof T]?: T[K] extends Dayjs | undefined | null ? T[K] : T[K] extends Array<infer R> ? Array<DeepPartial<R>> : T[K] extends Array<infer R> | undefined ? Array<DeepPartial<R>> | undefined : T[K] extends Array<infer R> | null ? Array<DeepPartial<R>> | null : T[K] extends Array<infer R> | undefined | null ? Array<DeepPartial<R>> | undefined | null : DeepPartial<T[K]>;
-};
-declare type DeepReadonly<T> = {
-    readonly [K in keyof T]: T[K] extends Dayjs | undefined | null ? T[K] : T[K] extends Array<infer R> ? Array<DeepReadonly<R>> : T[K] extends Array<infer R> | undefined ? Array<DeepReadonly<R>> | undefined : T[K] extends Array<infer R> | null ? Array<DeepReadonly<R>> | null : T[K] extends Array<infer R> | undefined | null ? Array<DeepReadonly<R>> | undefined | null : DeepReadonly<T[K]>;
-};
-declare type DeepUnreadonly<T> = {
-    readonly [K in keyof T]: T[K] extends Dayjs | undefined | null ? T[K] : T[K] extends Array<infer R> ? Array<DeepUnreadonly<R>> : T[K] extends Array<infer R> | undefined ? Array<DeepUnreadonly<R>> | undefined : T[K] extends Array<infer R> | null ? Array<DeepUnreadonly<R>> | null : T[K] extends Array<infer R> | undefined | null ? Array<DeepUnreadonly<R>> | undefined | null : DeepUnreadonly<T[K]>;
-};
+declare type DeepPartial<T> = T extends Builtin ? T : T extends Array<infer R> ? Array<DeepPartial<R>> : T extends Map<infer K, infer V> ? Map<DeepPartial<K>, DeepPartial<V>> : T extends ReadonlyMap<infer K, infer V> ? ReadonlyMap<DeepPartial<K>, DeepPartial<V>> : T extends WeakMap<infer K, infer V> ? WeakMap<DeepPartial<K>, DeepPartial<V>> : T extends Set<infer U> ? Set<DeepPartial<U>> : T extends ReadonlySet<infer U> ? ReadonlySet<DeepPartial<U>> : T extends WeakSet<infer U> ? WeakSet<DeepPartial<U>> : T extends Promise<infer U> ? Promise<DeepPartial<U>> : T extends Record<any, any> ? {
+    [K in keyof T]?: DeepPartial<T[K]>;
+} : Partial<T>;
+declare type DeepReadonly<T> = T extends Builtin ? T : T extends Array<infer R> ? Array<DeepReadonly<R>> : T extends Map<infer K, infer V> ? ReadonlyMap<DeepReadonly<K>, DeepReadonly<V>> : T extends ReadonlyMap<infer K, infer V> ? ReadonlyMap<DeepReadonly<K>, DeepReadonly<V>> : T extends WeakMap<infer K, infer V> ? WeakMap<DeepReadonly<K>, DeepReadonly<V>> : T extends Set<infer U> ? ReadonlySet<DeepReadonly<U>> : T extends ReadonlySet<infer U> ? ReadonlySet<DeepReadonly<U>> : T extends WeakSet<infer U> ? WeakSet<DeepReadonly<U>> : T extends Promise<infer U> ? Promise<DeepReadonly<U>> : T extends Record<any, any> ? {
+    readonly [K in keyof T]: DeepReadonly<T[K]>;
+} : Readonly<T>;
+declare type DeepUnreadonly<T> = T extends Builtin ? T : T extends Array<infer R> ? Array<DeepUnreadonly<R>> : T extends Map<infer K, infer V> ? Map<DeepUnreadonly<K>, DeepUnreadonly<V>> : T extends ReadonlyMap<infer K, infer V> ? Map<DeepUnreadonly<K>, DeepUnreadonly<V>> : T extends WeakMap<infer K, infer V> ? WeakMap<DeepUnreadonly<K>, DeepUnreadonly<V>> : T extends Set<infer U> ? Set<DeepUnreadonly<U>> : T extends ReadonlySet<infer U> ? Set<DeepUnreadonly<U>> : T extends WeakSet<infer U> ? WeakSet<DeepUnreadonly<U>> : T extends Promise<infer U> ? Promise<DeepUnreadonly<U>> : T extends Record<any, any> ? {
+    -readonly [K in keyof T]: DeepUnreadonly<T[K]>;
+} : DeepUnreadonly<T>;
 /**
  * `TARGET`型に`SOURCE`型を上書きします。
  *
@@ -43,4 +49,4 @@ declare type ReplaceType2<T, R> = {
  * }
  */
 declare type ReplaceType<T, S, R> = ReplaceType1<T, S> & ReplaceType2<T, R>;
-export { Constructor, DeepPartial, DeepReadonly, DeepUnreadonly, Overwrite, PartialAre, ReplaceType, RequiredAre };
+export { Primitive, IterableCollections, WeakCollections, CollectionTypes, BaseTypes, Builtin, Constructor, RequiredAre, PartialAre, DeepPartial, DeepReadonly, DeepUnreadonly, Overwrite, ReplaceType, };
