@@ -28,6 +28,8 @@ type DeepPartial<T> = T extends Builtin
   ? T
   : T extends Array<infer R>
   ? Array<DeepPartial<R>>
+  : T extends ReadonlyArray<infer R>
+  ? ReadonlyArray<DeepPartial<R>>
   : T extends Map<infer K, infer V>
   ? Map<DeepPartial<K>, DeepPartial<V>>
   : T extends ReadonlyMap<infer K, infer V>
@@ -51,7 +53,9 @@ type DeepPartial<T> = T extends Builtin
 type DeepReadonly<T> = T extends Builtin
   ? T
   : T extends Array<infer R>
-  ? Array<DeepReadonly<R>>
+  ? ReadonlyArray<DeepReadonly<R>>
+  : T extends ReadonlyArray<infer R>
+  ? ReadonlyArray<DeepReadonly<R>>
   : T extends Map<infer K, infer V>
   ? ReadonlyMap<DeepReadonly<K>, DeepReadonly<V>>
   : T extends ReadonlyMap<infer K, infer V>
@@ -75,6 +79,8 @@ type DeepReadonly<T> = T extends Builtin
 type DeepUnreadonly<T> = T extends Builtin
   ? T
   : T extends Array<infer R>
+  ? Array<DeepUnreadonly<R>>
+  : T extends ReadonlyArray<infer R>
   ? Array<DeepUnreadonly<R>>
   : T extends Map<infer K, infer V>
   ? Map<DeepUnreadonly<K>, DeepUnreadonly<V>>

@@ -22,6 +22,10 @@ interface Dummy {
   strArr2: string[] | undefined
   strArr3: string[] | null
   strArr4: string[] | undefined | null
+  map1: Map<string, { name: string; age: number }>
+  map2: Map<string, { name: string | undefined; age: number }> | undefined
+  map3: Map<string, { name: string | null; age: number }> | null
+  map4: Map<string, { name: string | undefined | null; age: number }> | undefined | null
 }
 
 describe('DeepPartial', () => {
@@ -170,6 +174,42 @@ describe('DeepPartial', () => {
     dummy.strArr4[0] = null // null設定不可
     dummy.strArr4[0] = 'one1'
 
+    //--------------------------------------------------
+    //  Map
+    //--------------------------------------------------
+
+    dummy.map1 = undefined
+    dummy.map1 = null // null設定不可
+    dummy.map1 = new Map()
+    dummy.map1.set('key1', { name: 'one', age: 1 })
+    dummy.map1.get('key1')!.name = undefined
+    dummy.map1.get('key1')!.name = null // null設定不可
+    dummy.map1.get('key1')!.name = 'one'
+
+    dummy.map2 = undefined
+    dummy.map2 = null // null設定不可
+    dummy.map2 = new Map()
+    dummy.map2.set('key1', { name: 'one', age: 1 })
+    dummy.map2.get('key1')!.name = undefined
+    dummy.map2.get('key1')!.name = null // null設定不可
+    dummy.map2.get('key1')!.name = 'one'
+
+    dummy.map3 = undefined
+    dummy.map3 = null
+    dummy.map3 = new Map()
+    dummy.map3.set('key1', { name: 'one', age: 1 })
+    dummy.map3.get('key1')!.name = undefined
+    dummy.map3.get('key1')!.name = null
+    dummy.map3.get('key1')!.name = 'one'
+
+    dummy.map4 = undefined
+    dummy.map4 = null
+    dummy.map4 = new Map()
+    dummy.map4.set('key1', { name: 'one', age: 1 })
+    dummy.map4.get('key1')!.name = undefined
+    dummy.map4.get('key1')!.name = null
+    dummy.map4.get('key1')!.name = 'one'
+
     <--- */
   })
 })
@@ -230,28 +270,28 @@ describe('DeepReadonly', () => {
     dummy.obj1 = { name: 'one', age: 1 }
     dummy.obj1.name = undefined
     dummy.obj1.name = null
-    dummy.obj1.name = 'one1'
+    dummy.obj1.name = 'one'
 
     dummy.obj2 = undefined
     dummy.obj2 = null
     dummy.obj2 = { name: 'one', age: 1 }
     dummy.obj2.name = undefined
     dummy.obj2.name = null
-    dummy.obj2.name = 'one1'
+    dummy.obj2.name = 'one'
 
     dummy.obj3 = undefined
     dummy.obj3 = null
     dummy.obj3 = { name: 'one', age: 1 }
     dummy.obj3.name = undefined
     dummy.obj3.name = null
-    dummy.obj3.name = 'one1'
+    dummy.obj3.name = 'one'
 
     dummy.obj4 = undefined
     dummy.obj4 = null
     dummy.obj4 = { name: 'one', age: 1 }
     dummy.obj4.name = undefined
     dummy.obj4.name = null
-    dummy.obj4.name = 'one1'
+    dummy.obj4.name = 'one'
 
     //--------------------------------------------------
     //  object array
@@ -262,63 +302,96 @@ describe('DeepReadonly', () => {
     dummy.objArr1 = [{ name: 'one', age: 1 }]
     dummy.objArr1[0].name = undefined
     dummy.objArr1[0].name = null
-    dummy.objArr1[0].name = 'one1'
+    dummy.objArr1[0].name = 'one'
 
     dummy.objArr2 = undefined
     dummy.objArr2 = null
     dummy.objArr2 = [{ name: 'one', age: 1 }]
     dummy.objArr2[0].name = undefined
     dummy.objArr2[0].name = null
-    dummy.objArr2[0].name = 'one1'
+    dummy.objArr2[0].name = 'one'
 
     dummy.objArr3 = undefined
     dummy.objArr3 = null
     dummy.objArr3 = [{ name: 'one', age: 1 }]
     dummy.objArr3[0].name = undefined
     dummy.objArr3[0].name = null
-    dummy.objArr3[0].name = 'one1'
+    dummy.objArr3[0].name = 'one'
 
     dummy.objArr4 = undefined
     dummy.objArr4 = null
     dummy.objArr4 = [{ name: 'one', age: 1 }]
     dummy.objArr4[0].name = undefined
     dummy.objArr4[0].name = null
-    dummy.objArr4[0].name = 'one1'
+    dummy.objArr4[0].name = 'one'
 
     //--------------------------------------------------
     //  string array
     //--------------------------------------------------
-
-    // プリミティブな配列の要素はReadonlyにならない!
-    // このため配列の要素に値を設定可能
 
     dummy.strArr1 = undefined
     dummy.strArr1 = null
     dummy.strArr1 = ['one']
     dummy.strArr1[0] = undefined
     dummy.strArr1[0] = null
-    dummy.strArr1[0] = 'one1' // 値を設定可能
+    dummy.strArr1[0] = 'one'
 
     dummy.strArr2 = undefined
     dummy.strArr2 = null
     dummy.strArr2 = ['one']
     dummy.strArr2[0] = undefined
     dummy.strArr2[0] = null
-    dummy.strArr2[0] = 'one1' // 値を設定可能
+    dummy.strArr2[0] = 'one'
 
     dummy.strArr3 = undefined
     dummy.strArr3 = null
     dummy.strArr3 = ['one']
     dummy.strArr3[0] = undefined
     dummy.strArr3[0] = null
-    dummy.strArr3[0] = 'one1' // 値を設定可能
+    dummy.strArr3[0] = 'one'
 
     dummy.strArr4 = undefined
     dummy.strArr4 = null
     dummy.strArr4 = ['one']
     dummy.strArr4[0] = undefined
     dummy.strArr4[0] = null
-    dummy.strArr4[0] = 'one1' // 値を設定可能
+    dummy.strArr4[0] = 'one'
+
+    //--------------------------------------------------
+    //  Map
+    //--------------------------------------------------
+
+    dummy.map1 = undefined
+    dummy.map1 = null
+    dummy.map1 = new Map()
+    dummy.map1.set('key1', { name: 'one', age: 1 })
+    dummy.map1.get('key1')!.name = undefined
+    dummy.map1.get('key1')!.name = null
+    dummy.map1.get('key1')!.name = 'one'
+
+    dummy.map2 = undefined
+    dummy.map2 = null
+    dummy.map2 = new Map()
+    dummy.map2.set('key1', { name: 'one', age: 1 })
+    dummy.map2.get('key1')!.name = undefined
+    dummy.map2.get('key1')!.name = null
+    dummy.map2.get('key1')!.name = 'one'
+
+    dummy.map3 = undefined
+    dummy.map3 = null
+    dummy.map3 = new Map()
+    dummy.map3.set('key1', { name: 'one', age: 1 })
+    dummy.map3.get('key1')!.name = undefined
+    dummy.map3.get('key1')!.name = null
+    dummy.map3.get('key1')!.name = 'one'
+
+    dummy.map4 = undefined
+    dummy.map4 = null
+    dummy.map4 = new Map()
+    dummy.map4.set('key1', { name: 'one', age: 1 })
+    dummy.map4.get('key1')!.name = undefined
+    dummy.map4.get('key1')!.name = null
+    dummy.map4.get('key1')!.name = 'one'
 
     <--- */
   })
