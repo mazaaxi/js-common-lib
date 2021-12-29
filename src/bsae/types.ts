@@ -24,7 +24,7 @@ type RequiredAre<T, K extends keyof T> = Omit<T, K> & Required<Pick<T, K>>
 
 type PartialAre<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>
 
-type DeepPartial<T> = T extends Builtin
+type DeepPartial<T> = T extends Function | Date | Error | RegExp | Dayjs
   ? T
   : T extends Array<infer R>
   ? Array<DeepPartial<R>>
@@ -48,9 +48,9 @@ type DeepPartial<T> = T extends Builtin
   ? {
       [K in keyof T]?: DeepPartial<T[K]>
     }
-  : Partial<T>
+  : T
 
-type DeepReadonly<T> = T extends Builtin
+type DeepReadonly<T> = T extends Function | Date | Error | RegExp | Dayjs
   ? T
   : T extends Array<infer R>
   ? ReadonlyArray<DeepReadonly<R>>
@@ -74,9 +74,9 @@ type DeepReadonly<T> = T extends Builtin
   ? {
       readonly [K in keyof T]: DeepReadonly<T[K]>
     }
-  : Readonly<T>
+  : T
 
-type DeepUnreadonly<T> = T extends Builtin
+type DeepUnreadonly<T> = T extends Function | Date | Error | RegExp | Dayjs
   ? T
   : T extends Array<infer R>
   ? Array<DeepUnreadonly<R>>
@@ -100,7 +100,7 @@ type DeepUnreadonly<T> = T extends Builtin
   ? {
       -readonly [K in keyof T]: DeepUnreadonly<T[K]>
     }
-  : DeepUnreadonly<T>
+  : T
 
 /**
  * `TARGET`型に`SOURCE`型を上書きします。
