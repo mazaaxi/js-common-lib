@@ -330,7 +330,7 @@ function findDuplicateValues<T>(array: T[]): DuplicateItem<T>[] {
  * //   { value: { id: 2, str: 'c' }, index: 2, first: true, last: false, removed: false },
  * //   { value: { id: 3, str: 'a' }, index: 3, first: false, last: true, removed: false },
  * //   { value: { id: 5, str: 'c' }, index: 5, first: false, last: true, removed: false },
- * //]
+ * // ]
  *
  * @param array
  * @param field
@@ -479,6 +479,62 @@ class Version {
   }
 }
 
+/**
+ * 準備が整うまで待機を行い、準備が整ったら指定の関数を実行します。
+ * @param isReady
+ *   準備が整ったか否かを判定する関数を指定します。この関数の初回は即時
+ *   実行され、その後は`options.interval`で指定された間隔で実行されます。
+ * @param readyFunc 準備が整ったら実行する関数を指定します。
+ * @param options
+ * - interval: isReady()を実行する間隔をミリ秒で指定します。
+ *   この値を指定しないと最速(0ms)でisReady()の実行が行われます。<br>
+ * - timeout: 準備が整うまでの制限時間をミリ秒で指定します。
+ *   この値を指定しないと準備が整わなくてもタイムアウトしないので注意してください。
+ */
+function runWhenReady<T = undefined>(
+  isReady: () => boolean,
+  readyFunc: (() => T) | (() => Promise<T>),
+  options?: { interval?: number; timeout?: number }
+): Promise<T | undefined> {
+  const interval = options?.interval ?? 0
+  const timeout = options?.timeout ?? 0
+
+  return new Promise<T | undefined>(resolve => {
+    if (isReady()) {
+      const funcResult = readyFunc()
+      if (funcResult instanceof Promise) {
+        funcResult.then(result => resolve(result))
+      } else {
+        resolve(funcResult)
+      }
+      return
+    }
+
+    const startTime = Date.now()
+    const intervalId = setInterval(() => {
+      // 一定時間経過したら、時間切れで終了
+      if (timeout) {
+        const diff = Date.now() - startTime
+        if (diff > timeout) {
+          clearInterval(intervalId)
+          resolve(undefined)
+          return
+        }
+      }
+      // 準備が整った場合
+      if (isReady()) {
+        clearInterval(intervalId)
+        const funcResult = readyFunc()
+        if (funcResult instanceof Promise) {
+          funcResult.then(result => resolve(result))
+        } else {
+          resolve(funcResult)
+        }
+      }
+    }, interval)
+  })
+}
+
 //========================================================================
 //
 //  Exports
@@ -499,6 +555,7 @@ export {
   removeEndSlash,
   removeStartDirChars,
   removeStartSlash,
+  runWhenReady,
   shuffleArray,
   sleep,
   splitArrayChunk,

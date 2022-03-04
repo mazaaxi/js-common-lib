@@ -5,7 +5,7 @@
 //
 //========================================================================
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.summarizeFamilyPaths = exports.splitHierarchicalPaths = exports.splitFilePath = exports.splitArrayChunk = exports.sleep = exports.shuffleArray = exports.removeStartSlash = exports.removeStartDirChars = exports.removeEndSlash = exports.removeBothEndsSlash = exports.prependHTTP = exports.pickProps = exports.notEmpty = exports.nonNullable = exports.isImplemented = exports.findDuplicateValues = exports.findDuplicateItems = exports.arrayToDict = exports.Version = void 0;
+exports.summarizeFamilyPaths = exports.splitHierarchicalPaths = exports.splitFilePath = exports.splitArrayChunk = exports.sleep = exports.shuffleArray = exports.runWhenReady = exports.removeStartSlash = exports.removeStartDirChars = exports.removeEndSlash = exports.removeBothEndsSlash = exports.prependHTTP = exports.pickProps = exports.notEmpty = exports.nonNullable = exports.isImplemented = exports.findDuplicateValues = exports.findDuplicateItems = exports.arrayToDict = exports.Version = void 0;
 /**
  * パス先頭のスラッシュを除去します。
  * @param path
@@ -320,7 +320,7 @@ exports.findDuplicateValues = findDuplicateValues;
  * //   { value: { id: 2, str: 'c' }, index: 2, first: true, last: false, removed: false },
  * //   { value: { id: 3, str: 'a' }, index: 3, first: false, last: true, removed: false },
  * //   { value: { id: 5, str: 'c' }, index: 5, first: false, last: true, removed: false },
- * //]
+ * // ]
  *
  * @param array
  * @param field
@@ -457,4 +457,57 @@ class Version {
     }
 }
 exports.Version = Version;
+/**
+ * 準備が整うまで待機を行い、準備が整ったら指定の関数を実行します。
+ * @param isReady
+ *   準備が整ったか否かを判定する関数を指定します。この関数の初回は即時
+ *   実行され、その後は`options.interval`で指定された間隔で実行されます。
+ * @param readyFunc 準備が整ったら実行する関数を指定します。
+ * @param options
+ * - interval: isReady()を実行する間隔をミリ秒で指定します。
+ *   この値を指定しないと最速(0ms)でisReady()の実行が行われます。<br>
+ * - timeout: 準備が整うまでの制限時間をミリ秒で指定します。
+ *   この値を指定しないと準備が整わなくてもタイムアウトしないので注意してください。
+ */
+function runWhenReady(isReady, readyFunc, options) {
+    var _a, _b;
+    const interval = (_a = options === null || options === void 0 ? void 0 : options.interval) !== null && _a !== void 0 ? _a : 0;
+    const timeout = (_b = options === null || options === void 0 ? void 0 : options.timeout) !== null && _b !== void 0 ? _b : 0;
+    return new Promise(resolve => {
+        if (isReady()) {
+            const funcResult = readyFunc();
+            if (funcResult instanceof Promise) {
+                funcResult.then(result => resolve(result));
+            }
+            else {
+                resolve(funcResult);
+            }
+            return;
+        }
+        const startTime = Date.now();
+        const intervalId = setInterval(() => {
+            // 一定時間経過したら、時間切れで終了
+            if (timeout) {
+                const diff = Date.now() - startTime;
+                if (diff > timeout) {
+                    clearInterval(intervalId);
+                    resolve(undefined);
+                    return;
+                }
+            }
+            // 準備が整った場合
+            if (isReady()) {
+                clearInterval(intervalId);
+                const funcResult = readyFunc();
+                if (funcResult instanceof Promise) {
+                    funcResult.then(result => resolve(result));
+                }
+                else {
+                    resolve(funcResult);
+                }
+            }
+        }, interval);
+    });
+}
+exports.runWhenReady = runWhenReady;
 //# sourceMappingURL=utils.js.map

@@ -131,7 +131,7 @@ declare function findDuplicateValues<T>(array: T[]): DuplicateItem<T>[];
  * //   { value: { id: 2, str: 'c' }, index: 2, first: true, last: false, removed: false },
  * //   { value: { id: 3, str: 'a' }, index: 3, first: false, last: true, removed: false },
  * //   { value: { id: 5, str: 'c' }, index: 5, first: false, last: true, removed: false },
- * //]
+ * // ]
  *
  * @param array
  * @param field
@@ -200,4 +200,20 @@ declare class Version {
     greaterThanOrEqual(other: Version | string): boolean;
     private compare;
 }
-export { Version, arrayToDict, findDuplicateItems, findDuplicateValues, isImplemented, nonNullable, notEmpty, pickProps, prependHTTP, removeBothEndsSlash, removeEndSlash, removeStartDirChars, removeStartSlash, shuffleArray, sleep, splitArrayChunk, splitFilePath, splitHierarchicalPaths, summarizeFamilyPaths, };
+/**
+ * 準備が整うまで待機を行い、準備が整ったら指定の関数を実行します。
+ * @param isReady
+ *   準備が整ったか否かを判定する関数を指定します。この関数の初回は即時
+ *   実行され、その後は`options.interval`で指定された間隔で実行されます。
+ * @param readyFunc 準備が整ったら実行する関数を指定します。
+ * @param options
+ * - interval: isReady()を実行する間隔をミリ秒で指定します。
+ *   この値を指定しないと最速(0ms)でisReady()の実行が行われます。<br>
+ * - timeout: 準備が整うまでの制限時間をミリ秒で指定します。
+ *   この値を指定しないと準備が整わなくてもタイムアウトしないので注意してください。
+ */
+declare function runWhenReady<T = undefined>(isReady: () => boolean, readyFunc: (() => T) | (() => Promise<T>), options?: {
+    interval?: number;
+    timeout?: number;
+}): Promise<T | undefined>;
+export { Version, arrayToDict, findDuplicateItems, findDuplicateValues, isImplemented, nonNullable, notEmpty, pickProps, prependHTTP, removeBothEndsSlash, removeEndSlash, removeStartDirChars, removeStartSlash, runWhenReady, shuffleArray, sleep, splitArrayChunk, splitFilePath, splitHierarchicalPaths, summarizeFamilyPaths, };

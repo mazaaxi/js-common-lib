@@ -12,6 +12,7 @@ import {
   removeEndSlash,
   removeStartDirChars,
   removeStartSlash,
+  runWhenReady,
   sleep,
   splitArrayChunk,
   splitFilePath,
@@ -463,28 +464,28 @@ describe('findDuplicateItems', () => {
   const originalA = [
     { id: 0, str: 'c' },
     { id: 1, str: 'b' },
-    { id: 2, str: 'a' },
+    { id: 2, str: 'a' }, // 重複なし
     { id: 3, str: 'f' },
     { id: 4, str: 'c' },
     { id: 5, str: 'b' },
     { id: 6, str: 'c' },
-    { id: 7, str: 'd' },
+    { id: 7, str: 'd' }, // 重複なし
     { id: 8, str: 'f' },
-    { id: 9, str: 'e' },
+    { id: 9, str: 'e' }, // 重複なし
     { id: 10, str: 'f' },
   ]
 
   const originalB = [
-    { id: 0, str: 'a' },
+    { id: 0, str: 'a' }, // 重複なし
     { id: 1, str: 'c' },
     { id: 2, str: 'b' },
     { id: 3, str: 'b' },
     { id: 4, str: 'c' },
     { id: 5, str: 'f' },
     { id: 6, str: 'c' },
-    { id: 7, str: 'd' },
+    { id: 7, str: 'd' }, // 重複なし
     { id: 8, str: 'f' },
-    { id: 9, str: 'e' },
+    { id: 9, str: 'e' }, // 重複なし
     { id: 10, str: 'f' },
   ]
 
@@ -508,6 +509,7 @@ describe('findDuplicateItems', () => {
     const array = [...originalA]
     const actual = findDuplicateItems(array, 'str')
 
+    // インデックス0番目の要素を削除
     actual[0].remove()
 
     expect(actual).toMatchObject([
@@ -539,12 +541,13 @@ describe('findDuplicateItems', () => {
     const array = [...originalA]
     const actual = findDuplicateItems(array, 'str')
 
+    // インデックス2番目の要素を削除
     actual[2].remove()
 
     expect(actual).toMatchObject([
       { value: { id: 0, str: 'c' }, index: 0, first: true, last: false, removed: false },
       { value: { id: 1, str: 'b' }, index: 1, first: true, last: false, removed: false },
-      { value: { id: 3, str: 'f' }, index: 3, first: true, last: false, removed: true }, // 削除された
+      { value: { id: 3, str: 'f' }, index: 3, first: true, last: false, removed: true }, // <- 削除された
       { value: { id: 4, str: 'c' }, index: 4 - 1, first: false, last: false, removed: false },
       { value: { id: 5, str: 'b' }, index: 5 - 1, first: false, last: true, removed: false },
       { value: { id: 6, str: 'c' }, index: 6 - 1, first: false, last: true, removed: false },
@@ -556,6 +559,7 @@ describe('findDuplicateItems', () => {
       { id: 0, str: 'c' },
       { id: 1, str: 'b' },
       { id: 2, str: 'a' },
+      // { id: 3, str: 'f' }, <- 削除された
       { id: 4, str: 'c' },
       { id: 5, str: 'b' },
       { id: 6, str: 'c' },
@@ -570,6 +574,7 @@ describe('findDuplicateItems', () => {
     const array = [...originalA]
     const actual = findDuplicateItems(array, 'str')
 
+    // インデックス7番目の要素を削除
     actual[7].remove()
 
     expect(actual).toMatchObject([
@@ -580,7 +585,7 @@ describe('findDuplicateItems', () => {
       { value: { id: 5, str: 'b' }, index: 5, first: false, last: true, removed: false },
       { value: { id: 6, str: 'c' }, index: 6, first: false, last: true, removed: false },
       { value: { id: 8, str: 'f' }, index: 8, first: false, last: false, removed: false },
-      { value: { id: 10, str: 'f' }, index: 10, first: false, last: true, removed: true }, // 削除された
+      { value: { id: 10, str: 'f' }, index: 10, first: false, last: true, removed: true }, // <- 削除された
     ])
 
     expect(array).toEqual([
@@ -594,6 +599,7 @@ describe('findDuplicateItems', () => {
       { id: 7, str: 'd' },
       { id: 8, str: 'f' },
       { id: 9, str: 'e' },
+      // { id: 10, str: 'f' }, <- 削除された
     ])
   })
 
@@ -601,6 +607,7 @@ describe('findDuplicateItems', () => {
     const array = [...originalA]
     const duplicates = findDuplicateItems(array, 'str')
 
+    // 先頭の重複は残し、他の重複は全て削除
     duplicates.forEach(item => !item.last && item.remove())
 
     expect(array).toEqual([
@@ -617,6 +624,7 @@ describe('findDuplicateItems', () => {
     const array = [...originalB]
     const duplicates = findDuplicateItems(array, 'str')
 
+    // 最後尾の重複は残し、他の重複は全て削除
     duplicates.forEach(item => !item.last && item.remove())
 
     expect(array).toEqual([
@@ -923,5 +931,71 @@ describe('Version', () => {
 
       expect(actual).toBeTruthy()
     })
+  })
+})
+
+describe('runWhenReady', () => {
+  it('ベーシックケース', async () => {
+    let counter = 1
+    const actual = await runWhenReady(
+      // `counter`が10以上になったら準備完了とする
+      () => ++counter >= 10,
+      // 準備が整ったあかつきとして999を返す
+      () => 999,
+      { interval: 10, timeout: 100 }
+    )
+
+    expect(actual).toBe(999)
+  })
+
+  it('isReady()が即時実行されることを検証', async () => {
+    const startTime = performance.now()
+
+    const actual = await runWhenReady(
+      () => true,
+      async () => 999,
+      { interval: 100 }
+    )
+
+    const endTime = performance.now()
+
+    expect(actual).toBe(999)
+    // `interval`に100msが設定されているが、isReady()の初回は即時実行されるので、
+    // 待ち時間はない。このため処理は100msより早く終わる。
+    expect(endTime - startTime).toBeLessThan(100)
+  })
+
+  it('readyFunc()が非同期だった場合', async () => {
+    let startTime = 0
+
+    const actual = await runWhenReady(
+      () => true,
+      async () => {
+        startTime = performance.now()
+        await sleep(1000) // 1秒待機
+        return 999
+      },
+      { interval: 10, timeout: 100 }
+    )
+
+    const endTime = performance.now()
+
+    expect(actual).toBe(999)
+    // readyFunc()は非同期で実行時間は1秒かかるはずなので、その検証
+    expect(endTime - startTime).toBeGreaterThan(1000)
+  })
+
+  it('準備が整わなかった場合', async () => {
+    let counter = 1
+    const actual = await runWhenReady(
+      () => ++counter >= 10,
+      () => 999,
+      // 準備が整うことがない設定をする
+      // ※1ms以内に準備が整う必要がある
+      { interval: 10, timeout: 1 }
+    )
+
+    // 準備が整わないので、結果としてundefinedが取得される
+    expect(actual).toBeUndefined()
   })
 })
