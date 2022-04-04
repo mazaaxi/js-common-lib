@@ -201,16 +201,17 @@ declare class Version {
     private compare;
 }
 /**
- * 準備が整うまで待機を行い、準備が整ったら指定の関数を実行します。
+ * 準備が整うまで監視を行い、準備が整ったら指定の関数を実行します。
  * @param isReady
- *   準備が整ったか否かを判定する関数を指定します。この関数の初回は即時
+ *   準備が整ったか否かを監視する関数を指定します。この関数の初回は即時
  *   実行され、その後は`options.interval`で指定された間隔で実行されます。
- * @param readyFunc 準備が整ったら実行する関数を指定します。
+ * @param readyFunc 準備が整った際に実行する関数を指定します。
  * @param options
- * - interval: isReady()を実行する間隔をミリ秒で指定します。
- *   この値を指定しないと最速(0ms)でisReady()の実行が行われます。<br>
+ * - interval: `isReady()`を実行する間隔をミリ秒で指定します。
+ *   この値を指定しないと可能な限り早い間隔で`isReady()`の実行が行われます。<br>
  * - timeout: 準備が整うまでの制限時間をミリ秒で指定します。
- *   この値を指定しないと準備が整わなくてもタイムアウトしないので注意してください。
+ *   この値を指定せずに準備が整わなかった場合、タイムアウトしないので注意してください。
+ * @return `readyFunc()`の実行結果が返されます。
  */
 declare function runWhenReady<T = undefined>(isReady: () => boolean, readyFunc: (() => T) | (() => Promise<T>), options?: {
     interval?: number;

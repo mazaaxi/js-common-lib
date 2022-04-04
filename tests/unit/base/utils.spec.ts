@@ -966,12 +966,11 @@ describe('runWhenReady', () => {
   })
 
   it('readyFunc()が非同期だった場合', async () => {
-    let startTime = 0
+    const startTime = performance.now()
 
     const actual = await runWhenReady(
       () => true,
       async () => {
-        startTime = performance.now()
         await sleep(1000) // 1秒待機
         return 999
       },
