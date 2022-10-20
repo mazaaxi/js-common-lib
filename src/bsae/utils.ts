@@ -340,6 +340,17 @@ function findDuplicateItems<T, K extends keyof T>(array: T[], field: K): Duplica
 }
 
 /**
+ * 指定された値が`null`または`undefined`でないことを断定します。
+ * もし`null`または`undefined`だった場合、例外がスローされます。
+ * @param value
+ */
+function assertNonNullable<T>(value: T): asserts value is NonNullable<T> {
+  if (value === undefined || value === null) {
+    throw new Error(`Expected \`value\` to be defined, but received ${value}`)
+  }
+}
+
+/**
  * 指定された値が`null`または`undefined`でないことをチェックします。
  * `null`または`undefined`の場合は`false`を、それ以外の場合は`true`を返します。
  * @param value
@@ -536,6 +547,36 @@ function runWhenReady<T = undefined>(
   })
 }
 
+/**
+ * 拡張可能なメソッドを作成します。
+ * @param method
+ */
+function extensibleMethod<T extends Function>(method: T): T & { readonly super: T; body: T } {
+  const _super = method
+  let _body = method
+
+  const result: any = (...args: any[]) => {
+    return _body(...args)
+  }
+
+  Object.defineProperty(result, 'super', {
+    get: () => {
+      return _super
+    },
+  })
+
+  Object.defineProperty(result, 'body', {
+    get: () => {
+      return _body
+    },
+    set: v => {
+      _body = v
+    },
+  })
+
+  return result
+}
+
 //========================================================================
 //
 //  Exports
@@ -545,6 +586,8 @@ function runWhenReady<T = undefined>(
 export {
   Version,
   arrayToDict,
+  assertNonNullable,
+  extensibleMethod,
   findDuplicateItems,
   findDuplicateValues,
   isImplemented,

@@ -1,6 +1,8 @@
 import {
   Version,
   arrayToDict,
+  assertNonNullable,
+  extensibleMethod,
   findDuplicateItems,
   findDuplicateValues,
   isImplemented,
@@ -638,6 +640,53 @@ describe('findDuplicateItems', () => {
   })
 })
 
+describe('assertNonNullable', () => {
+  it('nullの場合', async () => {
+    let actual!: Error
+    try {
+      assertNonNullable(null)
+    } catch (err: any) {
+      actual = err
+    }
+
+    expect(actual.message).toBe(`Expected \`value\` to be defined, but received ${null}`)
+  })
+
+  it('undefinedの場合', async () => {
+    let actual!: Error
+    try {
+      assertNonNullable(undefined)
+    } catch (err: any) {
+      actual = err
+    }
+
+    expect(actual.message).toBe(`Expected \`value\` to be defined, but received ${undefined}`)
+  })
+
+  it('空文字の場合', async () => {
+    const value = ''
+    assertNonNullable(value)
+    expect(value).toBe('')
+  })
+
+  it('空オブジェクトの場合', async () => {
+    const value = {}
+    assertNonNullable(value)
+    expect(value).toEqual({})
+  })
+
+  it('nullまたはundefined以外の場合', async () => {
+    const value = {
+      name: 'John Doe',
+    } as { name: string; age: number } | undefined
+
+    assertNonNullable(value)
+    // `assertNonNullable()`を実行することで`value`が`null`または`undefined`でないことが確定するため、
+    // `value.name`と記述してもエラーが発生しなくなる
+    expect(value.name).toBe('John Doe')
+  })
+})
+
 describe('nonNullable', () => {
   it('nullの場合', async () => {
     const actual = nonNullable(null)
@@ -996,5 +1045,54 @@ describe('runWhenReady', () => {
 
     // 準備が整わないので、結果としてundefinedが取得される
     expect(actual).toBeUndefined()
+  })
+})
+
+namespace Boo {
+  export function newInstance() {
+    // greetはサブクラスでオーバーライドされることを想定するので、
+    // extensionMethodで拡張可能な状態にしておく。
+    const greet = extensibleMethod<(str: string) => string>(str => {
+      return `${str} Boo`
+    })
+
+    return { greet }
+  }
+}
+
+namespace Foo {
+  export function newInstance() {
+    const base = Boo.newInstance()
+
+    // greetはさらにサブクラスでオーバーライドされるのを想定しているので、
+    // extensionMethodで拡張可能な状態にしておく。
+    const greet = (base.greet.body = extensibleMethod(str => {
+      return `${base.greet.super(str)}, ${str} Foo`
+    }))
+
+    // base.greetを上書きするために本クラスで作成したgreetを設定している
+    return { ...base, greet }
+  }
+}
+
+namespace Woo {
+  export function newInstance() {
+    const base = Foo.newInstance()
+
+    base.greet.body = str => {
+      return `${base.greet.super(str)}, ${str} Woo`
+    }
+
+    return { ...base }
+  }
+}
+
+describe('extensibleMethod', () => {
+  it('ベーシックケース', async () => {
+    const woo = Woo.newInstance()
+
+    const actual = woo.greet('Hi')
+
+    expect(actual).toBe('Hi Boo, Hi Foo, Hi Woo')
   })
 })

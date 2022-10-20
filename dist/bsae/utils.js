@@ -5,7 +5,7 @@
 //
 //========================================================================
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.summarizeFamilyPaths = exports.splitHierarchicalPaths = exports.splitFilePath = exports.splitArrayChunk = exports.sleep = exports.shuffleArray = exports.runWhenReady = exports.removeStartSlash = exports.removeStartDirChars = exports.removeEndSlash = exports.removeBothEndsSlash = exports.prependHTTP = exports.pickProps = exports.notEmpty = exports.nonNullable = exports.isImplemented = exports.findDuplicateValues = exports.findDuplicateItems = exports.arrayToDict = exports.Version = void 0;
+exports.summarizeFamilyPaths = exports.splitHierarchicalPaths = exports.splitFilePath = exports.splitArrayChunk = exports.sleep = exports.shuffleArray = exports.runWhenReady = exports.removeStartSlash = exports.removeStartDirChars = exports.removeEndSlash = exports.removeBothEndsSlash = exports.prependHTTP = exports.pickProps = exports.notEmpty = exports.nonNullable = exports.isImplemented = exports.findDuplicateValues = exports.findDuplicateItems = exports.extensibleMethod = exports.assertNonNullable = exports.arrayToDict = exports.Version = void 0;
 /**
  * パス先頭のスラッシュを除去します。
  * @param path
@@ -330,6 +330,17 @@ function findDuplicateItems(array, field) {
 }
 exports.findDuplicateItems = findDuplicateItems;
 /**
+ * 指定された値が`null`または`undefined`でないことを断定します。
+ * もし`null`または`undefined`だった場合、例外がスローされます。
+ * @param value
+ */
+function assertNonNullable(value) {
+    if (value === undefined || value === null) {
+        throw new Error(`Expected \`value\` to be defined, but received ${value}`);
+    }
+}
+exports.assertNonNullable = assertNonNullable;
+/**
  * 指定された値が`null`または`undefined`でないことをチェックします。
  * `null`または`undefined`の場合は`false`を、それ以外の場合は`true`を返します。
  * @param value
@@ -511,4 +522,30 @@ function runWhenReady(isReady, readyFunc, options) {
     });
 }
 exports.runWhenReady = runWhenReady;
+/**
+ * 拡張可能なメソッドを作成します。
+ * @param method
+ */
+function extensibleMethod(method) {
+    const _super = method;
+    let _body = method;
+    const result = (...args) => {
+        return _body(...args);
+    };
+    Object.defineProperty(result, 'super', {
+        get: () => {
+            return _super;
+        },
+    });
+    Object.defineProperty(result, 'body', {
+        get: () => {
+            return _body;
+        },
+        set: v => {
+            _body = v;
+        },
+    });
+    return result;
+}
+exports.extensibleMethod = extensibleMethod;
 //# sourceMappingURL=utils.js.map

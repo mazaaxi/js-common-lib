@@ -138,6 +138,12 @@ declare function findDuplicateValues<T>(array: T[]): DuplicateItem<T>[];
  */
 declare function findDuplicateItems<T, K extends keyof T>(array: T[], field: K): DuplicateItem<T>[];
 /**
+ * 指定された値が`null`または`undefined`でないことを断定します。
+ * もし`null`または`undefined`だった場合、例外がスローされます。
+ * @param value
+ */
+declare function assertNonNullable<T>(value: T): asserts value is NonNullable<T>;
+/**
  * 指定された値が`null`または`undefined`でないことをチェックします。
  * `null`または`undefined`の場合は`false`を、それ以外の場合は`true`を返します。
  * @param value
@@ -217,4 +223,12 @@ declare function runWhenReady<T = undefined>(isReady: () => boolean, readyFunc: 
     interval?: number;
     timeout?: number;
 }): Promise<T | undefined>;
-export { Version, arrayToDict, findDuplicateItems, findDuplicateValues, isImplemented, nonNullable, notEmpty, pickProps, prependHTTP, removeBothEndsSlash, removeEndSlash, removeStartDirChars, removeStartSlash, runWhenReady, shuffleArray, sleep, splitArrayChunk, splitFilePath, splitHierarchicalPaths, summarizeFamilyPaths, };
+/**
+ * 拡張可能なメソッドを作成します。
+ * @param method
+ */
+declare function extensibleMethod<T extends Function>(method: T): T & {
+    readonly super: T;
+    body: T;
+};
+export { Version, arrayToDict, assertNonNullable, extensibleMethod, findDuplicateItems, findDuplicateValues, isImplemented, nonNullable, notEmpty, pickProps, prependHTTP, removeBothEndsSlash, removeEndSlash, removeStartDirChars, removeStartSlash, runWhenReady, shuffleArray, sleep, splitArrayChunk, splitFilePath, splitHierarchicalPaths, summarizeFamilyPaths, };
