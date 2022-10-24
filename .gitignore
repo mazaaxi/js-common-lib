@@ -3,6 +3,7 @@
 
 .cache/
 .idea/
+.node-version
 node_modules/
 
 /dist/**/*.js.map
