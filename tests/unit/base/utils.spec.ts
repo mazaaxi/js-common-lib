@@ -1,11 +1,16 @@
 import {
+  KeysToCamel,
+  KeysToSnake,
   Version,
   arrayToDict,
   assertNonNullable,
+  convertObject,
   extensibleMethod,
   findDuplicateItems,
   findDuplicateValues,
   isImplemented,
+  keysToCamel,
+  keysToSnake,
   nonNullable,
   notEmpty,
   pickProps,
@@ -16,11 +21,14 @@ import {
   removeStartSlash,
   runWhenReady,
   sleep,
+  snakeToCamel,
   splitArrayChunk,
   splitFilePath,
   splitHierarchicalPaths,
   summarizeFamilyPaths,
 } from '../../../src'
+import type { Dayjs } from 'dayjs'
+import dayjs from 'dayjs'
 import { performance } from 'perf_hooks'
 
 describe('removeStartSlash', () => {
@@ -782,7 +790,7 @@ describe('sleep', () => {
     const startTime = performance.now()
     await sleep(1000)
     const endTime = performance.now()
-    expect(endTime - startTime).toBeGreaterThanOrEqual(1000)
+    expect(Math.ceil(endTime - startTime)).toBeGreaterThanOrEqual(1000)
   })
 })
 
@@ -1011,7 +1019,7 @@ describe('runWhenReady', () => {
     expect(actual).toBe(999)
     // `interval`に100msが設定されているが、isReady()の初回は即時実行されるので、
     // 待ち時間はない。このため処理は100msより早く終わる。
-    expect(endTime - startTime).toBeLessThan(100)
+    expect(Math.ceil(endTime - startTime)).toBeLessThan(100)
   })
 
   it('readyFunc()が非同期だった場合', async () => {
@@ -1094,5 +1102,472 @@ describe('extensibleMethod', () => {
     const actual = woo.greet('Hi')
 
     expect(actual).toBe('Hi Boo, Hi Foo, Hi Woo')
+  })
+})
+
+describe('convertObject', () => {
+  interface APIUser {
+    first_name: string
+    last_name: string
+    age: string
+    birthday: string
+    phone_numbers: string[]
+    physical: { height: string; weight: string; sitting_height: string }
+  }
+
+  interface User {
+    firstName: string
+    lastName: string
+    age: number
+    birthday: Dayjs
+    phoneNumbers: string[]
+    physical: { height: number; weight: number; sittingHeight: number }
+  }
+
+  it('ベーシックケース - オブジェクト', () => {
+    const user: APIUser = {
+      first_name: 'taro',
+      last_name: 'yamada',
+      age: '18',
+      birthday: '2000-01-01T00:00:00.000Z',
+      phone_numbers: ['03-1234-5678', '090-1234-5678'],
+      physical: { height: '170', weight: '60', sitting_height: '90' },
+    }
+
+    const actual = convertObject<typeof user, User>(user, {
+      convertor: (key, value) => {
+        if (key === 'age') return { key: snakeToCamel(key), value: Number(value) }
+        if (key === 'birthday') return { key: snakeToCamel(key), value: dayjs(value) }
+        if (key === 'physical') {
+          type APIPhysical = APIUser['physical']
+          return {
+            key: snakeToCamel(key),
+            value: convertObject<APIPhysical>(value, {
+              convertor: (key, value) => {
+                if (key === 'height') return { key: snakeToCamel(key), value: Number(value) }
+                if (key === 'weight') return { key: snakeToCamel(key), value: Number(value) }
+                if (key === 'sitting_height') return { key: snakeToCamel(key), value: Number(value) }
+                return { key: snakeToCamel(key), value }
+              },
+            }),
+          }
+        }
+        return { key: snakeToCamel(key), value }
+      },
+    })
+
+    expect<User>(actual).toEqual<User>({
+      firstName: 'taro',
+      lastName: 'yamada',
+      age: 18,
+      birthday: dayjs('2000-01-01T00:00:00.000Z'),
+      phoneNumbers: ['03-1234-5678', '090-1234-5678'],
+      physical: { height: 170, weight: 60, sittingHeight: 90 },
+    })
+  })
+
+  it('ベーシックケース - 配列', () => {
+    const user1: APIUser = {
+      first_name: 'taro',
+      last_name: 'yamada',
+      age: '18',
+      birthday: '2000-01-01T00:00:00.000Z',
+      phone_numbers: ['03-1234-5678', '090-1234-5678'],
+      physical: { height: '170', weight: '60', sitting_height: '90' },
+    }
+    const user2: APIUser = {
+      first_name: 'hanako',
+      last_name: 'yamada',
+      age: '20',
+      birthday: '1998-01-01T00:00:00.000Z',
+      phone_numbers: ['03-8765-4321', '090-8765-4321'],
+      physical: { height: '160', weight: '50', sitting_height: '85' },
+    }
+    const users = [user1, user2]
+
+    const actual = convertObject<typeof users, User[]>(users, {
+      convertor: (key, value) => {
+        if (key === 'age') return { key: snakeToCamel(key), value: Number(value) }
+        if (key === 'birthday') return { key: snakeToCamel(key), value: dayjs(value) }
+        if (key === 'physical') {
+          type APIPhysical = APIUser['physical']
+          return {
+            key: snakeToCamel(key),
+            value: convertObject<APIPhysical>(value, {
+              convertor: (key, value) => {
+                if (key === 'height') return { key: snakeToCamel(key), value: Number(value) }
+                if (key === 'weight') return { key: snakeToCamel(key), value: Number(value) }
+                if (key === 'sitting_height') return { key: snakeToCamel(key), value: Number(value) }
+                return { key: snakeToCamel(key), value }
+              },
+            }),
+          }
+        }
+        return { key: snakeToCamel(key), value }
+      },
+    })
+
+    expect<User[]>(actual).toEqual<User[]>([
+      {
+        firstName: 'taro',
+        lastName: 'yamada',
+        age: 18,
+        birthday: dayjs('2000-01-01T00:00:00.000Z'),
+        phoneNumbers: ['03-1234-5678', '090-1234-5678'],
+        physical: { height: 170, weight: 60, sittingHeight: 90 },
+      },
+      {
+        firstName: 'hanako',
+        lastName: 'yamada',
+        age: 20,
+        birthday: dayjs('1998-01-01T00:00:00.000Z'),
+        phoneNumbers: ['03-8765-4321', '090-8765-4321'],
+        physical: { height: 160, weight: 50, sittingHeight: 85 },
+      },
+    ])
+  })
+
+  it('`deep: false`の場合', () => {
+    const user: APIUser = {
+      first_name: 'taro',
+      last_name: 'yamada',
+      age: '18',
+      birthday: '2000-01-01T00:00:00.000Z',
+      phone_numbers: ['03-1234-5678', '090-1234-5678'],
+      physical: { height: '170', weight: '60', sitting_height: '90' },
+    }
+
+    // 単純にキーをキャメルケース変換する
+    const actual = convertObject<typeof user>(user, {
+      convertor: (key, value) => {
+        return { key: snakeToCamel(key), value }
+      },
+      deep: false, // ネストして変換しない
+    })
+
+    expect(actual).toEqual({
+      firstName: user.first_name,
+      lastName: user.last_name,
+      age: user.age,
+      birthday: user.birthday,
+      phoneNumbers: user.phone_numbers,
+      // `deep: false`なので、オブジェクトはネストして変換されない
+      physical: {
+        height: user.physical.height,
+        weight: user.physical.weight,
+        sitting_height: user.physical.sitting_height,
+      },
+    })
+  })
+
+  it('`deep: true`の場合', () => {
+    const user: APIUser = {
+      first_name: 'taro',
+      last_name: 'yamada',
+      age: '18',
+      birthday: '2000-01-01T00:00:00.000Z',
+      phone_numbers: ['03-1234-5678', '090-1234-5678'],
+      physical: { height: '170', weight: '60', sitting_height: '90' },
+    }
+
+    // 単純にキーをキャメルケース変換する
+    const actual = convertObject<typeof user>(user, {
+      convertor: (key, value) => {
+        return { key: snakeToCamel(key), value }
+      },
+      deep: true, // ネストして変換する
+    })
+
+    expect(actual).toEqual({
+      firstName: user.first_name,
+      lastName: user.last_name,
+      age: user.age,
+      birthday: user.birthday,
+      phoneNumbers: user.phone_numbers,
+      // `deep: true`なので、オブジェクトはネストして変換される
+      physical: {
+        height: user.physical.height,
+        weight: user.physical.weight,
+        sittingHeight: user.physical.sitting_height,
+      },
+    })
+  })
+
+  it('ビルトインオブジェクトを指定した場合', () => {
+    type Item = {
+      dateValue: Date
+      errorValue: Error
+      regexpValue: RegExp
+      dayjsValue: Dayjs
+    }
+
+    const item = {
+      date_value: new Date(),
+      error_value: new Error(''),
+      regexp_value: new RegExp(''),
+      dayjs_value: dayjs(),
+    }
+
+    const actual = convertObject<typeof item, Item>(item, {
+      convertor: (key, value) => {
+        return { key: snakeToCamel(key), value }
+      },
+    })
+
+    // ビルトインオブジェクトのキーはキャメルケースに変換されない想定
+    expect<Item>(actual).toEqual(<typeof actual>{
+      dateValue: item.date_value,
+      errorValue: item.error_value,
+      regexpValue: item.regexp_value,
+      dayjsValue: item.dayjs_value,
+    })
+  })
+})
+
+describe('keysToCamel', () => {
+  interface APIUser {
+    first_name: string
+    last_name: string
+    age: string
+    birthday: string
+    phone_numbers: string[]
+    physical: { height: string; weight: string; sitting_height: string }
+  }
+
+  interface User {
+    firstName: string
+    lastName: string
+    age: number
+    birthday: Dayjs
+    phoneNumbers: string[]
+    physical: { height: number; weight: number; sittingHeight: number }
+  }
+
+  it('ベーシックケース', () => {
+    const user: APIUser = {
+      first_name: 'taro',
+      last_name: 'yamada',
+      age: '18',
+      birthday: '2000-01-01T00:00:00.000Z',
+      phone_numbers: ['03-1234-5678', '090-1234-5678'],
+      physical: { height: '170', weight: '60', sitting_height: '90' },
+    }
+
+    const actual = keysToCamel<typeof user, User>(user, {
+      convertor: (key, value) => {
+        if (key === 'age') return Number(value)
+        if (key === 'birthday') return dayjs(value)
+        if (key === 'physical') {
+          type APIPhysical = APIUser['physical']
+          return keysToCamel<APIPhysical>(value, {
+            convertor: (key, value) => {
+              if (key === 'height') return Number(value)
+              if (key === 'weight') return Number(value)
+              if (key === 'sitting_height') return Number(value)
+              return value
+            },
+          })
+        }
+        return value
+      },
+    })
+
+    expect<User>(actual).toEqual<User>({
+      firstName: 'taro',
+      lastName: 'yamada',
+      age: 18,
+      birthday: dayjs('2000-01-01T00:00:00.000Z'),
+      phoneNumbers: ['03-1234-5678', '090-1234-5678'],
+      physical: { height: 170, weight: 60, sittingHeight: 90 },
+    })
+  })
+
+  describe('`convertor`を指定しない場合', () => {
+    it('`deep: false`の場合', () => {
+      const user: APIUser = {
+        first_name: 'taro',
+        last_name: 'yamada',
+        age: '18',
+        birthday: '2000-01-01T00:00:00.000Z',
+        phone_numbers: ['03-1234-5678', '090-1234-5678'],
+        physical: { height: '170', weight: '60', sitting_height: '90' },
+      }
+
+      // 単純にキーをキャメルケース変換する
+      const actual = keysToCamel<typeof user>(user, {
+        deep: false, // ネストして変換しない
+      })
+
+      expect(actual).toEqual({
+        firstName: user.first_name,
+        lastName: user.last_name,
+        age: user.age,
+        birthday: user.birthday,
+        phoneNumbers: user.phone_numbers,
+        // `deep: false`なので、オブジェクトはネストして変換されない
+        physical: {
+          height: user.physical.height,
+          weight: user.physical.weight,
+          // キャメルケースに変換されていないことに注目
+          sitting_height: user.physical.sitting_height,
+        },
+      })
+    })
+
+    it('`deep: true`の場合', () => {
+      type User = KeysToCamel<APIUser>
+
+      const user: APIUser = {
+        first_name: 'taro',
+        last_name: 'yamada',
+        age: '18',
+        birthday: '2000-01-01T00:00:00.000Z',
+        phone_numbers: ['03-1234-5678', '090-1234-5678'],
+        physical: { height: '170', weight: '60', sitting_height: '90' },
+      }
+
+      // 単純にキーをキャメルケース変換する
+      const actual = keysToCamel<typeof user, User>(user, {
+        deep: true, // ネストして変換する
+      })
+
+      expect<User>(actual).toEqual<User>({
+        firstName: user.first_name,
+        lastName: user.last_name,
+        age: user.age,
+        birthday: user.birthday,
+        phoneNumbers: user.phone_numbers,
+        // `deep: true`なので、オブジェクトはネストして変換される
+        physical: {
+          height: user.physical.height,
+          weight: user.physical.weight,
+          sittingHeight: user.physical.sitting_height,
+        },
+      })
+    })
+  })
+})
+
+describe('keysToSnake', () => {
+  interface APIUser {
+    first_name: string
+    last_name: string
+    age: string
+    birthday: string
+    phone_numbers: string[]
+    physical: { height: string; weight: string; sitting_height: string }
+  }
+
+  interface User {
+    firstName: string
+    lastName: string
+    age: number
+    birthday: Dayjs
+    phoneNumbers: string[]
+    physical: { height: number; weight: number; sittingHeight: number }
+  }
+
+  it('ベーシックケース', () => {
+    const user: User = {
+      firstName: 'taro',
+      lastName: 'yamada',
+      age: 18,
+      birthday: dayjs('2000-01-01T00:00:00.000Z'),
+      phoneNumbers: ['03-1234-5678', '090-1234-5678'],
+      physical: { height: 170, weight: 60, sittingHeight: 90 },
+    }
+
+    const actual = keysToSnake<typeof user, APIUser>(user, {
+      convertor: (key, value) => {
+        if (key === 'age') return value.toString()
+        if (key === 'birthday') return value.toISOString()
+        if (key === 'physical') {
+          type Physical = User['physical']
+          return keysToSnake<Physical>(value, {
+            convertor: (key, value) => {
+              if (key === 'height') return value.toString()
+              if (key === 'weight') return value.toString()
+              if (key === 'sittingHeight') return value.toString()
+              return value
+            },
+          })
+        }
+        return value
+      },
+    })
+
+    expect<APIUser>(actual).toEqual<APIUser>({
+      first_name: 'taro',
+      last_name: 'yamada',
+      age: '18',
+      birthday: '2000-01-01T00:00:00.000Z',
+      phone_numbers: ['03-1234-5678', '090-1234-5678'],
+      physical: { height: '170', weight: '60', sitting_height: '90' },
+    })
+  })
+
+  describe('`convertor`を指定しない場合', () => {
+    it('`deep: false`の場合', () => {
+      const user: User = {
+        firstName: 'taro',
+        lastName: 'yamada',
+        age: 18,
+        birthday: dayjs('2000-01-01T00:00:00.000Z'),
+        phoneNumbers: ['03-1234-5678', '090-1234-5678'],
+        physical: { height: 170, weight: 60, sittingHeight: 90 },
+      }
+
+      // 単純にキーをスネークケース変換する
+      const actual = keysToSnake<typeof user>(user, {
+        deep: false, // ネストして変換しない
+      })
+
+      expect(actual).toEqual({
+        first_name: user.firstName,
+        last_name: user.lastName,
+        age: user.age,
+        birthday: user.birthday,
+        phone_numbers: user.phoneNumbers,
+        // `deep: false`なので、オブジェクトはネストして変換されない
+        physical: {
+          height: user.physical.height,
+          weight: user.physical.weight,
+          // スネークケースに変換されていないことに注目
+          sittingHeight: user.physical.sittingHeight,
+        },
+      })
+    })
+
+    it('`deep: true`の場合', () => {
+      type APIUser = KeysToSnake<User>
+
+      const user: User = {
+        firstName: 'taro',
+        lastName: 'yamada',
+        age: 18,
+        birthday: dayjs('2000-01-01T00:00:00.000Z'),
+        phoneNumbers: ['03-1234-5678', '090-1234-5678'],
+        physical: { height: 170, weight: 60, sittingHeight: 90 },
+      }
+
+      // 単純にキーをスネークケース変換する
+      const actual = keysToSnake<typeof user, APIUser>(user, {
+        deep: true, // ネストして変換する
+      })
+
+      expect<APIUser>(actual).toEqual<APIUser>({
+        first_name: user.firstName,
+        last_name: user.lastName,
+        age: user.age,
+        birthday: user.birthday,
+        phone_numbers: user.phoneNumbers,
+        // `deep: true`なので、オブジェクトはネストして変換される
+        physical: {
+          height: user.physical.height,
+          weight: user.physical.weight,
+          sitting_height: user.physical.sittingHeight,
+        },
+      })
+    })
   })
 })

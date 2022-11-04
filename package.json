@@ -1,6 +1,6 @@
 {
   "name": "js-common-lib",
-  "version": "0.0.2",
+  "version": "0.0.0",
   "license": "MIT",
   "author": "mazaaxi",
   "private": true,
@@ -18,7 +18,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "rm -rf dist && tsc --declaration --project ./tsconfig.json",
-    "test": "jest --runInBand",
+    "test:unit": "jest --runInBand",
     "test:coverage": "jest --runInBand --coverage",
     "lint": "./eslint.sh"
   },

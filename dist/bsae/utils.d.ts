@@ -1,4 +1,10 @@
 /**
+ * `T`から型を推論します。
+ * `T`が配列の場合、その配列に格納されるアイテムの型を取得します。
+ * `T`が配列以外の場合、`T`の型をそのまま返します。
+ */
+declare type InferFrom<T> = T extends Array<infer R> ? R : T;
+/**
  * パス先頭のスラッシュを除去します。
  * @param path
  */
@@ -231,4 +237,58 @@ declare function extensibleMethod<T extends Function>(method: T): T & {
     readonly super: T;
     body: T;
 };
-export { Version, arrayToDict, assertNonNullable, extensibleMethod, findDuplicateItems, findDuplicateValues, isImplemented, nonNullable, notEmpty, pickProps, prependHTTP, removeBothEndsSlash, removeEndSlash, removeStartDirChars, removeStartSlash, runWhenReady, shuffleArray, sleep, splitArrayChunk, splitFilePath, splitHierarchicalPaths, summarizeFamilyPaths, };
+/**
+ * スネークケースをキャメルケースに変換します。
+ * @param str
+ */
+declare function snakeToCamel(str: string): string;
+/**
+ * キャメルケースをスネークケースに変換します。
+ * @param str
+ */
+declare function camelToSnake(str: string): string;
+/**
+ * キャメルケースをケバブケースに変換します。
+ * @param str
+ */
+declare function camelToKebab(str: string): string;
+/**
+ * 指定されたオブジェクトまたはオブジェクト配列のキーと値を`convertor`で変換します。
+ * @param value 変換対象のオブジェクトまたはオブジェクト配列を指定してください。
+ * @param input
+ * - convertor 変換関数を指定してください。<br>
+ * - deep プロパティにオブジェクトがあった場合、そのオブジェクトをネストして
+ *   変換するかを指定してください。<br>
+ */
+declare function convertObject<FROM extends Record<string, any> | Record<string, any>[], TO = unknown>(value: FROM, input: {
+    convertor: (key: keyof InferFrom<FROM>, value: any) => {
+        key: string;
+        value: any;
+    };
+    deep?: boolean;
+}): TO;
+/**
+ * オブジェクトのキーをスネークケースからキャメルケースに変換します。
+ * @param value 変換対象のオブジェクトまたはオブジェクト配列を指定してください。
+ * @param options
+ * - convertor 変換関数を指定してください。<br>
+ * - deep プロパティがオブジェクトがあった場合、そのオブジェクトをネストして
+ *   変換するかを指定してください。<br>
+ */
+declare function keysToCamel<FROM extends Record<string, any> | Record<string, any>[], TO = unknown>(value: FROM, options?: {
+    convertor?: (key: keyof InferFrom<FROM>, value: any) => any;
+    deep?: boolean;
+}): TO;
+/**
+ * オブジェクトのキーをキャメルケースからスネークケースに変換します。
+ * @param value 変換対象のオブジェクトまたはオブジェクト配列を指定してください。
+ * @param options
+ * - convertor 変換関数を指定してください。<br>
+ * - deep プロパティがオブジェクトがあった場合、そのオブジェクトをネストして
+ *   変換するかを指定してください。<br>
+ */
+declare function keysToSnake<FROM extends Record<string, any> | Record<string, any>[], TO = unknown>(value: FROM, options?: {
+    convertor?: (key: keyof InferFrom<FROM>, value: any) => any;
+    deep?: boolean;
+}): TO;
+export { Version, arrayToDict, assertNonNullable, camelToKebab, camelToSnake, convertObject, extensibleMethod, findDuplicateItems, findDuplicateValues, isImplemented, keysToCamel, keysToSnake, nonNullable, notEmpty, pickProps, prependHTTP, removeBothEndsSlash, removeEndSlash, removeStartDirChars, removeStartSlash, runWhenReady, shuffleArray, sleep, snakeToCamel, splitArrayChunk, splitFilePath, splitHierarchicalPaths, summarizeFamilyPaths, };

@@ -1,3 +1,18 @@
+import dayjs from 'dayjs'
+
+//========================================================================
+//
+//  Implementation
+//
+//========================================================================
+
+/**
+ * `T`から型を推論します。
+ * `T`が配列の場合、その配列に格納されるアイテムの型を取得します。
+ * `T`が配列以外の場合、`T`の型をそのまま返します。
+ */
+type InferFrom<T> = T extends Array<infer R> ? R : T
+
 //========================================================================
 //
 //  Implementation
@@ -577,6 +592,155 @@ function extensibleMethod<T extends Function>(method: T): T & { readonly super: 
   return result
 }
 
+/**
+ * スネークケースをキャメルケースに変換します。
+ * @param str
+ */
+function snakeToCamel(str: string): string {
+  return str.replace(/([-_][a-z])/gi, $1 => $1.toUpperCase().replace('-', '').replace('_', ''))
+}
+
+/**
+ * キャメルケースをスネークケースに変換します。
+ * @param str
+ */
+function camelToSnake(str: string): string {
+  return str.replace(/([A-Z])/g, '_$1').toLowerCase()
+}
+
+/**
+ * キャメルケースをケバブケースに変換します。
+ * @param str
+ */
+function camelToKebab(str: string): string {
+  return str.replace(/[a-z][A-Z]/g, '$1-$2').toLowerCase()
+}
+
+/**
+ * 指定されたオブジェクトまたはオブジェクト配列のキーと値を`convertor`で変換します。
+ * @param value 変換対象のオブジェクトまたはオブジェクト配列を指定してください。
+ * @param input
+ * - convertor 変換関数を指定してください。<br>
+ * - deep プロパティにオブジェクトがあった場合、そのオブジェクトをネストして
+ *   変換するかを指定してください。<br>
+ */
+function convertObject<FROM extends Record<string, any> | Record<string, any>[], TO = unknown>(
+  value: FROM,
+  input: {
+    convertor: (key: keyof InferFrom<FROM>, value: any) => { key: string; value: any }
+    deep?: boolean
+  }
+): TO {
+  const isObject = (value: any) => {
+    if (value instanceof Array) return false
+
+    if (typeof value !== 'object') return false
+    if (value instanceof Date) return false
+    if (value instanceof Error) return false
+    if (value instanceof RegExp) return false
+    if (dayjs.isDayjs(value)) return false
+
+    return true
+  }
+
+  const { convertor, deep } = input
+
+  if (isObject(value)) {
+    const result: Record<string, any> = {}
+    const obj = value as Record<string, any>
+
+    for (const key of Object.keys(obj)) {
+      const { key: toKey, value: toValue } = convertor(key as any, obj[key])
+      if (deep) {
+        result[toKey] = convertObject<FROM, TO>(toValue, input)
+      } else {
+        result[toKey] = toValue
+      }
+    }
+
+    return result as any
+  } else if (Array.isArray(value)) {
+    const result: any = []
+    const array = value as any[]
+
+    for (const item of array) {
+      result.push(convertObject<FROM, TO>(item, input))
+    }
+
+    return result as any
+  }
+
+  return value as any
+}
+
+/**
+ * オブジェクトのキーをスネークケースからキャメルケースに変換します。
+ * @param value 変換対象のオブジェクトまたはオブジェクト配列を指定してください。
+ * @param options
+ * - convertor 変換関数を指定してください。<br>
+ * - deep プロパティがオブジェクトがあった場合、そのオブジェクトをネストして
+ *   変換するかを指定してください。<br>
+ */
+function keysToCamel<FROM extends Record<string, any> | Record<string, any>[], TO = unknown>(
+  value: FROM,
+  options?: {
+    convertor?: (key: keyof InferFrom<FROM>, value: any) => any
+    deep?: boolean
+  }
+): TO {
+  const { convertor, deep } = options || {}
+
+  if (convertor) {
+    return convertObject(value, {
+      convertor: (key, value) => {
+        return { key: snakeToCamel(key as string), value: convertor(key, value) }
+      },
+      deep,
+    })
+  } else {
+    return convertObject(value, {
+      convertor: (key, value) => {
+        return { key: snakeToCamel(key as string), value }
+      },
+      deep,
+    })
+  }
+}
+
+/**
+ * オブジェクトのキーをキャメルケースからスネークケースに変換します。
+ * @param value 変換対象のオブジェクトまたはオブジェクト配列を指定してください。
+ * @param options
+ * - convertor 変換関数を指定してください。<br>
+ * - deep プロパティがオブジェクトがあった場合、そのオブジェクトをネストして
+ *   変換するかを指定してください。<br>
+ */
+function keysToSnake<FROM extends Record<string, any> | Record<string, any>[], TO = unknown>(
+  value: FROM,
+  options?: {
+    convertor?: (key: keyof InferFrom<FROM>, value: any) => any
+    deep?: boolean
+  }
+): TO {
+  const { convertor, deep } = options || {}
+
+  if (convertor) {
+    return convertObject(value, {
+      convertor: (key, value) => {
+        return { key: camelToSnake(key as string), value: convertor(key, value) }
+      },
+      deep,
+    })
+  } else {
+    return convertObject(value, {
+      convertor: (key, value) => {
+        return { key: camelToSnake(key as string), value }
+      },
+      deep,
+    })
+  }
+}
+
 //========================================================================
 //
 //  Exports
@@ -587,10 +751,15 @@ export {
   Version,
   arrayToDict,
   assertNonNullable,
+  camelToKebab,
+  camelToSnake,
+  convertObject,
   extensibleMethod,
   findDuplicateItems,
   findDuplicateValues,
   isImplemented,
+  keysToCamel,
+  keysToSnake,
   nonNullable,
   notEmpty,
   pickProps,
@@ -602,6 +771,7 @@ export {
   runWhenReady,
   shuffleArray,
   sleep,
+  snakeToCamel,
   splitArrayChunk,
   splitFilePath,
   splitHierarchicalPaths,

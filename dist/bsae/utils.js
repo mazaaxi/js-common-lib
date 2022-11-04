@@ -1,11 +1,15 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.summarizeFamilyPaths = exports.splitHierarchicalPaths = exports.splitFilePath = exports.splitArrayChunk = exports.snakeToCamel = exports.sleep = exports.shuffleArray = exports.runWhenReady = exports.removeStartSlash = exports.removeStartDirChars = exports.removeEndSlash = exports.removeBothEndsSlash = exports.prependHTTP = exports.pickProps = exports.notEmpty = exports.nonNullable = exports.keysToSnake = exports.keysToCamel = exports.isImplemented = exports.findDuplicateValues = exports.findDuplicateItems = exports.extensibleMethod = exports.convertObject = exports.camelToSnake = exports.camelToKebab = exports.assertNonNullable = exports.arrayToDict = exports.Version = void 0;
+const dayjs_1 = __importDefault(require("dayjs"));
 //========================================================================
 //
 //  Implementation
 //
 //========================================================================
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.summarizeFamilyPaths = exports.splitHierarchicalPaths = exports.splitFilePath = exports.splitArrayChunk = exports.sleep = exports.shuffleArray = exports.runWhenReady = exports.removeStartSlash = exports.removeStartDirChars = exports.removeEndSlash = exports.removeBothEndsSlash = exports.prependHTTP = exports.pickProps = exports.notEmpty = exports.nonNullable = exports.isImplemented = exports.findDuplicateValues = exports.findDuplicateItems = exports.extensibleMethod = exports.assertNonNullable = exports.arrayToDict = exports.Version = void 0;
 /**
  * パス先頭のスラッシュを除去します。
  * @param path
@@ -548,4 +552,134 @@ function extensibleMethod(method) {
     return result;
 }
 exports.extensibleMethod = extensibleMethod;
+/**
+ * スネークケースをキャメルケースに変換します。
+ * @param str
+ */
+function snakeToCamel(str) {
+    return str.replace(/([-_][a-z])/gi, $1 => $1.toUpperCase().replace('-', '').replace('_', ''));
+}
+exports.snakeToCamel = snakeToCamel;
+/**
+ * キャメルケースをスネークケースに変換します。
+ * @param str
+ */
+function camelToSnake(str) {
+    return str.replace(/([A-Z])/g, '_$1').toLowerCase();
+}
+exports.camelToSnake = camelToSnake;
+/**
+ * キャメルケースをケバブケースに変換します。
+ * @param str
+ */
+function camelToKebab(str) {
+    return str.replace(/[a-z][A-Z]/g, '$1-$2').toLowerCase();
+}
+exports.camelToKebab = camelToKebab;
+/**
+ * 指定されたオブジェクトまたはオブジェクト配列のキーと値を`convertor`で変換します。
+ * @param value 変換対象のオブジェクトまたはオブジェクト配列を指定してください。
+ * @param input
+ * - convertor 変換関数を指定してください。<br>
+ * - deep プロパティにオブジェクトがあった場合、そのオブジェクトをネストして
+ *   変換するかを指定してください。<br>
+ */
+function convertObject(value, input) {
+    const isObject = (value) => {
+        if (value instanceof Array)
+            return false;
+        if (typeof value !== 'object')
+            return false;
+        if (value instanceof Date)
+            return false;
+        if (value instanceof Error)
+            return false;
+        if (value instanceof RegExp)
+            return false;
+        if (dayjs_1.default.isDayjs(value))
+            return false;
+        return true;
+    };
+    const { convertor, deep } = input;
+    if (isObject(value)) {
+        const result = {};
+        const obj = value;
+        for (const key of Object.keys(obj)) {
+            const { key: toKey, value: toValue } = convertor(key, obj[key]);
+            if (deep) {
+                result[toKey] = convertObject(toValue, input);
+            }
+            else {
+                result[toKey] = toValue;
+            }
+        }
+        return result;
+    }
+    else if (Array.isArray(value)) {
+        const result = [];
+        const array = value;
+        for (const item of array) {
+            result.push(convertObject(item, input));
+        }
+        return result;
+    }
+    return value;
+}
+exports.convertObject = convertObject;
+/**
+ * オブジェクトのキーをスネークケースからキャメルケースに変換します。
+ * @param value 変換対象のオブジェクトまたはオブジェクト配列を指定してください。
+ * @param options
+ * - convertor 変換関数を指定してください。<br>
+ * - deep プロパティがオブジェクトがあった場合、そのオブジェクトをネストして
+ *   変換するかを指定してください。<br>
+ */
+function keysToCamel(value, options) {
+    const { convertor, deep } = options || {};
+    if (convertor) {
+        return convertObject(value, {
+            convertor: (key, value) => {
+                return { key: snakeToCamel(key), value: convertor(key, value) };
+            },
+            deep,
+        });
+    }
+    else {
+        return convertObject(value, {
+            convertor: (key, value) => {
+                return { key: snakeToCamel(key), value };
+            },
+            deep,
+        });
+    }
+}
+exports.keysToCamel = keysToCamel;
+/**
+ * オブジェクトのキーをキャメルケースからスネークケースに変換します。
+ * @param value 変換対象のオブジェクトまたはオブジェクト配列を指定してください。
+ * @param options
+ * - convertor 変換関数を指定してください。<br>
+ * - deep プロパティがオブジェクトがあった場合、そのオブジェクトをネストして
+ *   変換するかを指定してください。<br>
+ */
+function keysToSnake(value, options) {
+    const { convertor, deep } = options || {};
+    if (convertor) {
+        return convertObject(value, {
+            convertor: (key, value) => {
+                return { key: camelToSnake(key), value: convertor(key, value) };
+            },
+            deep,
+        });
+    }
+    else {
+        return convertObject(value, {
+            convertor: (key, value) => {
+                return { key: camelToSnake(key), value };
+            },
+            deep,
+        });
+    }
+}
+exports.keysToSnake = keysToSnake;
 //# sourceMappingURL=utils.js.map
