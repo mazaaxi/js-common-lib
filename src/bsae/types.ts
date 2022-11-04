@@ -103,25 +103,22 @@ type DeepUnreadonly<T> = T extends Function | Date | Error | RegExp | Dayjs
   : T
 
 /**
- * `TARGET`型に`SOURCE`型を上書きします。
+ * `TARGET`型に`SOURCE`型をマージします。
  *
  * @example
  * type Target = { name: string; age: number }
  * type Source = { name: string; age?: number; weight: number }
- * type Person = Overwrite<Target, Source>
+ * type Person = Merge<Target, Source>
  * const p: Person = null as any
  * p.name = 'Taro' // string
  * p.age = undefined // number | undefined
  * p.weight = 170 // number
  */
-type Overwrite<TARGET, SOURCE> = Omit<TARGET, keyof SOURCE> & SOURCE
-
-type ReplaceType1<T, S> = {
-  [K in keyof T]: T[K] extends S ? unknown : T[K]
-}
-type ReplaceType2<T, R> = {
-  [K in keyof T]: T[K] extends unknown ? R : T[K]
-}
+type Merge<TARGET, SOURCE> = {
+  [K in keyof TARGET]: K extends keyof SOURCE ? SOURCE[K] : TARGET[K]
+} & SOURCE extends infer O
+  ? { [K in keyof O]: O[K] }
+  : never
 
 /**
  * `T`型の中で`S`型のメンバーを`R`型に置き換えます。
@@ -136,6 +133,13 @@ type ReplaceType2<T, R> = {
  * }
  */
 type ReplaceType<T, S, R> = ReplaceType1<T, S> & ReplaceType2<T, R>
+
+type ReplaceType1<T, S> = {
+  [K in keyof T]: T[K] extends S ? unknown : T[K]
+}
+type ReplaceType2<T, R> = {
+  [K in keyof T]: T[K] extends unknown ? R : T[K]
+}
 
 type SnakeToCamel<S extends string> = S extends `${infer P1}_${infer P2}${infer P3}`
   ? `${Lowercase<P1>}${Uppercase<P2>}${SnakeToCamel<P3>}`
@@ -214,7 +218,7 @@ export {
   DeepPartial,
   DeepReadonly,
   DeepUnreadonly,
-  Overwrite,
+  Merge,
   ReplaceType,
   SnakeToCamel,
   KeysToCamel,
