@@ -1154,6 +1154,9 @@ describe('convertObject', () => {
         }
         return { key: snakeToCamel(key), value }
       },
+      // `value`にネストしたオブジェクトを指定し、かつ`convertor`を指定する場合は、
+      // 基本的に`deep: false`を指定
+      deep: false,
     })
 
     expect<User>(actual).toEqual<User>({
@@ -1205,6 +1208,9 @@ describe('convertObject', () => {
         }
         return { key: snakeToCamel(key), value }
       },
+      // `value`にネストしたオブジェクトを指定し、かつ`convertor`を指定する場合は、
+      // 基本的に`deep: false`を指定
+      deep: false,
     })
 
     expect<User[]>(actual).toEqual<User[]>([
@@ -1275,7 +1281,7 @@ describe('convertObject', () => {
       convertor: (key, value) => {
         return { key: snakeToCamel(key), value }
       },
-      deep: true, // ネストして変換する
+      deep: true, // ネストして変換する (デフォルト)
     })
 
     expect(actual).toEqual({
@@ -1314,7 +1320,7 @@ describe('convertObject', () => {
       },
     })
 
-    // ビルトインオブジェクトのキーはキャメルケースに変換されない想定
+    // ビルトインオブジェクト内のキーはキャメルケースに変換されない想定
     expect<Item>(actual).toEqual(<typeof actual>{
       dateValue: item.date_value,
       errorValue: item.error_value,
@@ -1370,6 +1376,9 @@ describe('keysToCamel', () => {
         }
         return value
       },
+      // `value`にネストしたオブジェクトを指定し、かつ`convertor`を指定する場合は、
+      // 基本的に`deep: false`を指定
+      deep: false,
     })
 
     expect<User>(actual).toEqual<User>({
@@ -1428,7 +1437,7 @@ describe('keysToCamel', () => {
 
       // 単純にキーをキャメルケース変換する
       const actual = keysToCamel<typeof user, User>(user, {
-        deep: true, // ネストして変換する
+        deep: true, // ネストして変換する (デフォルト)
       })
 
       expect<User>(actual).toEqual<User>({
@@ -1494,6 +1503,9 @@ describe('keysToSnake', () => {
         }
         return value
       },
+      // `value`にネストしたオブジェクトを指定し、かつ`convertor`を指定する場合は、
+      // 基本的に`deep: false`を指定
+      deep: false,
     })
 
     expect<APIUser>(actual).toEqual<APIUser>({
@@ -1552,7 +1564,7 @@ describe('keysToSnake', () => {
 
       // 単純にキーをスネークケース変換する
       const actual = keysToSnake<typeof user, APIUser>(user, {
-        deep: true, // ネストして変換する
+        deep: true, // ネストして変換する (デフォルト)
       })
 
       expect<APIUser>(actual).toEqual<APIUser>({

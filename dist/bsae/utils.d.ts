@@ -254,11 +254,16 @@ declare function camelToSnake(str: string): string;
 declare function camelToKebab(str: string): string;
 /**
  * 指定されたオブジェクトまたはオブジェクト配列のキーと値を`convertor`で変換します。
+ *
+ * 注意: `value`にネストしたオブジェクトを指定し、かつ`convertor`を指定する場合は、
+ * 基本的に`deep: false`を指定してください。これは親オブジェクトと子オブジェクトに
+ * 同じ名前のプロパティがあった場合、意図しない変換が行われる可能性があるためです。
+ *
  * @param value 変換対象のオブジェクトまたはオブジェクト配列を指定してください。
  * @param input
  * - convertor 変換関数を指定してください。<br>
- * - deep プロパティにオブジェクトがあった場合、そのオブジェクトをネストして
- *   変換するかを指定してください。<br>
+ * - deep `value`のプロパティにオブジェクトがあった場合、そのオブジェクトをネスト
+ *   して変換するかを指定してください。デフォルトは`true`です。<br>
  */
 declare function convertObject<FROM extends Record<string, any> | Record<string, any>[], TO = unknown>(value: FROM, input: {
     convertor: (key: keyof InferFrom<FROM>, value: any) => {
@@ -269,11 +274,16 @@ declare function convertObject<FROM extends Record<string, any> | Record<string,
 }): TO;
 /**
  * オブジェクトのキーをスネークケースからキャメルケースに変換します。
+ *
+ * 注意: `value`にネストしたオブジェクトを指定し、かつ`convertor`を指定する場合は、
+ * 基本的に`deep: false`を指定してください。これは親オブジェクトと子オブジェクトに
+ * 同じ名前のプロパティがあった場合、意図しない変換が行われる可能性があるためです。
+ *
  * @param value 変換対象のオブジェクトまたはオブジェクト配列を指定してください。
  * @param options
  * - convertor 変換関数を指定してください。<br>
  * - deep プロパティがオブジェクトがあった場合、そのオブジェクトをネストして
- *   変換するかを指定してください。<br>
+ *   変換するかを指定してください。デフォルトは`true`です。<br>
  */
 declare function keysToCamel<FROM extends Record<string, any> | Record<string, any>[], TO = unknown>(value: FROM, options?: {
     convertor?: (key: keyof InferFrom<FROM>, value: any) => any;
@@ -281,11 +291,16 @@ declare function keysToCamel<FROM extends Record<string, any> | Record<string, a
 }): TO;
 /**
  * オブジェクトのキーをキャメルケースからスネークケースに変換します。
+ *
+ * 注意: `value`にネストしたオブジェクトを指定し、かつ`convertor`を指定する場合は、
+ * 基本的に`deep: false`を指定してください。これは親オブジェクトと子オブジェクトに
+ * 同じ名前のプロパティがあった場合、意図しない変換が行われる可能性があるためです。
+ *
  * @param value 変換対象のオブジェクトまたはオブジェクト配列を指定してください。
  * @param options
  * - convertor 変換関数を指定してください。<br>
  * - deep プロパティがオブジェクトがあった場合、そのオブジェクトをネストして
- *   変換するかを指定してください。<br>
+ *   変換するかを指定してください。デフォルトは`true`です。<br>
  */
 declare function keysToSnake<FROM extends Record<string, any> | Record<string, any>[], TO = unknown>(value: FROM, options?: {
     convertor?: (key: keyof InferFrom<FROM>, value: any) => any;

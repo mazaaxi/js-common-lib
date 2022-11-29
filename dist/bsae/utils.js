@@ -578,11 +578,16 @@ function camelToKebab(str) {
 exports.camelToKebab = camelToKebab;
 /**
  * 指定されたオブジェクトまたはオブジェクト配列のキーと値を`convertor`で変換します。
+ *
+ * 注意: `value`にネストしたオブジェクトを指定し、かつ`convertor`を指定する場合は、
+ * 基本的に`deep: false`を指定してください。これは親オブジェクトと子オブジェクトに
+ * 同じ名前のプロパティがあった場合、意図しない変換が行われる可能性があるためです。
+ *
  * @param value 変換対象のオブジェクトまたはオブジェクト配列を指定してください。
  * @param input
  * - convertor 変換関数を指定してください。<br>
- * - deep プロパティにオブジェクトがあった場合、そのオブジェクトをネストして
- *   変換するかを指定してください。<br>
+ * - deep `value`のプロパティにオブジェクトがあった場合、そのオブジェクトをネスト
+ *   して変換するかを指定してください。デフォルトは`true`です。<br>
  */
 function convertObject(value, input) {
     const isObject = (value) => {
@@ -600,7 +605,8 @@ function convertObject(value, input) {
             return false;
         return true;
     };
-    const { convertor, deep } = input;
+    const { convertor } = input;
+    const deep = typeof input.deep === 'boolean' ? input.deep : true;
     if (isObject(value)) {
         const result = {};
         const obj = value;
@@ -628,58 +634,54 @@ function convertObject(value, input) {
 exports.convertObject = convertObject;
 /**
  * オブジェクトのキーをスネークケースからキャメルケースに変換します。
+ *
+ * 注意: `value`にネストしたオブジェクトを指定し、かつ`convertor`を指定する場合は、
+ * 基本的に`deep: false`を指定してください。これは親オブジェクトと子オブジェクトに
+ * 同じ名前のプロパティがあった場合、意図しない変換が行われる可能性があるためです。
+ *
  * @param value 変換対象のオブジェクトまたはオブジェクト配列を指定してください。
  * @param options
  * - convertor 変換関数を指定してください。<br>
  * - deep プロパティがオブジェクトがあった場合、そのオブジェクトをネストして
- *   変換するかを指定してください。<br>
+ *   変換するかを指定してください。デフォルトは`true`です。<br>
  */
 function keysToCamel(value, options) {
     const { convertor, deep } = options || {};
-    if (convertor) {
-        return convertObject(value, {
-            convertor: (key, value) => {
-                return { key: snakeToCamel(key), value: convertor(key, value) };
-            },
-            deep,
-        });
-    }
-    else {
-        return convertObject(value, {
-            convertor: (key, value) => {
-                return { key: snakeToCamel(key), value };
-            },
-            deep,
-        });
-    }
+    return convertObject(value, {
+        convertor: (key, value) => {
+            return {
+                key: snakeToCamel(key),
+                value: convertor ? convertor(key, value) : value,
+            };
+        },
+        deep,
+    });
 }
 exports.keysToCamel = keysToCamel;
 /**
  * オブジェクトのキーをキャメルケースからスネークケースに変換します。
+ *
+ * 注意: `value`にネストしたオブジェクトを指定し、かつ`convertor`を指定する場合は、
+ * 基本的に`deep: false`を指定してください。これは親オブジェクトと子オブジェクトに
+ * 同じ名前のプロパティがあった場合、意図しない変換が行われる可能性があるためです。
+ *
  * @param value 変換対象のオブジェクトまたはオブジェクト配列を指定してください。
  * @param options
  * - convertor 変換関数を指定してください。<br>
  * - deep プロパティがオブジェクトがあった場合、そのオブジェクトをネストして
- *   変換するかを指定してください。<br>
+ *   変換するかを指定してください。デフォルトは`true`です。<br>
  */
 function keysToSnake(value, options) {
     const { convertor, deep } = options || {};
-    if (convertor) {
-        return convertObject(value, {
-            convertor: (key, value) => {
-                return { key: camelToSnake(key), value: convertor(key, value) };
-            },
-            deep,
-        });
-    }
-    else {
-        return convertObject(value, {
-            convertor: (key, value) => {
-                return { key: camelToSnake(key), value };
-            },
-            deep,
-        });
-    }
+    return convertObject(value, {
+        convertor: (key, value) => {
+            return {
+                key: camelToSnake(key),
+                value: convertor ? convertor(key, value) : value,
+            };
+        },
+        deep,
+    });
 }
 exports.keysToSnake = keysToSnake;
 //# sourceMappingURL=utils.js.map
