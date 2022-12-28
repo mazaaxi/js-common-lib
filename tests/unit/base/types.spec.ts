@@ -1,4 +1,4 @@
-import { DeepPartial, DeepReadonly } from '../../../src'
+import { DeepPartial, DeepReadonly, Merge } from '../../../src'
 import dayjs, { Dayjs } from 'dayjs'
 
 interface Dummy {
@@ -392,6 +392,117 @@ describe('DeepReadonly', () => {
     dummy.map4.get('key1')!.name = undefined
     dummy.map4.get('key1')!.name = null
     dummy.map4.get('key1')!.name = 'one'
+
+    <--- */
+  })
+})
+
+describe('Merge', () => {
+  type RawItem = {
+    firstName: string
+    body: {
+      state: string
+      weight: string
+      height: string
+    }
+    phones: Array<{
+      carrier: string
+    }>
+    memo: Map<
+      string,
+      {
+        type: string
+        content: string
+      }
+    >
+    createdAt: string
+    updatedAt: string
+  }
+
+  type Item = Merge<
+    RawItem,
+    {
+      lastName: string
+      body: {
+        weight: number
+        height: number
+        sittingHeight: number
+      }
+      phones: ReadonlyArray<{
+        carrier: 'docomo' | 'au' | 'softbank'
+        number: string
+      }>
+      memo: WeakMap<
+        Dayjs,
+        {
+          type: 'diary' | 'travel'
+        }
+      >
+      createdAt: Dayjs
+      updatedAt: Dayjs
+    }
+  >
+
+  it('静的解析 - 正常', () => {
+    const memo: Item['memo'] = new Map()
+    memo.set(dayjs(), {
+      type: 'diary',
+      content: 'Today I did programming.',
+    })
+
+    const item: Item = {
+      firstName: 'John',
+      lastName: 'Doe',
+      body: {
+        state: 'normal',
+        weight: 63,
+        height: 175,
+        sittingHeight: 90,
+      },
+      phones: [
+        {
+          carrier: 'docomo',
+          number: '090-1234-5678',
+        },
+      ],
+      memo,
+      createdAt: dayjs(),
+      updatedAt: dayjs(),
+    }
+  })
+
+  it('静的解析 - 不正', () => {
+    /* ---> TypeScriptの静的解析の結果を確認するには、
+            このコメントブロックを削除してください
+
+    const memo: Item['memo'] = new Map()
+    memo.set(
+      dayjs().toISOString(), // 文字列は設定不可
+      {
+        type: 'hoge', // 規定の文字列以外設定不可
+        content: 'Today I did programming.',
+      }
+    )
+
+    const item: Item = {
+      firstName: 'John',
+      lastName: 'Doe',
+      body: {
+        state: 'normal',
+        weight: '63', // 文字列は設定不可
+        height: '175', // 文字列は設定不可
+        sittingHeight: 90,
+      },
+      phones: [
+        {
+          carrier: 'hoge', // 規定の文字列以外設定不可
+          number: '',
+        },
+      ],
+      memo,
+      createdAt: dayjs().toISOString(), // 文字列は設定不可
+      updatedAt: dayjs().toISOString(), // 文字列は設定不可
+    }
 
     <--- */
   })

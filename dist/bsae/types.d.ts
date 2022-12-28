@@ -29,11 +29,9 @@ declare type DeepUnreadonly<T> = T extends Function | Date | Error | RegExp | Da
  * p.age = undefined // number | undefined
  * p.weight = 170 // number
  */
-declare type Merge<TARGET, SOURCE> = {
-    [K in keyof TARGET]: K extends keyof SOURCE ? SOURCE[K] : TARGET[K];
-} & SOURCE extends infer O ? {
-    [K in keyof O]: O[K];
-} : never;
+declare type Merge<T, S> = T extends Function | Date | Error | RegExp | Dayjs ? T : T extends Array<infer TR> ? S extends Array<infer SR> ? Array<Merge<TR, SR>> : S extends ReadonlyArray<infer SR> ? ReadonlyArray<Merge<TR, SR>> : S : T extends Map<infer TK, infer TV> ? S extends Map<infer SK, infer SV> ? Map<SK, Merge<TV, SV>> : S extends ReadonlyMap<infer SK, infer SV> ? ReadonlyMap<SK, Merge<TV, SV>> : S extends WeakMap<infer SK, infer SV> ? WeakMap<SK, Merge<TV, SV>> : S : T extends Set<infer TR> ? S extends Set<infer SR> ? Set<Merge<TR, SR>> : S extends ReadonlySet<infer SR> ? ReadonlySet<Merge<TR, SR>> : S extends WeakSet<infer SR> ? WeakSet<Merge<TR, SR>> : S : T extends Record<any, any> ? {
+    [K in keyof (T & S)]: K extends keyof S ? (S[K] extends Record<any, any> ? Merge<T[K], S[K]> : S[K]) : T[K];
+} : S;
 /**
  * `T`型の中で`S`型のメンバーを`R`型に置き換えます。
  *
