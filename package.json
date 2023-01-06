@@ -23,17 +23,21 @@
     "lint": "./eslint.sh"
   },
   "dependencies": {
+    "chokidar": "^3.5.3",
     "dayjs": "^1.11.6"
   },
   "devDependencies": {
+    "@types/fs-extra": "^9.0.13",
     "@types/jest": "^29.2.0",
     "@types/lodash": "^4.14.186",
     "@types/node": "^18.11.4",
     "@typescript-eslint/eslint-plugin": "^5.40.1",
     "@typescript-eslint/parser": "^5.40.1",
+    "commander": "^9.4.1",
     "eslint": "^8.26.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.2.1",
+    "fs-extra": "^11.1.0",
     "jest": "^27.5.1",
     "lodash": "^4.17.21",
     "prettier": "^2.7.1",
