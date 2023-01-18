@@ -74,7 +74,7 @@ declare function prependHTTP(path: string, { https }?: {
  * @param props 取り出したいプロパティ
  * @param excludeValues 除外したいプロパティ値
  */
-declare function pickProps<T, K extends keyof T>(obj: T, props: K[], excludeValues?: any[]): {
+declare function pickProps<T extends Record<any, any>, K extends keyof T>(obj: T, props: K[], excludeValues?: any[]): {
     [P in K]: T[P];
 };
 /**

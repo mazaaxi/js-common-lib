@@ -155,7 +155,7 @@ function prependHTTP(path: string, { https = true } = {}) {
  * @param props 取り出したいプロパティ
  * @param excludeValues 除外したいプロパティ値
  */
-function pickProps<T, K extends keyof T>(obj: T, props: K[], excludeValues?: any[]): { [P in K]: T[P] } {
+function pickProps<T extends Record<any, any>, K extends keyof T>(obj: T, props: K[], excludeValues?: any[]): { [P in K]: T[P] } {
   const result: any = {}
   for (const prop of props) {
     // オブジェクトに指定されたキーが存在しない場合、そのキーを無視
