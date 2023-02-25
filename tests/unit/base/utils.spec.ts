@@ -21,13 +21,13 @@ import {
   removeStartSlash,
   runWhenReady,
   sleep,
-  snakeToCamel,
   splitArrayChunk,
   splitFilePath,
   splitHierarchicalPaths,
   summarizeFamilyPaths,
 } from '../../../src'
 import type { Dayjs } from 'dayjs'
+import camelCase from 'lodash/camelCase'
 import dayjs from 'dayjs'
 import { performance } from 'perf_hooks'
 
@@ -1136,23 +1136,23 @@ describe('convertObject', () => {
 
     const actual = convertObject<typeof user, User>(user, {
       convertor: (key, value) => {
-        if (key === 'age') return { key: snakeToCamel(key), value: Number(value) }
-        if (key === 'birthday') return { key: snakeToCamel(key), value: dayjs(value) }
+        if (key === 'age') return { key: camelCase(key), value: Number(value) }
+        if (key === 'birthday') return { key: camelCase(key), value: dayjs(value) }
         if (key === 'physical') {
           type APIPhysical = APIUser['physical']
           return {
-            key: snakeToCamel(key),
+            key: camelCase(key),
             value: convertObject<APIPhysical>(value, {
               convertor: (key, value) => {
-                if (key === 'height') return { key: snakeToCamel(key), value: Number(value) }
-                if (key === 'weight') return { key: snakeToCamel(key), value: Number(value) }
-                if (key === 'sitting_height') return { key: snakeToCamel(key), value: Number(value) }
-                return { key: snakeToCamel(key), value }
+                if (key === 'height') return { key: camelCase(key), value: Number(value) }
+                if (key === 'weight') return { key: camelCase(key), value: Number(value) }
+                if (key === 'sitting_height') return { key: camelCase(key), value: Number(value) }
+                return { key: camelCase(key), value }
               },
             }),
           }
         }
-        return { key: snakeToCamel(key), value }
+        return { key: camelCase(key), value }
       },
       // `value`にネストしたオブジェクトを指定し、かつ`convertor`を指定する場合は、
       // 基本的に`deep: false`を指定
@@ -1190,23 +1190,23 @@ describe('convertObject', () => {
 
     const actual = convertObject<typeof users, User[]>(users, {
       convertor: (key, value) => {
-        if (key === 'age') return { key: snakeToCamel(key), value: Number(value) }
-        if (key === 'birthday') return { key: snakeToCamel(key), value: dayjs(value) }
+        if (key === 'age') return { key: camelCase(key), value: Number(value) }
+        if (key === 'birthday') return { key: camelCase(key), value: dayjs(value) }
         if (key === 'physical') {
           type APIPhysical = APIUser['physical']
           return {
-            key: snakeToCamel(key),
+            key: camelCase(key),
             value: convertObject<APIPhysical>(value, {
               convertor: (key, value) => {
-                if (key === 'height') return { key: snakeToCamel(key), value: Number(value) }
-                if (key === 'weight') return { key: snakeToCamel(key), value: Number(value) }
-                if (key === 'sitting_height') return { key: snakeToCamel(key), value: Number(value) }
-                return { key: snakeToCamel(key), value }
+                if (key === 'height') return { key: camelCase(key), value: Number(value) }
+                if (key === 'weight') return { key: camelCase(key), value: Number(value) }
+                if (key === 'sitting_height') return { key: camelCase(key), value: Number(value) }
+                return { key: camelCase(key), value }
               },
             }),
           }
         }
-        return { key: snakeToCamel(key), value }
+        return { key: camelCase(key), value }
       },
       // `value`にネストしたオブジェクトを指定し、かつ`convertor`を指定する場合は、
       // 基本的に`deep: false`を指定
@@ -1246,7 +1246,7 @@ describe('convertObject', () => {
     // 単純にキーをキャメルケース変換する
     const actual = convertObject<typeof user>(user, {
       convertor: (key, value) => {
-        return { key: snakeToCamel(key), value }
+        return { key: camelCase(key), value }
       },
       deep: false, // ネストして変換しない
     })
@@ -1279,7 +1279,7 @@ describe('convertObject', () => {
     // 単純にキーをキャメルケース変換する
     const actual = convertObject<typeof user>(user, {
       convertor: (key, value) => {
-        return { key: snakeToCamel(key), value }
+        return { key: camelCase(key), value }
       },
       deep: true, // ネストして変換する (デフォルト)
     })
@@ -1316,7 +1316,7 @@ describe('convertObject', () => {
 
     const actual = convertObject<typeof item, Item>(item, {
       convertor: (key, value) => {
-        return { key: snakeToCamel(key), value }
+        return { key: camelCase(key), value }
       },
     })
 

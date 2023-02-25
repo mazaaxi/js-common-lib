@@ -238,21 +238,6 @@ declare function extensibleMethod<T extends Function>(method: T): T & {
     body: T;
 };
 /**
- * スネークケースをキャメルケースに変換します。
- * @param str
- */
-declare function snakeToCamel(str: string): string;
-/**
- * キャメルケースをスネークケースに変換します。
- * @param str
- */
-declare function camelToSnake(str: string): string;
-/**
- * キャメルケースをケバブケースに変換します。
- * @param str
- */
-declare function camelToKebab(str: string): string;
-/**
  * 指定されたオブジェクトまたはオブジェクト配列のキーと値を`convertor`で変換します。
  *
  * 注意: `value`にネストオブジェクト(オブジェクトのメンバーを持つオブジェクト)を指定し、かつ
@@ -330,4 +315,4 @@ declare function keysToSnake<FROM extends Record<string, any> | Record<string, a
     convertor?: (key: keyof InferFrom<FROM>, value: any) => any;
     deep?: boolean;
 }): TO;
-export { Version, arrayToDict, assertNonNullable, camelToKebab, camelToSnake, convertObject, extensibleMethod, findDuplicateItems, findDuplicateValues, isImplemented, keysToCamel, keysToSnake, nonNullable, notEmpty, pickProps, prependHTTP, removeBothEndsSlash, removeEndSlash, removeStartDirChars, removeStartSlash, runWhenReady, shuffleArray, sleep, snakeToCamel, splitArrayChunk, splitFilePath, splitHierarchicalPaths, summarizeFamilyPaths, };
+export { Version, arrayToDict, assertNonNullable, convertObject, extensibleMethod, findDuplicateItems, findDuplicateValues, isImplemented, keysToCamel, keysToSnake, nonNullable, notEmpty, pickProps, prependHTTP, removeBothEndsSlash, removeEndSlash, removeStartDirChars, removeStartSlash, runWhenReady, shuffleArray, sleep, splitArrayChunk, splitFilePath, splitHierarchicalPaths, summarizeFamilyPaths, };

@@ -1,4 +1,6 @@
+import camelCase from 'lodash/camelCase'
 import dayjs from 'dayjs'
+import snakeCase from 'lodash/snakeCase'
 
 //========================================================================
 //
@@ -593,30 +595,6 @@ function extensibleMethod<T extends Function>(method: T): T & { readonly super: 
 }
 
 /**
- * スネークケースをキャメルケースに変換します。
- * @param str
- */
-function snakeToCamel(str: string): string {
-  return str.replace(/([-_][a-z])/gi, $1 => $1.toUpperCase().replace('-', '').replace('_', ''))
-}
-
-/**
- * キャメルケースをスネークケースに変換します。
- * @param str
- */
-function camelToSnake(str: string): string {
-  return str.replace(/([A-Z])/g, '_$1').toLowerCase()
-}
-
-/**
- * キャメルケースをケバブケースに変換します。
- * @param str
- */
-function camelToKebab(str: string): string {
-  return str.replace(/[a-z][A-Z]/g, '$1-$2').toLowerCase()
-}
-
-/**
  * 指定されたオブジェクトまたはオブジェクト配列のキーと値を`convertor`で変換します。
  *
  * 注意: `value`にネストオブジェクト(オブジェクトのメンバーを持つオブジェクト)を指定し、かつ
@@ -720,7 +698,7 @@ function keysToCamel<FROM extends Record<string, any> | Record<string, any>[], T
   return convertObject(value, {
     convertor: (key, value) => {
       return {
-        key: snakeToCamel(key as string),
+        key: camelCase(key as string),
         value: convertor ? convertor(key, value) : value,
       }
     },
@@ -761,7 +739,7 @@ function keysToSnake<FROM extends Record<string, any> | Record<string, any>[], T
   return convertObject(value, {
     convertor: (key, value) => {
       return {
-        key: camelToSnake(key as string),
+        key: snakeCase(key as string),
         value: convertor ? convertor(key, value) : value,
       }
     },
@@ -779,8 +757,6 @@ export {
   Version,
   arrayToDict,
   assertNonNullable,
-  camelToKebab,
-  camelToSnake,
   convertObject,
   extensibleMethod,
   findDuplicateItems,
@@ -799,7 +775,6 @@ export {
   runWhenReady,
   shuffleArray,
   sleep,
-  snakeToCamel,
   splitArrayChunk,
   splitFilePath,
   splitHierarchicalPaths,

@@ -3,8 +3,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.summarizeFamilyPaths = exports.splitHierarchicalPaths = exports.splitFilePath = exports.splitArrayChunk = exports.snakeToCamel = exports.sleep = exports.shuffleArray = exports.runWhenReady = exports.removeStartSlash = exports.removeStartDirChars = exports.removeEndSlash = exports.removeBothEndsSlash = exports.prependHTTP = exports.pickProps = exports.notEmpty = exports.nonNullable = exports.keysToSnake = exports.keysToCamel = exports.isImplemented = exports.findDuplicateValues = exports.findDuplicateItems = exports.extensibleMethod = exports.convertObject = exports.camelToSnake = exports.camelToKebab = exports.assertNonNullable = exports.arrayToDict = exports.Version = void 0;
+exports.summarizeFamilyPaths = exports.splitHierarchicalPaths = exports.splitFilePath = exports.splitArrayChunk = exports.sleep = exports.shuffleArray = exports.runWhenReady = exports.removeStartSlash = exports.removeStartDirChars = exports.removeEndSlash = exports.removeBothEndsSlash = exports.prependHTTP = exports.pickProps = exports.notEmpty = exports.nonNullable = exports.keysToSnake = exports.keysToCamel = exports.isImplemented = exports.findDuplicateValues = exports.findDuplicateItems = exports.extensibleMethod = exports.convertObject = exports.assertNonNullable = exports.arrayToDict = exports.Version = void 0;
+const camelCase_1 = __importDefault(require("lodash/camelCase"));
 const dayjs_1 = __importDefault(require("dayjs"));
+const snakeCase_1 = __importDefault(require("lodash/snakeCase"));
 //========================================================================
 //
 //  Implementation
@@ -553,30 +555,6 @@ function extensibleMethod(method) {
 }
 exports.extensibleMethod = extensibleMethod;
 /**
- * スネークケースをキャメルケースに変換します。
- * @param str
- */
-function snakeToCamel(str) {
-    return str.replace(/([-_][a-z])/gi, $1 => $1.toUpperCase().replace('-', '').replace('_', ''));
-}
-exports.snakeToCamel = snakeToCamel;
-/**
- * キャメルケースをスネークケースに変換します。
- * @param str
- */
-function camelToSnake(str) {
-    return str.replace(/([A-Z])/g, '_$1').toLowerCase();
-}
-exports.camelToSnake = camelToSnake;
-/**
- * キャメルケースをケバブケースに変換します。
- * @param str
- */
-function camelToKebab(str) {
-    return str.replace(/[a-z][A-Z]/g, '$1-$2').toLowerCase();
-}
-exports.camelToKebab = camelToKebab;
-/**
  * 指定されたオブジェクトまたはオブジェクト配列のキーと値を`convertor`で変換します。
  *
  * 注意: `value`にネストオブジェクト(オブジェクトのメンバーを持つオブジェクト)を指定し、かつ
@@ -666,7 +644,7 @@ function keysToCamel(value, options) {
     return convertObject(value, {
         convertor: (key, value) => {
             return {
-                key: snakeToCamel(key),
+                key: (0, camelCase_1.default)(key),
                 value: convertor ? convertor(key, value) : value,
             };
         },
@@ -700,7 +678,7 @@ function keysToSnake(value, options) {
     return convertObject(value, {
         convertor: (key, value) => {
             return {
-                key: camelToSnake(key),
+                key: (0, snakeCase_1.default)(key),
                 value: convertor ? convertor(key, value) : value,
             };
         },
