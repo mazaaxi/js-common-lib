@@ -1305,6 +1305,7 @@ describe('convertObject', () => {
       errorValue: Error
       regexpValue: RegExp
       dayjsValue: Dayjs
+      nullValue: null // typeof null === 'object' なので、一応オブジェクトとして扱う
     }
 
     const item = {
@@ -1312,6 +1313,7 @@ describe('convertObject', () => {
       error_value: new Error(''),
       regexp_value: new RegExp(''),
       dayjs_value: dayjs(),
+      null_value: null,
     }
 
     const actual = convertObject<typeof item, Item>(item, {
@@ -1326,6 +1328,7 @@ describe('convertObject', () => {
       errorValue: item.error_value,
       regexpValue: item.regexp_value,
       dayjsValue: item.dayjs_value,
+      nullValue: item.null_value,
     })
   })
 })

@@ -624,7 +624,7 @@ function convertObject<FROM extends Record<string, any> | Record<string, any>[],
 ): TO {
   const isObject = (value: any) => {
     if (value instanceof Array) return false
-
+    if (value === null) return false
     if (typeof value !== 'object') return false
     if (value instanceof Date) return false
     if (value instanceof Error) return false

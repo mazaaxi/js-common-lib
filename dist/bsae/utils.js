@@ -579,6 +579,8 @@ function convertObject(value, input) {
     const isObject = (value) => {
         if (value instanceof Array)
             return false;
+        if (value === null)
+            return false;
         if (typeof value !== 'object')
             return false;
         if (value instanceof Date)
