@@ -417,6 +417,7 @@ describe('Merge', () => {
     >
     createdAt: string
     updatedAt: string
+    greet: (msg: string) => string
   }
 
   type Item = Merge<
@@ -440,6 +441,7 @@ describe('Merge', () => {
       >
       createdAt: Dayjs
       updatedAt: Dayjs
+      greet: () => string
     }
   >
 
@@ -468,6 +470,7 @@ describe('Merge', () => {
       memo,
       createdAt: dayjs(),
       updatedAt: dayjs(),
+      greet: () => 'Hello!',
     }
   })
 
@@ -502,6 +505,9 @@ describe('Merge', () => {
       memo,
       createdAt: dayjs().toISOString(), // 文字列は設定不可
       updatedAt: dayjs().toISOString(), // 文字列は設定不可
+      greet: msg => {
+        return `Hello ${msg}!`
+      }, // 引数を持つ関数は設定不可
     }
 
     <--- */

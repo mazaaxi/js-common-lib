@@ -114,8 +114,10 @@ type DeepUnreadonly<T> = T extends Function | Date | Error | RegExp | Dayjs
  * p.age = undefined // number | undefined
  * p.weight = 170 // number
  */
-type Merge<T, S> = T extends Function | Date | Error | RegExp | Dayjs
+type Merge<T, S> = T extends Date | Error | RegExp | Dayjs
   ? T
+  : T extends Function
+  ? S
   : T extends Array<infer TR>
   ? S extends Array<infer SR>
     ? Array<Merge<TR, SR>>
