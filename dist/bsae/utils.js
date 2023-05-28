@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.summarizeFamilyPaths = exports.splitHierarchicalPaths = exports.splitFilePath = exports.splitArrayChunk = exports.sleep = exports.shuffleArray = exports.runWhenReady = exports.removeStartSlash = exports.removeStartDirChars = exports.removeEndSlash = exports.removeBothEndsSlash = exports.prependHTTP = exports.pickProps = exports.notEmpty = exports.nonNullable = exports.keysToSnake = exports.keysToCamel = exports.isImplemented = exports.findDuplicateValues = exports.findDuplicateItems = exports.extensibleMethod = exports.convertObject = exports.assertNonNullable = exports.arrayToDict = exports.Version = void 0;
+exports.toPathFromFullPath = exports.summarizeFamilyPaths = exports.splitHierarchicalPaths = exports.splitFilePath = exports.splitArrayChunk = exports.sleep = exports.shuffleArray = exports.runWhenReady = exports.removeStartSlash = exports.removeStartDirChars = exports.removeEndSlash = exports.removeBothEndsSlash = exports.prependHTTP = exports.pickProps = exports.notEmpty = exports.nonNullable = exports.keysToSnake = exports.keysToCamel = exports.isImplemented = exports.findDuplicateValues = exports.findDuplicateItems = exports.extensibleMethod = exports.convertObject = exports.assertNonNullable = exports.arrayToDict = exports.Version = void 0;
 const camelCase_1 = __importDefault(require("lodash/camelCase"));
 const dayjs_1 = __importDefault(require("dayjs"));
 const snakeCase_1 = __importDefault(require("lodash/snakeCase"));
@@ -55,6 +55,21 @@ function removeStartDirChars(path) {
     return path.replace(/^\.*\/*/, '');
 }
 exports.removeStartDirChars = removeStartDirChars;
+/**
+ * フルパスからクエリストリングとハッシュを除去したパスを取得します。
+ * @param fullPath
+ */
+function toPathFromFullPath(fullPath) {
+    if (!fullPath)
+        return '';
+    if (fullPath.startsWith('/')) {
+        return fullPath.split(/[?#]/)[0];
+    }
+    else {
+        return fullPath.split(/\/?[?#]/)[0];
+    }
+}
+exports.toPathFromFullPath = toPathFromFullPath;
 /**
  * ファイルパスをファイル名とディレクトリパスに分割します。
  * @param filePath

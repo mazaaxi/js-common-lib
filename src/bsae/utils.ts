@@ -61,6 +61,20 @@ function removeStartDirChars(path: string | undefined | null): string {
 }
 
 /**
+ * フルパスからクエリストリングとハッシュを除去したパスを取得します。
+ * @param fullPath
+ */
+function toPathFromFullPath(fullPath: string | undefined | null): string {
+  if (!fullPath) return ''
+
+  if (fullPath.startsWith('/')) {
+    return fullPath.split(/[?#]/)[0]
+  } else {
+    return fullPath.split(/\/?[?#]/)[0]
+  }
+}
+
+/**
  * ファイルパスをファイル名とディレクトリパスに分割します。
  * @param filePath
  */
@@ -779,4 +793,5 @@ export {
   splitFilePath,
   splitHierarchicalPaths,
   summarizeFamilyPaths,
+  toPathFromFullPath,
 }

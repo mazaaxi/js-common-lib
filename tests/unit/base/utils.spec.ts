@@ -25,6 +25,7 @@ import {
   splitFilePath,
   splitHierarchicalPaths,
   summarizeFamilyPaths,
+  toPathFromFullPath,
 } from '../../../src'
 import type { Dayjs } from 'dayjs'
 import camelCase from 'lodash/camelCase'
@@ -125,6 +126,91 @@ describe('removeStartDirChars', () => {
 
   it('nullを指定した場合', async () => {
     const actual = removeStartDirChars(null)
+    expect(actual).toBe('')
+  })
+})
+
+describe('toPathFromFullPath', () => {
+  describe('絶対パス - ルートパス', () => {
+    it('クエリストリングがある場合', async () => {
+      const actual = toPathFromFullPath('/?name=taro')
+      expect(actual).toBe('/')
+    })
+
+    it('ハッシュがある場合', async () => {
+      const actual = toPathFromFullPath('/#title1')
+      expect(actual).toBe('/')
+    })
+
+    it('クエリストリングとハッシュがある場合', async () => {
+      const actual = toPathFromFullPath('/?name=taro#title1')
+      expect(actual).toBe('/')
+    })
+  })
+
+  describe('絶対パス - サブパス', () => {
+    it('クエリストリングがある場合', async () => {
+      const actual = toPathFromFullPath('/aaa/bbb?name=taro')
+      expect(actual).toBe('/aaa/bbb')
+    })
+
+    it('ハッシュがある場合', async () => {
+      const actual = toPathFromFullPath('/aaa/bbb#title1')
+      expect(actual).toBe('/aaa/bbb')
+    })
+
+    it('クエリストリングとハッシュがある場合', async () => {
+      const actual = toPathFromFullPath('/aaa/bbb?name=taro#title1')
+      expect(actual).toBe('/aaa/bbb')
+    })
+  })
+
+  describe('相対パス - ルートパス', () => {
+    it('クエリストリングがある場合', async () => {
+      const actual = toPathFromFullPath('?name=taro')
+      expect(actual).toBe('')
+    })
+
+    it('ハッシュがある場合', async () => {
+      const actual = toPathFromFullPath('#title1')
+      expect(actual).toBe('')
+    })
+
+    it('クエリストリングとハッシュがある場合', async () => {
+      const actual = toPathFromFullPath('?name=taro#title1')
+      expect(actual).toBe('')
+    })
+  })
+
+  describe('相対パス - サブパス', () => {
+    it('クエリストリングがある場合', async () => {
+      const actual = toPathFromFullPath('aaa/bbb?name=taro')
+      expect(actual).toBe('aaa/bbb')
+    })
+
+    it('ハッシュがある場合', async () => {
+      const actual = toPathFromFullPath('aaa/bbb#title1')
+      expect(actual).toBe('aaa/bbb')
+    })
+
+    it('クエリストリングとハッシュがある場合', async () => {
+      const actual = toPathFromFullPath('aaa/bbb?name=taro#title1')
+      expect(actual).toBe('aaa/bbb')
+    })
+  })
+
+  it('空文字場合', async () => {
+    const actual = toPathFromFullPath('')
+    expect(actual).toBe('')
+  })
+
+  it('undefinedの場合', async () => {
+    const actual = toPathFromFullPath(undefined)
+    expect(actual).toBe('')
+  })
+
+  it('nullの場合', async () => {
+    const actual = toPathFromFullPath(null)
     expect(actual).toBe('')
   })
 })

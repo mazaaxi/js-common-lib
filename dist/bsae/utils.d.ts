@@ -28,6 +28,11 @@ declare function removeBothEndsSlash(path: string | undefined | null): string;
  */
 declare function removeStartDirChars(path: string | undefined | null): string;
 /**
+ * フルパスからクエリストリングとハッシュを除去したパスを取得します。
+ * @param fullPath
+ */
+declare function toPathFromFullPath(fullPath: string | undefined | null): string;
+/**
  * ファイルパスをファイル名とディレクトリパスに分割します。
  * @param filePath
  */
@@ -315,4 +320,4 @@ declare function keysToSnake<FROM extends Record<string, any> | Record<string, a
     convertor?: (key: keyof InferFrom<FROM>, value: any) => any;
     deep?: boolean;
 }): TO;
-export { Version, arrayToDict, assertNonNullable, convertObject, extensibleMethod, findDuplicateItems, findDuplicateValues, isImplemented, keysToCamel, keysToSnake, nonNullable, notEmpty, pickProps, prependHTTP, removeBothEndsSlash, removeEndSlash, removeStartDirChars, removeStartSlash, runWhenReady, shuffleArray, sleep, splitArrayChunk, splitFilePath, splitHierarchicalPaths, summarizeFamilyPaths, };
+export { Version, arrayToDict, assertNonNullable, convertObject, extensibleMethod, findDuplicateItems, findDuplicateValues, isImplemented, keysToCamel, keysToSnake, nonNullable, notEmpty, pickProps, prependHTTP, removeBothEndsSlash, removeEndSlash, removeStartDirChars, removeStartSlash, runWhenReady, shuffleArray, sleep, splitArrayChunk, splitFilePath, splitHierarchicalPaths, summarizeFamilyPaths, toPathFromFullPath, };
